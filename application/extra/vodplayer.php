@@ -1,31 +1,5 @@
 <?php
 return array (
-  'sdm3u8' => 
-  array (
-    'status' => '1',
-    'from' => 'sdm3u8',
-    'show' => '闪电m3u8',
-    'des' => '',
-    'target' => '_self',
-    'ps' => '0',
-    'parse' => '',
-    'sort' => '999',
-    'tip' => '',
-    'id' => 'sdm3u8',
-  ),
-  'dbm3u8' => 
-  array (
-    'status' => '1',
-    'from' => 'dbm3u8',
-    'show' => '百度m3u8',
-    'des' => '',
-    'target' => '_self',
-    'ps' => '0',
-    'parse' => '',
-    'sort' => '998',
-    'tip' => '',
-    'id' => 'dbm3u8',
-  ),
   'dplayer' => 
   array (
     'status' => '1',
@@ -112,5 +86,55 @@ return array (
     'sort' => '902',
     'tip' => '无需安装任何插件	',
     'id' => 'flv',
+  ),
+  'lzm3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'lzm3u8',
+    'show' => '量子m3u8',
+    'des' => '',
+    'target' => '_self',
+    'ps' => '1',
+    'parse' => '',
+    'sort' => '1000',
+    'tip' => '',
+    'id' => 'lzm3u8',
+  ),
+  'wolong' => 
+  array (
+    'status' => '1',
+    'from' => 'wolong',
+    'show' => 'wolong',
+    'des' => '卧龙资源',
+    'target' => '_self',
+    'ps' => '1',
+    'parse' => 'https://jx.wolongzywcdn.com:65/m3u8.php?url=',
+    'sort' => '1000',
+    'tip' => '',
+    'id' => 'wolong',
+  ),
+  'zykyun' => 
+  array (
+    'status' => '1',
+    'from' => 'zykyun',
+    'show' => 'zykyun',
+    'des' => 'http://1080zyku.com/',
+    'ps' => '1',
+    'parse' => '',
+    'sort' => '99',
+    'tip' => '在线播放,无需安装播放器',
+    'id' => 'zykyun',
+  ),
+  '1080zyk' => 
+  array (
+    'status' => '1',
+    'from' => '1080zyk',
+    'show' => '1080zyk',
+    'des' => 'http://1080zyku.com/',
+    'ps' => '1',
+    'parse' => 'https://vip.zykbf.com/?url=',
+    'sort' => '99',
+    'tip' => '在线播放,无需安装播放器',
+    'id' => '1080zyk',
   ),
 );

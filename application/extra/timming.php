@@ -35,7 +35,7 @@ return array (
     'param' => '/start.php/admin/collect/api.html?ac=cj&cjflag=6c4b9deb0102572741f5169070ce1b56&cjurl=https%3A%2F%2Fapi.apibdzy.com%2Fapi.php%2Fprovide%2Fvod%2F%3Fac%3Dlist&h=24&t=&ids=&wd=&type=2&mid=1&opt=0&sync_pic_opt=0&filter=0&filter_from=&filter_year=&param=',
     'weeks' => '1,2,3,4,5,6,0',
     'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
-    'runtime' => 1741846458,
+    'runtime' => 1741860609,
   ),
   'wolong' => 
   array (
@@ -49,5 +49,16 @@ return array (
     'weeks' => '1,2,3,4,5,6,0',
     'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
     'runtime' => 1741846639,
+  ),
+  '' => 
+  array (
+    '__token__' => '2ee9d079286673d57abf214eaf2cdc00',
+    'status' => '0',
+    'name' => '',
+    'des' => '',
+    'file' => 'collect',
+    'param' => 'https://api.yzzy-api.com/inc/api_mac10.php?ac=videolist&t=61&pg=16&h=&ids=&wd=',
+    'weeks' => '1,2,3,4,5,6,0',
+    'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
   ),
 );

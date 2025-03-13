@@ -37,9 +37,9 @@ return array (
     'site_tj' => '统计代码',
     'site_status' => '1',
     'site_close_tip' => '站点暂时关闭，请稍后访问',
-    'new_version' => '',
     'ads_dir' => 'ads',
     'mob_ads_dir' => 'ads',
+    'new_version' => '0',
   ),
   'app' => 
   array (
@@ -97,11 +97,13 @@ return array (
   ),
   'user' => 
   array (
-    'status' => '1',
-    'reg_open' => '1',
+    'status' => '0',
+    'reg_open' => '0',
     'reg_status' => '1',
     'reg_phone_sms' => '0',
     'reg_email_sms' => '0',
+    'email_white_hosts' => '',
+    'email_black_hosts' => '',
     'reg_verify' => '0',
     'login_verify' => '0',
     'reg_points' => '10',
@@ -200,7 +202,7 @@ return array (
   'interface' => 
   array (
     'status' => 0,
-    'pass' => '73LFM8ABLA6A4BG2',
+    'pass' => 'UOE7NIMUWWHDRTCM',
     'vodtype' => '动作片=动作',
     'arttype' => '头条=头条',
     'actortype' => '',
@@ -586,8 +588,8 @@ plotdetail/<id>   => plot/detail',
     'widthpop' => '0',
     'heightpop' => '600',
     'second' => '5',
-    'prestrain' => '//union.maccms.la/html/prestrain.html',
-    'buffer' => '//union.maccms.la/html/buffer.html',
+    'prestrain' => '',
+    'buffer' => '',
     'parse' => '',
     'autofull' => '0',
     'showtop' => '1',
