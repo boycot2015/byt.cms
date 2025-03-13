@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="renderer" content="webkit" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="apple-mobile-web-app-title" content="免费短视频分享大全 - 大中国" />
+<script src="/template/default/asset/js/player.js"></script>
+<meta name="viewport" content="initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/index.php/rss/index.xml" />
+<!--[if lt IE 9]><script type="text/javascript">window.location.href = '/index.php/map/index.html';</script><![endif]-->
+<link href="/template/default/asset/img/favicon.png" rel="apple-touch-icon-precomposed" />
+<link href="/template/default/asset/img/favicon.png" rel="shortcut icon" type="image/ico" />
+<link rel="stylesheet" type="text/css" href="/template/default/asset/css/style.css?v=" />
+<script type="text/javascript">
+if(document.cookie.match(new RegExp('(^| )fed_color=([^;]*)(;|$)')) != null) {
+	var color = document.cookie.match(new RegExp('(^| )fed_color=([^;]*)(;|$)'));
+	if(color[2] == 'white') {
+		var elementid = document.getElementById('fed-colo-color');
+		if(elementid) elementid.parentNode.removeChild(elementid);
+	} else if(!document.getElementById('fed-colo-color')) {
+		var style = document.createElement('link');
+		style.type = 'text/css';
+		style.rel = 'stylesheet';
+		style.id = 'fed-colo-color';
+		style.href = '/template/default/asset/css/' + unescape(color[2]) + '.css?v=';
+		document.getElementsByTagName('head').item(0).appendChild(style);
+	} else document.getElementById('fed-colo-color').href = '/template/default/asset/css/' + unescape(color[2]) + '.css?v=';
+}
+</script></head>
+<body class="fed-min-width">
+<div class="fed-head-info fed-back-whits fed-min-width fed-box-shadow">
+	<div class="fed-part-case">
+		<div class="fed-navs-info">
+			<ul class="fed-menu-info">
+				<li class="fed-pull-left">
+					<a class="fed-menu-logo fed-show-kind" href="/"><img width="96" height="40" alt="免费短视频分享大全 - 大中国" src="/static/images/logo.jpg" /></a>
+				</li>
+				<li class="fed-pull-left">
+					<a class="fed-menu-title fed-show-kind fed-font-xvi fed-hide fed-show-md-block" href="/">首页</a>
+				</li>
+								<li class="fed-pull-left">
+					<a class="fed-menu-title fed-show-kind fed-font-xvi fed-hide fed-show-md-block" href="/index.php/vod/type/id/1.html">影视</a>
+				</li>
+								<li class="fed-pull-left">
+					<a class="fed-menu-title fed-show-kind fed-font-xvi fed-hide fed-show-md-block" href="/index.php/art/index.html">资讯</a>
+				</li>
+								<li class="fed-pull-left">
+					<a class="fed-menu-title fed-show-kind fed-font-xvi fed-hide fed-show-md-block" href="/index.php/topic/index.html">专题</a>
+				</li>
+								<li class="fed-pull-left">
+					<a class="fed-menu-title fed-show-kind fed-font-xvi fed-hide fed-show-md-block" href="/index.php/gbook/index.html">留言</a>
+				</li>
+								<li class="fed-pull-left">
+					<a class="fed-menu-title fed-show-kind fed-font-xvi fed-navs-navbar fed-event fed-hide fed-show-sm-block" href="javascript:;">导航<span class="fed-part-move fed-edge-info fed-edge-bottom"></span></a>
+				</li>
+			</ul>
+			<div class="fed-navs-search fed-back-whits fed-hidden fed-conceal fed-show-sm-block">
+				<a class="fed-navs-close fed-conceal fed-hide-sm" href="javascript:;">取消</a>
+				<form class="fed-navs-form" autocomplete="off" onkeydown="if(event.keyCode==13){return false}">
+										<div class="fed-navs-cuts fed-event">
+						<a class="fed-navs-btns" href="javascript:;">
+														<span class="fed-navs-name" data-type="1" data-href="/index.php/vod/search.html">视频</span><span class="fed-part-move fed-edge-info fed-edge-bottom"></span> 						</a>
+					</div>
+					<input class="fed-navs-input fed-back-ashen fed-event" type="search" placeholder="请输入关键字" />
+					<a class="fed-navs-submit fed-back-ashen"><i class="fed-icon-font fed-icon-sousuo"></i></a>
+									</form>
+			</div>
+			<div class="fed-navs-right">
+				<a class="fed-navs-route fed-text-black fed-event fed-hidden fed-hide-sm" href="javascript:;"></a>
+								<a class="fed-navs-button fed-text-black fed-event fed-hide-sm fed-icon-font fed-icon-sousuo" href="javascript:;"></a>
+								<a class="fed-navs-record fed-text-black fed-event fed-hide-xs fed-show-sm-block" href="javascript:;">看过<span class="fed-part-move fed-edge-info fed-edge-bottom"></span></a>
+								<a class="fed-navs-login fed-text-black fed-hide-xs fed-show-sm-block" href="javascript:;">登录</a>
+								<a class="fed-navs-record fed-text-black fed-event fed-hide-sm fed-icon-font fed-icon-lishi" href="javascript:;"></a>
+							</div>
+		</div>
+		<div class="fed-pops-navbar fed-box-shadow fed-min-width fed-hidden fed-conceal fed-anim">
+			<div class="fed-pops-channel fed-back-whits fed-part-rows fed-line-top fed-hidden">选择频道</div>
+			<a class="fed-pops-btns fed-back-whits fed-text-black fed-text-center fed-event fed-hide-sm fed-icon-font fed-icon-fenlei" href="javascript:;"></a>
+			<ul class="fed-pops-list fed-font-size fed-back-whits fed-part-rows">
+				<li class="fed-col-sm2">
+					<a class="fed-part-eone" href="/">首页</a>
+				</li>
+								<li class="fed-col-sm2">
+					<a class="fed-part-eone" href="/index.php/vod/type/id/1.html">影视</a>
+				</li>
+								<li class="fed-col-sm2">
+					<a class="fed-part-eone" href="/index.php/gbook/index.html">留言</a>
+				</li>
+							</ul>
+		</div>
+		<div class="fed-pops-search fed-hidden fed-conceal fed-anim fed-anim-upbit">
+			<div class="fed-pops-case fed-line-top fed-back-ashen fed-box-shadow">
+				<div class="fed-pops-key"></div>
+				<div class="fed-pops-box">
+					<div class="fed-pops-hot">
+						<div class="fed-pops-title fed-back-whits fed-part-rows fed-line-bottom">热门搜索</div>
+						<ul class="fed-pops-list fed-back-whits fed-part-rows">
+														<li class="fed-col-xs6">
+								<a class="fed-event fed-part-eone" href="/index.php/vod/search/wd/%E5%8F%98%E5%BD%A2%E9%87%91%E5%88%9A.html"><span class="fed-part-nums fed-part-num1">1</span><span class="fed-name">变形金刚</span></a>
+							</li>
+														<li class="fed-col-xs6">
+								<a class="fed-event fed-part-eone" href="/index.php/vod/search/wd/%E7%81%AB%E5%BD%B1%E5%BF%8D%E8%80%85.html"><span class="fed-part-nums fed-part-num2">2</span><span class="fed-name">火影忍者</span></a>
+							</li>
+														<li class="fed-col-xs6">
+								<a class="fed-event fed-part-eone" href="/index.php/vod/search/wd/%E5%A4%8D%E4%BB%87%E8%80%85%E8%81%94%E7%9B%9F.html"><span class="fed-part-nums fed-part-num3">3</span><span class="fed-name">复仇者联盟</span></a>
+							</li>
+														<li class="fed-col-xs6">
+								<a class="fed-event fed-part-eone" href="/index.php/vod/search/wd/%E6%88%98%E7%8B%BC.html"><span class="fed-part-nums fed-part-num4">4</span><span class="fed-name">战狼</span></a>
+							</li>
+														<li class="fed-col-xs6">
+								<a class="fed-event fed-part-eone" href="/index.php/vod/search/wd/%E7%BA%A2%E6%B5%B7%E8%A1%8C%E5%8A%A8.html"><span class="fed-part-nums fed-part-num5">5</span><span class="fed-name">红海行动</span></a>
+							</li>
+													</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="fed-pops-record fed-box-shadow fed-hidden fed-conceal fed-anim fed-anim-upbit">
+			<div class="fed-pops-title fed-back-whits fed-line-top fed-line-bottom fed-part-rows"><span class="fed-col-xs9">观看记录</span>
+				<a class="fed-clear fed-event fed-text-right fed-col-xs3" href="javascript:;">清空</a>
+			</div>
+			<ul class="fed-pops-list fed-back-whits"></ul>
+		</div>
+		<div class="fed-pops-cuts fed-line-top fed-hidden fed-conceal fed-anim fed-anim-upbit">
+			<ul class="fed-part-rows fed-box-shadow fed-back-whits fed-padding">
+				<li data-type="1" data-href="/index.php/vod/search.html" class="fed-padding fed-part-curs fed-text-center fed-event fed-text-green">视频</li>
+							</ul>
+		</div>
+				<div class="fed-pops-user fed-box-shadow fed-back-whits fed-hidden fed-conceal fed-anim fed-anim-upbit">
+			<ul class="fed-pops-list fed-font-size fed-back-whits">
+				<li>
+					<a href="/index.php/user/index.html"></a>
+				</li>
+				<li>
+					<a href="/index.php/user/info.html">修改资料</a>
+				</li>
+				<li>
+					<a href="/index.php/user/favs.html">我的收藏</a>
+				</li>
+				<li>
+					<a href="/index.php/user/plays.html">播放记录</a>
+				</li>
+				<li>
+					<a href="/index.php/user/downs.html">下载记录</a>
+				</li>
+				<li>
+					<a href="/index.php/user/plog.html">积分记录</a>
+				</li>
+				<li>
+					<a href="/index.php/user/orders.html">充值记录</a>
+				</li>
+				<li>
+					<a href="/index.php/user/cash.html">积分提现</a>
+				</li>
+				<li>
+					<a href="/index.php/user/buy.html">在线充值</a>
+				</li>
+				<li>
+					<a href="/index.php/user/upgrade.html">升级会员</a>
+				</li>
+				<li>
+					<a href="/index.php/user/reward.html">三级分销</a>
+				</li>
+				<li>
+					<a href="/index.php/user/popedom.html">我的权限</a>
+				</li>
+				<li>
+					<a href="/index.php/user/logout.html">退出登录</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="fed-tabr-info fed-back-whits fed-min-width fed-line-top fed-hide-sm">
+	<ul class="fed-part-rows">
+		<li class="fed-text-center"><a class="fed-visible" href="/"><i class="fed-icon-font fed-icon-shouye"></i><span class="fed-font-xii">首页</span></a></li>
+				<li class="fed-text-center"><a class="fed-visible" href="/index.php/art/index.html"><i class="fed-icon-font fed-icon-zixun"></i><span class="fed-font-xii">资讯</span></a></li>
+				<li class="fed-text-center"><a class="fed-visible" href="/index.php/topic/index.html"><i class="fed-icon-font fed-icon-zhuanti"></i><span class="fed-font-xii">专题</span></a></li>
+				<li class="fed-text-center"><a class="fed-visible" href="/index.php/gbook/index.html"><i class="fed-icon-font fed-icon-liuyan"></i><span class="fed-font-xii">留言</span></a></li>
+				<li class="fed-text-center"><a class="fed-visible" href="/index.php/user/login.html"><i class="fed-icon-font fed-icon-yonghu"></i><span class="fed-font-xii">我的</span></a></li>
+			</ul>
+</div>
+
+<div class="fed-main-info fed-min-width">
+<div class="fed-part-case">
+
+<title>最近更新 - 免费短视频分享大全 - 大中国</title>
+<div class="fed-part-layout fed-back-whits">
+	<div class="fed-list-head fed-part-rows fed-padding">
+		<h2 class="fed-font-xvi">最近更新</h2>
+		<ul class="fed-part-tips fed-padding">
+			<li><a class="fed-more" href="/index.php/vod/show/id/1.html">筛选</a></li>
+		</ul>
+	</div>
+	<ul class="fed-list-info fed-part-rows">
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/133.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/17aaead6acd368c7fcd4bf2862802cf2.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/133.html" >远古食人鲨</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Eric Balfour,Iva Hasperger,Aarón Díaz</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/132.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/436190f3269517915e6c7b953aab41a2.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/132.html" >独眼巨人博士</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+阿尔伯特·德科,Thomas Coley,Janice Logan</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/78.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/a1a80795cf0600412f385937f18bb3f5.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/78.html" >男子游泳部剧场版：永恒的混合泳之羁绊</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+岛崎信长,铃木达央,代永翼,平川大辅,宫野真守,细谷佳正,宫田幸季,铃村健一,丰永利行,内山昂辉</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/131.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/24f11f1a543839d3a7a19a700018f6c6.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新英语</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/131.html" >哥斯拉大战金刚2：帝国崛起</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+丽贝卡·豪尔,布莱恩·泰里·亨利,丹·史蒂文斯,凯莉·霍特尔,亚历克斯·费恩斯,陈法拉,瑞切尔·豪斯,润·斯米克,尚特尔·贾米森,格雷格·哈顿,凯文·科普兰,泰丝·多布雷,蒂姆·卡罗尔,安东尼·布兰登·黄,索菲亚·恩博森-贝恩,叶叶·周,Jamaliah,Othman,Nick,Lawler,Chika,Ikogwe,文森特·B·拉戈斯</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/130.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/d16b87431d6b00fc94949ae2c0a6df3b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/130.html" >变蝇人1986</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+杰夫·高布伦,吉娜·戴维斯,约翰·盖兹,乔·波希尔,莱斯利·卡尔森,大卫·柯南伯格</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/129.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/0811b1c82da50be03189f0b44343709c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/129.html" >神秘博士：瑞芙·桑恩的丈夫们</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+彼得·卡帕尔迪,阿莉克丝·金斯顿,马特·卢卡斯</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/128.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/661db6d9e1815b5cae7d0f92b950f125.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/128.html" >神秘博士：下一位博士</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+David Tennant,David Morrissey,Dervla Kirwan,Velile Tshabalala,Ruari Mears,Paul Kasey,Edmund Kente,Michael Bertenshaw</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/127.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/a2d010692496030602fbad0ec1459031.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/127.html" >神秘博士：圣诞入侵</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+大卫·田纳特,比莉·派佩,Camille Coduri,Noel Clarke,Penelope Wilton</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/126.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/bc2dc3db28d0beafd6c875f460639a66.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/126.html" >博士之夜</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Paul McGann,John Hurt,Emma Campbell-Jones,Clare Higgins</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/125.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/2b9cdaf6520091fb99691a700f50196e.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">10.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/125.html" >世界奇妙物语 2018年春季特别篇</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+三浦春马,白石麻衣,仓科加奈,唐泽寿明,升毅,佐久间由衣</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/124.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/bcb281fdb18d222717cc0307df14e32c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/124.html" >白室</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+肖娜·麦克唐纳,奥德·菲尔,爱丽塔·阿察丽娅</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/123.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/82f7f233a371daf884e7ba3821604a56.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/123.html" >变形怪体</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+史蒂夫·麦奎因,安妮塔·可桑,Earl Rowe,John Benson</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/122.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/0eeaf1dae18b6e46976ad45dbbd1a94b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/122.html" >食人鱼</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+徐冬冬,黄涛,李京沐,晨罡,赵欣彤,徐铁龙,王润,王玺,陈静,赵钏旭,甘宇喆</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/1.html" data-original="https://img.bdzyimg1.com/upload/vod/20250312-1/92f1b3ced744eed55f567b7da9cbf51b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第04集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/1.html" >接送人生</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+全慧珍,赵敏修,郑镇荣,全锡浩,???,朴宝庆,高娜恩,朴秀妍</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/121.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/f97030deb84f6c5603ed77264545f3e2.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/121.html" >剧场版 假面骑士零一 真实×时间</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+高桥文哉,冈田龙太郎,鹤岛乃爱</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/120.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/028d9f94762fdf383a294e65f78b44c8.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/120.html" >未知的恐惧</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+约翰·卡朋特 John Carpenter,玛拉·鲍尔斯,保罗·理查兹,梅·温,杰拉尔德·米尔顿,Duane Grey,Richard Gilden,马丁·加拉拉加,Patrick O&amp;#039;Moore,William Hamel,Charles H. Gray,Charles Postal,兰斯洛特爵士</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/119.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/13ff85c7b0f288c8e07209a70fd01819.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/119.html" >潘多拉的世界</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+西格妮·韦弗</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/118.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/368c47bbcd18b52726c33aff192eedb7.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/118.html" >杀人电魔</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+克利夫·德杨,罗珊妮·哈特,约瑟夫·劳伦斯,马修·劳伦斯</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/117.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/bba5ef7d4e54aebdde69bba8de88d76c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/117.html" >月光光心慌慌3</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+汤姆·阿特金斯,斯泰西·内尔金,丹·奥赫里奇,迈克尔·柯里,Ralph Strait</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/116.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/6d80a951cf14a286dcde1143c86bd628.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/116.html" >同步2019</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+詹米·多南,安东尼·麦凯,艾丽·艾恩奈兹,小比尔·奥伯斯特,马丁·巴特斯·布拉德福德,劳伦斯·特纳,Betsy Holt,亚伦·格罗本,Natasha Tina Liu,Shane Brady,Matthew Underwood,Divine Prince Ty Emmecca,Devyn A. Tyler,Sam Malone,Walker Babington,亚当·J·耶安德,Jean-Pierre Vertus</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/115.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/38bfbdc204ebea6d6bf0211a6c7643a2.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/115.html" >修复体</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+托马斯·科特,卡雷尔·多布雷,Václav,Neuzil</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/114.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/320ac23d35fbde3a3c891b75981dc10c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/114.html" >狮子王：木法沙传奇</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+亚伦·皮埃尔,小凯文·哈里森,蒂凡尼·布恩,麦斯·米科尔森,普雷斯顿·尼曼,卡吉索·莱迪加,布鲁·艾薇·卡特,约翰·卡尼,塞斯·罗根,比利·艾希纳,坦迪·牛顿,连尼·詹姆斯,阿尼卡·诺尼·罗斯,凯斯·大卫,唐纳德·格洛弗,碧昂丝,布雷林·兰金斯,提奥·绍莫卢,阿卜杜勒·萨利斯,福拉凯·奥洛沃福耶库,乔安娜·琼斯</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/92.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/808d9346acc12e0fbe1e546f8666d4e5.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/92.html" >全职猎人剧场版：最后的任务</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+潘惠美,伊濑茉莉也,藤原启治,泽城美雪,浪川大辅,横山智佐,关俊彦,寺崎裕香,富永美伊奈,植田佳奈,滨添伸也,二又一成,铃木琢磨,中村大树,齐藤贵美子,三石琴乃,松山鹰志,山本美月,大友龙三郎,永井一郎,中村狮童</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/113.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/e56bf91e9660d925b95a462c1f920926.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/113.html" >海螺和鲸鱼</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+莎莉·霍金斯,罗伯·布莱顿,黛安娜·里格</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/110.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/f6f31e3dff8b1e8106cc4f258d773e1c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/110.html" >鲁邦三世 Master File</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+栗田貫一,小林清志,井上真樹夫,増山江威子,納谷悟朗,大塚周夫</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/71.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/59f335eccf008ce7f4cdc9c2f2d2ed41.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第04集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/71.html" >明日方舟：冬隐归路国语</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+甲斐田幸,黑泽朋世,日笠阳子,加隈亚衣,广桥凉,种田梨沙,中原麻衣,福圆美里,小清水亚美,石上静香,德井青空,安野希世乃,山寺宏一,日高范子,伊藤加奈惠,坂本真绫,天崎滉平,堀江瞬,千本木彩花,竹达彩奈,高垣彩阳,银河万丈,庄司宇芽香</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/108.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/7cb0794debd583f105df9b769807e291.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/108.html" >名侦探柯南：第十四个目标</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+高山南,山崎和佳奈,神谷明,山口胜平,茶风林,盐泽兼人,高木涉,岩居由希子,大谷育江,绪方贤一</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/90.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/5a143bb4bfdb0bb5b6697447bab1f2c6.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/90.html" >火影忍者剧场版：大激突！幻之地底遗迹</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+竹内顺子,河相我闻,中村千绘,森久保祥太郎,石田彰,加濑康之,高乃丽,小岛幸子,桑岛法子,本田贵子,加藤优子,志村知幸,宫岛史年,吉野贵宏,加藤将之,酒井敬幸,黑川智花,野岛昭生,野泽那智</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/112.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/db5e3b2c934158560972047b2f5e4a4c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/112.html" >神秘魔法部</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Nicholas Corda,Sylvana Joyce,艾莉森·雷·罗森菲尔德,Courtney Shaw,Erica Schroeder</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/111.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/fb308eab51d4370b0899e0595e13d0d7.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/111.html" >鲁邦三世：炎之记忆 东京危机</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+栗田貫一 Kanichi Kurita,納谷悟朗 Goro Naya,古市幸子,河本香織,小林清志 Kiyoshi Kobayashi,井上真樹夫 Makio Inoue,増山江威子 Eiko Masuyama,林原めぐみ Megumi Hayashibara,山寺宏一 K?ichi Yamadera,藤本譲 Yuzuru Fujimoto,中島誠之助 Nakajima Seinosuke,鷹西美佳</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/88.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/31a226636f5eeccefe8b29905048c6b5.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/88.html" >木偶奇遇记</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Mel Blanc,Frankie Darro,Cliff Edwards,Dickie Jones</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/75.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/afdc2aba680a23cea28d1870d62dbcc6.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/75.html" >全明星超人</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+克里斯蒂娜·亨德里克斯,Linda Cardellini,Matthew Gray Gubler</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/51.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/5fb0e18f76966357924c4890808fcc4b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第366集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/51.html" >妖神记</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+苏尚卿,柳知萧,张妮,钟巍</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/56.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/292c850aefa9eab4f433559fd20f78d0.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第78集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/56.html" >五行战神</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+魏一凡,王薇,张萌,唐子晰,舒雷,李嘉祥,赵双,杨塑坤,万纯,张恩泽</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/2.html" data-original="https://img.bdzyimg1.com/upload/vod/20250312-1/913dbe771d7011dc461062900fafe589.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第20集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/2.html" >反斗威龙粤语</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+吕方,梁家仁,杜德伟,张凤妮,江欣燕,朱洁仪,秦煌,李龙基,胡枫,郑瑞芬,梁钦棋,翁慧德,何璧坚</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/101.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/622cb0de25a576f2050192fab88e188d.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/101.html" >正义联盟：战争</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+西恩·奥斯汀,扎克·卡利森,克里斯托弗·戈勒姆,贾斯汀·柯克,米歇尔·莫纳汉,谢默·摩尔,杰森·奥玛拉,艾伦·图代克,史蒂夫·布卢姆,迪·布拉雷·贝克尔,梅利克·白尔杰,金伯莉·布鲁克斯,洛奇·卡罗尔,艾恩·格拉法德,乔治娜·科多瓦,约翰·马里亚诺,理查德·麦克格纳格尔,马修·默瑟,乔治·纽伯恩,安德莉亚·罗马诺,罗杰·罗斯,加里·安东尼·斯特吉斯,布鲁斯·托马斯,海登·瓦尔希</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/76.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/c2063e8828b3bdf992633bb66253dd95.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/76.html" >海绵宝宝</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+安东尼奥·班德拉斯,艾瑞克·鲍扎,蒂姆·康威,埃迪·狄森,罗伯·鲍森,凯文·迈克尔·理查德森,艾普尔·斯图瓦特,克里·萨莫,比利·维斯特,卡洛斯·阿拉斯拉奇,诺兰·诺斯,保罗·提比特,汤姆·肯尼,比尔·法格巴克,罗德格尔·邦帕斯</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/109.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/084f63d2e629f23f4da3b82d37c5c314.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">10.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/109.html" >变形金刚：前传</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+彼得·库伦,弗兰克·维尔克,马克·瑞安,布赖恩·斯特帕尼克,凯文·杜恩</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/83.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/96068144ebc52afec4ec3226d7f6341c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/83.html" >狼的孩子雨和雪</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+宫崎葵,大泽隆夫,黑木华,西井幸人,大野百花,加部亚门,平冈拓真,林原惠美,中村正,大木民夫,片冈富枝,小林隆,井上肇,染谷将太,桝太一,碓井将大,多田野曜平,桥本一郎,池上幸平,竹内太郎,津田英三,今井麻美,德本英一郎,上白石萌音,荒川知佳,小林里乃,春名风花,佐藤瑠生亮,田中奏生,小西舞优,谷村美月,麻生久美子,菅原文太</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/107.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/244b0eba495aafba8455ef2868444869.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/107.html" >盗梦特攻队</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+伊万·卡马拉斯,加布里瑞拉·哈默里,佐兰·马克兰兹,乔鲍·马顿,保罗?贝兰托尼,马特·戴维尔,卡塔琳?东比,亨利?格兰特,彼得·林卡,马泰?梅萨罗什,加博尔·纳吉帕尔,维吉尼亚?普罗德</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/106.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/139eb182fbdbb2409c5c3de71d5f0259.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/106.html" >天鹅公主：音乐王国</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Nina Herzog,尤里·洛文塔尔,Joseph Medrano,Jennifer Miller</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/105.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/c6ceb874177465665b8a0bb91420e614.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/105.html" >威洛比家的孩子们</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+威尔·福特,马丁·肖特,阿莱西娅·卡拉,简·科拉克斯基,瑞奇·热维斯,玛娅·鲁道夫,泰瑞·克鲁斯,塞恩·库伦,珊农·陈-肯特,克里斯蒂娜·罗塞托,罗宾·罗斯,科琳·惠勒,Rebecca Husain,Bonnie Riley,Islie Hirvonen,Fiona Toth</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/104.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/b3d963b84724d1dab1abf975382031c6.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/104.html" >闪闪小超人</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+玛佳丽·罗森茨威格,Isaac Lobé-Lebel,Lior Chabbat,Jérémy Prévost,Sébastien Desjours,Léopold Vom Dorp,Victoire Pauwels,Léovanie Raud,Damien Boisseau,Laurent Maurel,Marie-Eugénie Maréchal,Philippe Spiteri,Simon Brunner,Fran?oise Pavy,Julien Crampon</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/103.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/9168975a2ba5e0f790a70424d35ae7b6.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/103.html" >来了一只发火的龙</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+莉莉·柯林斯,伊恩·麦柯肖恩,托比·凯贝尔</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/102.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/d234e86b43990f405bf13aed860339f9.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">10.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/102.html" >永远的忍者神龟</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+米夏埃尔·桑泰尔尼克拉斯,韦恩·格雷森,萨姆·里格尔,Greg Abbey,斯科蒂·雷,Darren Dunstan,薇诺妮卡·泰勒</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/100.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/2215bb994d9de22a73a644ac66e0244e.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/100.html" >Go！Go！小小车向前冲：科丽茜出发啰</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Maisie Benson,Paul Killam,Kerry Gudjohnsen</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/99.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/8d0ada0f2ef0e24b6ca8b364ae6a7830.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/99.html" >好事一小朵，查理·布朗</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Caleb Bellavance,Will Bhaneja,Charlie Boyle,Holly Gorski,海蒂·克拉格滕,Isabella Leo,Jacob Mazeral,特里·迈古林,Maya Misaljevic,Matthew Mucci,Maria Nash,Natasha Nathan,Tyler James Nathan,Lucas Nguyen,Lexi Perri</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/98.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/d35addec686555e42331efb22d35dce8.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/98.html" >帕罗尼秀！万圣特辑！</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+贾斯汀·罗兰,帕梅拉·阿德龙,凯瑞·华格伦,Zach Hadel,Vatche Panos</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/86.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/f7da4bc70599dab47b02372914e69150.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/86.html" >小人国</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Jessica Dragonette,Lanny Ross,品托·考维格</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/97.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/1680594117ae58967e203a02e1db6dc6.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/97.html" >海盜的通道</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+唐纳德·萨瑟兰,盖奇·芒罗,凯瑞-安·莫斯,梅根·佛洛斯,金·寇兹,科鲁姆·费奥瑞,高登·平森特,保罗·格罗斯,罗西弗·萨瑟兰</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/96.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/49e8abb2fef82b5297d6778b450336a1.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/96.html" >芭比：大城市大梦想</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Amber Eliese May,米歇尔·伊萨·卢比欧,亚美莉卡·杨</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/95.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/31571189559d87da8c564bc8acb6f9d4.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/95.html" >鹬蚌相争</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+陆汝浩</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/94.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/472905c61281057c2943f8f5a00385dc.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/94.html" >查理布朗，跟着小猎犬一起来热舞吧！</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+斯泰西·弗格森,Gary Goren,Gini Holtzman,Keri Houlihan,布雷特·约翰逊</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/93.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/db72a95c8f5298d7128a2de55ae553c7.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/93.html" >全金属狂潮 One Night Stand</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+关智一,雪野五月,野上尤加奈,三木真一郎,根谷美智子,大塚明夫,西村知道,千叶进步,浅野真由美,室园丈裕,福山润,木村郁绘,菊池志穗,高桥美佳子,高桥智秋,半场友惠,松本大,松田佑贵,山岸功,增谷康纪</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/91.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/536d765184b9b8de3ab5fe0267f2d14b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/91.html" >绿洲幻想曲</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Clare Fog,乔纳森·利波</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/89.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/1ae720fc0fca63b3558bdc91e8d29142.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/89.html" >睡美人1959</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+玛丽·科斯塔,比尔·雪利,艾莉诺·阿德里,薇娜·费尔顿,芭芭拉·卢迪,芭芭拉·乔·艾伦</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/87.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/379d2626df064091d9146859cbc23128.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/87.html" >小飞侠1953</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+鲍比·德里斯科尔,凯瑟琳·博蒙特,汉斯·康拉德,比尔·汤普森,希瑟·安吉尔,保罗·科林斯,汤米·卢斯克,康迪·康迪多,汤姆·康威</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/85.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/5e4403ce5bb30b591d8070f825a542ba.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/85.html" >南郭先生</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+郑拾风</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/84.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/634860113f69c21ff2ea842bf5f16f39.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/84.html" >狐狸打猎人</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+邱岳峰</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/80.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/5e75d438b0dc587fb13ad2b8d0f006fc.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/80.html" >新东方神娃</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+王燕华,王晓彤,李晔,洪海天,胡谦,翟巍,倪康,魏思芸,姚培华,游军,周南飞,刘北辰,严丽祯</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/82.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/50622a72cbf94dc5afc48a9560982897.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/82.html" >藏羚王之雪域精灵</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+李扬,鞠萍,王雪纯,高明洁</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/81.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/d4ff02e1aaf3e960b4c2772d90f9da5f.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">10.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/81.html" >龙之纪元：追索者的黎明</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+栗山千明,谷原章介,GACKT</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/79.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/7c21bf6cfc3e6524caf1547573771670.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/79.html" >新地雷战：神勇小子</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+马英哲,涓子,苏俣,林强,梁子,陈大刚,梁晓强,马羽非,陈晨</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/77.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/e4f7abcce14744d94d9452e1c28a3750.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/77.html" >格列佛归来</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Tyler Bunch,Wayne Grayson,Alyson Leigh Rosenfeld</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/74.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/8a8a1bd224a83b5192ac02d34f4cd19c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">10.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/74.html" >大世界2017</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+朱昌龙,曹寇,杨思明,马晓峰,曹恺,刘健,薛峰,朱虹,王达,施海涛,郑懿</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/73.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/559b6e350590cd9805793b2e150171ba.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/73.html" >幻想曲</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+Deems Taylor,列奥波德·斯托科夫斯基,The Philadelphia Orchestra</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/63.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/b0b8e07fbaf4cf27bac06ef134d87b03.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第31集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/63.html" >熊出没之环球大冒险</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+张伟,张秉君,颜凡津,陈光,孙晓东,万丹青</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/72.html" data-original="https://img.bdzyimg1.com/upload/vod/20250228-1/9e48a9d90f1552a94ab05001b91cfe84.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">3.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新HD</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/72.html" >风云决</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+任贤齐,谢霆锋,韩雪,童自荣</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/43.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/d24729cc54a4fdfafc4b090f61530315.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第90集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/43.html" >百炼成神</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+张沛,王冰甜,嗣航,栾祥瑾,宋国庆,孙恺寅,黄进泽,唐昊,桑毓泽,张坤</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/41.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/92ef98d1f8f87cee2eb90f9241fbe336.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第307集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/41.html" >万界独尊</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+王大伟,柳知萧,陆敏悦,冷泉夜月,关帅,蘭雨馨,季骜杰,默伶,包小柒,徐翔,张妮,烈之流星,钟巍,Akira明,安志,kinsen,芥末</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/57.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/c1b5f0ca1066509f38baec19e194b6c2.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第10集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/57.html" >灵笼</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+黄莺,李元韬,陶典,程玉珠,夏一可</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/10.html" data-original="https://img.bdzyimg1.com/upload/vod/20250312-1/10711cfb1472324c5c26d727d5c5ee84.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第32集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/10.html" >滤镜</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+檀健次,李兰迪,高瀚宇,罗秋韵,黄思瑞,嘉泽,蒲萄,王弘毅,昌隆,任彬,孙芮</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/52.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/716f3567ca61c5ef958db6b23fe5e9ce.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第26集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/52.html" >暗河传</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+刘明月,唐小喜,魏超,锦鲤,乔诗语</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/70.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/d2b9d7b4564d14d425933bbacfadae5a.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第11集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/70.html" >十方武圣</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+滕佳峻,杏林儿,山岸,零柒,崔凯,绿绮,囧森瑟夫,庞欣怡,良生,香凝,一舟,韩雨泽,南屿,盛典,巽辰</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/60.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/cd8d7f462c0428ca33a5693bed2f6e96.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第28集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/60.html" >逆天邪神3D</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+郭鸿博,冯骏骅,醋醋,筱筝,富贵,沈达威,不一,谢添天</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/44.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/021606ce07f69fabfffc00a45f2fd5e2.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第388集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/44.html" >逆天至尊</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+阿旦,糖醋里脊,诗福</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/55.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/63accad3bdb620eb2722227186062b12.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">8.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第45集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/55.html" >宗门里除了我都是卧底</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+杨凯祺 ,赵爽,聂曦映,李逸,尹博一,张家辉,张雪敏,傅婷云,幽幽,孔天畅,刘一鸣,唐明冬,赵熠彤,黄伟忠</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/67.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/a26e8bb181a4e546c15315969b27948c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第388集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/67.html" >绝世武魂</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+稳得高处,晓寒,古井秋筠,愚舟,龙神冕下,沂昂,六月,倚栏桡,点君,两两,秋少主,白雨松,大围,小老汉,长崎,煎蛋饼饼,遂非,氟西汀,节能,洛阡阡,牛尔,洛樱,鹿白,大猴,里德不秃,残月的枫影,冰霜墨菊,子话,燕高阳,小林,韩博文</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/69.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/ef4fcc2f732e72d62cba053d8d2e87c8.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">10.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第03集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/69.html" >武动乾坤第五季</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+萧清源 KIYO</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/68.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/5cf9926546d13e6a74987b42b8019f4b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第02集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/68.html" >茶啊二中第五季</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+邢原源,王博文,高禹恒,孙伏雨,郭红进,陈小龙,子欣</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/47.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/20cd53e01ad698def789c4f8d65fb14f.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第179集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/47.html" >剑域风云</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+张成杰,陈倩,唐钰,高莹梦,丁莹莹,苏旖旎,丁传慧,陈新玥,江瑞,张英,宁冀荣,张鑫磊</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/50.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/516067592a3e5255f9266e18bf5c9536.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第521集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/50.html" >武神主宰</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+许子尧,唐泽宗,陈帅,吴凡,孙科</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/66.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/551707001bf84144e75579649be100d2.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">10.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第26集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/66.html" >超级飞侠第三季</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+熊柏瑄,肖可歆,刘博瑞,吴佳佳</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/64.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/5dc86c3259017652763473e44bb6852b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第94集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/64.html" >虹猫蓝兔七侠传</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+付以琳,晏婷,刘蓉,刘娟,肖睿,张怀武,袁文君,廖新星,邹正均,梁实之,宁锦伦,周博</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/65.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/8cf5eb05a15f1b7729412b3d6754e0db.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第100集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/65.html" >封神榜传奇</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+韦启昌</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/62.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/0913752ebc0ead5609671cb3e7571e57.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第07集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/62.html" >武动乾坤第四季</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+柯暮卿</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/61.html" data-original="https://img.bdzyimg1.com/upload/vod/20250301-1/16abdee4c72ea149caa357bcdf206b8b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第26集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/61.html" >师士传说</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+叶重</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/59.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/e82a41e41be87db818abed70a5c03930.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第11集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/59.html" >一世之尊</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+林景,王美心,金娜,杨超然,李春胤</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/58.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/9718f152f12bf7bb4f0def8b65b4ca6c.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">7.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第101集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/58.html" >仙武传</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+谷江山</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/53.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/06d850e67c6cd2e0b6732a959d9c7ee8.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">5.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第23集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/53.html" >眷思量</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+凃雄飞,段艺璇,姜广涛,赵岭,王潇倩,何冠男,周侗,胡正健,刘晓倩,张欣</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/46.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/976bd84ce99a886e7f0e62f2d6501263.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">6.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第04集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/46.html" >永生之海噬仙灵</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+刘思岑,贺文潇,刘晴</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/54.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/68143e9dba72abd606cf857e78bd2dca.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">4.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第37集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/54.html" >太古星神诀</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+陈志诚,方玉婕,苗浩生,徐程昊,王春瑞,陈鸿鑫,汪一凡,刘淑媛</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/49.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/377ceaf4ca6958b13434e3837292dd65.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">1.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第102集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/49.html" >剑道第一仙</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+风袖,灯果,美加,吴孟阳</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/48.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/0b75b36b2abe59bdd44aac2fa9739a46.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">10.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第148集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/48.html" >神印王座</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+常蓉珊,瞳音,叶知秋,阎么么,藤新,刘明月</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/45.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/2606db99765680a35f06e5f1384ab592.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">9.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第13集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/45.html" >全职高手第三季</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+张杰</span>
+		</li>
+				<li class="fed-list-item fed-padding fed-col-xs4 fed-col-sm3 fed-col-md2">
+		<a class="fed-list-pics fed-lazy fed-part-2by3" href="/index.php/vod/detail/id/42.html" data-original="https://img.bdzyimg1.com/upload/vod/20250302-1/68997e12a97781986de862bd57fa197b.jpg">
+	<span class="fed-list-play fed-hide-xs"></span>
+		<span class="fed-list-score fed-font-xii fed-back-green">2.0</span>
+		<span class="fed-list-remarks fed-font-xii fed-text-white fed-text-center">更新第03集</span>
+</a>
+<a class="fed-list-title fed-font-xiv fed-text-center fed-text-sm-left fed-visible fed-part-eone" href="/index.php/vod/detail/id/42.html" >神墓第二季</a>
+<span class="fed-list-desc fed-font-xii fed-visible fed-part-eone fed-text-muted fed-hide-xs fed-show-sm-block">
+卢力峰</span>
+		</li>
+			</ul>
+</div>
+</div></div><div class="fed-goto-info">
+		<a class="fed-goto-share fed-visible fed-text-center fed-back-whits fed-icon-font fed-icon-fenxiang" href="javascript:;"></a>
+		<a class="fed-goto-color fed-visible fed-text-center fed-back-whits fed-icon-font fed-icon-fengge fed-event" href="javascript:;"></a>
+		<a class="fed-goto-toper fed-hidden fed-text-center fed-back-whits fed-icon-font fed-icon-top" href="javascript:;"></a>
+</div><script type="text/javascript"> var vfed = { 'path': '/', 'tips': 'CWcMTI3LjAuMC4xPTE2MzI3OTU1ODg=', 'ver': '', 'tpl': '/template/default/', 'mid': '', 'aid': '7', 'did': '', 'sid': '', 'nid': '', 'wap': 'wap.test.cn', 'mob': '0', 'not': '1' }; </script>
+<script src="/template/default/asset/js/jquery.js?v=" type="text/javascript" charset="utf-8"></script>
+<script src="/template/default/asset/js/global.js?v=" type="text/javascript" charset="utf-8"></script>
+<!--苹果cms盒子MacCmaBox.Com-->
+<div class="fed-foot-info fed-part-layout fed-back-whits">
+	<div class="fed-part-case">
+		<p class="fed-text-center fed-text-black"></p>
+		<p class="fed-text-center fed-text-black">统计代码</p>
+		<p class="fed-text-center fed-text-black fed-foot-maps fed-font-size">
+			<a class="fed-font-xiv" href="/index.php/rss/index.xml" target="_blank">RSS订阅</a>
+			<span class="fed-font-xiv">&nbsp;-&nbsp;</span>
+			<a class="fed-font-xiv" href="/index.php/rss/baidu.xml" target="_blank">百度蜘蛛</a>
+			<span class="fed-font-xiv">&nbsp;-&nbsp;</span>
+			<a class="fed-font-xiv" href="/index.php/rss/google.xml" target="_blank">谷歌地图</a>
+			<span class="fed-font-xiv">&nbsp;-&nbsp;</span>
+			<a class="fed-font-xiv" href="/index.php/rss/sm.xml" target="_blank">神马爬虫</a>
+			<span class="fed-font-xiv fed-hide-xs">&nbsp;-&nbsp;</span>
+			<a class="fed-font-xiv fed-hide-xs" href="/index.php/rss/sogou.xml" target="_blank">搜狗蜘蛛</a>
+			<span class="fed-font-xiv fed-hide-xs">&nbsp;-&nbsp;</span>
+			<a class="fed-font-xiv fed-hide-xs" href="/index.php/rss/so.xml" target="_blank">奇虎地图</a>
+			<span class="fed-font-xiv fed-hide-xs">&nbsp;-&nbsp;</span>
+			<a class="fed-font-xiv fed-hide-xs" href="/index.php/rss/bing.xml" target="_blank">必应爬虫</a>
+		</p>
+				<p class="fed-text-center fed-text-black">123456@test.cn&nbsp;&nbsp;&nbsp;icp123</p>
+				<p class="fed-text-center fed-text-black">&copy;&nbsp;2025&nbsp;www.test.cn&nbsp;Theme&nbsp;by&nbsp;<a class="fed-font-xiv" href="//www.maccmsbox.com/" target="_blank">vfed&nbsp;</a></p>
+	</div>
+</div>
+</body>
+</html>

@@ -14,3 +14,4 @@ nohup*
 .well-known
 /upload
 node_modules/
+.vercel

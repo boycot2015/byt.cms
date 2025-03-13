@@ -1,0 +1,121 @@
+{include file="../../../application/admin/view/public/head" /}
+<link href="https://cdn.jsdelivr.net/gh/amujie/mojia@1.1.6/asset/inc/css/layui.css?v=1.1.6" rel="stylesheet" type="text/css" />
+<link href="https://cdn.jsdelivr.net/gh/amujie/mojia@1.1.6/asset/css/style.css?v=1.1.6" rel="stylesheet" type="text/css" />
+<style id="mo-java-rule" type="text/css">
+	.mo-bord-muted,hr,
+	.mo-bord-muted:after,
+	.mo-bord-muted:before {border-color: #dedede!important}
+	.mo-bord-focus:focus {border-color: #ff5f00 !important}
+	.mo-bord-lower {border-bottom-color: #999999!important}
+	.mo-bord-upper {border-top-color: #999999 !important}
+	.mo-bord-round {border-radius: 3px !important;overflow: hidden}
+	.mo-back-items {background: #7f7f8c !important;color: #ffffff !important}
+	.mo-back-item1 {background: #ff0d29 !important;color: #ffffff !important}
+	.mo-back-item2 {background: #ff920b !important;color: #ffffff !important}
+	.mo-back-item3 {background: #ffc600 !important;color: #ffffff !important}
+	.mo-back-white {background: #ffffff !important;color: #333333 !important}
+	.mo-back-black {background: #000000 !important;color: #ffffff !important}
+	.mo-back-fixed {background: #f8f8f8 !important;color: #333333 !important}
+	.mo-back-click {background: #ededed;color: #333333}
+	.mo-back-muted {background-color: #f2f3f6 !important;color: #666666 !important}
+	.mo-back-write:visited {background: #cacaca;color: #333333;border-color: #cacaca}
+	.mo-back-mojia {background: #ff5f00 !important;color: #ffffff !important;border-color: #ff5f00 !important;opacity: 1 !important}
+	.mo-back-hover:hover {background: #ff5f00 !important;color: #ffffff !important;border-color: #ff5f00 !important}
+	.mo-back-disad {background: #dfdfdf !important;color: #999999 !important;border-color: #dfdfdf !important;opacity: 1 !important}
+	.mo-text-white {color: #ffffff!important}
+	.mo-text-black {color: #333333!important}
+	.mo-text-muted {color: #666666!important}
+	.mo-text-gules {color: #ff0d29!important}
+	.mo-text-green {color: #28bd98!important}
+	.mo-text-input {color: #333333!important}
+	.mo-text-blush {color: #ff6f6f!important}
+	.mo-text-disad {color: #999999!important}
+	.mo-text-mojia {color: #ff5f00!important}
+	.mo-text-hover:hover {color: #ff5f00 !important}
+	.mo-lazy-color {background-color: #dedede !important;color: #333333 !important}
+	@media(min-width:768px) {.mo-part-round {border-radius: 3px !important}}
+	.mo-play-highs {padding-top:56.25%!important}
+	@media(min-width:768px) {
+		.mo-play-highs {padding-top:56.25%!important}}
+</style>
+<style id="mo-java-dark" type="text/dark">
+	.mo-bord-muted,hr,
+	.mo-bord-muted:after,
+	.mo-bord-muted:before {border-color: #2a2a2a!important}
+	.mo-bord-focus:focus {border-color: #d3b270 !important}
+	.mo-bord-lower {border-bottom-color: #666666!important}
+	.mo-bord-upper {border-top-color: #666666 !important}
+	.mo-back-items {background: #7f7f8c !important;color: #ffffff !important}
+	.mo-back-item1 {background: #ff0d29 !important;color: #ffffff !important}
+	.mo-back-item2 {background: #ff920b !important;color: #ffffff !important}
+	.mo-back-item3 {background: #ffc600 !important;color: #ffffff !important}
+	.mo-back-white {background: #333333 !important;color: #999999 !important}
+	.mo-back-black {background: #000000 !important;color: #999999 !important}
+	.mo-back-fixed {background: #555555 !important;color: #999999 !important}
+	.mo-back-click {background: #444444;color: #999999}
+	.mo-back-muted {background-color: #2b2a2a !important;color: #999999 !important}
+	.mo-back-write:visited {background: #555555;color: #999999;border-color: #555555}
+	.mo-back-mojia {background: #d3b270 !important;color: #ffffff !important;border-color: #d3b270 !important;opacity: 1 !important}
+	.mo-back-hover:hover {background: #d3b270 !important;color: #ffffff !important;border-color: #d3b270 !important}
+	.mo-back-disad {background: #888888 !important;color: #aaaaaa !important;border-color: #888888 !important;opacity: 1 !important}
+	.mo-text-white {color: #ffffff!important}
+	.mo-text-black {color: #333333!important}
+	.mo-text-muted {color: #666666!important}
+	.mo-text-gules {color: #ff0d29!important}
+	.mo-text-green {color: #28bd98!important}
+	.mo-text-input {color: #999999!important}
+	.mo-text-blush {color: #ff6f6f!important}
+	.mo-text-disad {color: #aaaaaa!important}
+	.mo-text-mojia {color: #d3b270!important}
+	.mo-text-hover:hover {color: #d3b270 !important}
+	.mo-lazy-color {background-color: #666666 !important;color: #999999 !important}
+</style>
+<script src="https://cdn.jsdelivr.net/gh/amujie/mojia@1.1.6/asset/inc/layui.all.js?v=1.1.6" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	var magic = {
+		'admin': 'admin.php',
+		'path': '/',
+		'tpl': '/template/mojia/',
+		'cdn': 'https://cdn.jsdelivr.net/gh/amujie/mojia@1.1.6/'
+	};
+</script>
+<form class="layui-form layui-form-pane" action="">
+	<input type="hidden" name="__token__" value="{$Request.token}" />
+	<div class="layui-tab mo-java-mojia" lay-filter="table" data-mid="{$verify['url']}" data-aid="{$verify['key']}" data-rid="{$verify['tga']}" data-sid="{$verify['sid']}" data-nid="{$verify['nid']}" data-time="{:file_exists('runtime/temp/'.md5('mojia').'.php')?require('runtime/temp/'.md5('mojia').'.php'):null}">
+		<ul class="layui-tab-title">
+			<li lay-id="table1" class="layui-this">欢迎使用</li>
+			<li lay-id="table2">导航设置</li>
+			<li lay-id="table3">首页设置</li>
+			<li lay-id="table5">配色设置</li>
+			<li lay-id="table7">SEO设置</li>
+			<li lay-id="table8">其他设置</li>
+		</ul>
+		<div class="layui-tab-content">
+			{include file="../../../template/mojia/html/admin/mojias"}
+			{include file="../../../template/mojia/html/admin/navbar"}
+			{include file="../../../template/mojia/html/admin/indexs"}
+			{include file="../../../template/mojia/html/admin/colour"}
+			{include file="../../../template/mojia/html/admin/seokey"}
+			{include file="../../../template/mojia/html/admin/others"}
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button type="submit" class="layui-btn" lay-submit="" lay-filter="formSubmit">立即保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript">
+	layui.config({
+		version: '{$version}',
+		base: {:stristr($mojia['other']['cdns']['link'],'amujie/mojia')==true?'magic.cdn':'magic.tpl'} + 'asset/js/'
+	}).extend({
+		income: '{/}https://cdn.jsdelivr.net/gh/amujie/mojia@master/asset/js/income'
+	}).use(['admin'], function() {
+		layui.admin.global.init();
+	});
+</script>
+{include file="../../../application/admin/view/public/foot" /}
+<script type="text/javascript" src="__STATIC__/js/jquery.cookie.js"></script>
+</body>
+</html>

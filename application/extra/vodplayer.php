@@ -1,5 +1,31 @@
 <?php
 return array (
+  'sdm3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'sdm3u8',
+    'show' => '闪电m3u8',
+    'des' => '',
+    'target' => '_self',
+    'ps' => '0',
+    'parse' => '',
+    'sort' => '999',
+    'tip' => '',
+    'id' => 'sdm3u8',
+  ),
+  'dbm3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'dbm3u8',
+    'show' => '百度m3u8',
+    'des' => '',
+    'target' => '_self',
+    'ps' => '0',
+    'parse' => '',
+    'sort' => '998',
+    'tip' => '',
+    'id' => 'dbm3u8',
+  ),
   'dplayer' => 
   array (
     'status' => '1',
@@ -86,17 +112,5 @@ return array (
     'sort' => '902',
     'tip' => '无需安装任何插件	',
     'id' => 'flv',
-  ),
-  'dbm3u8' => 
-  array (
-    'status' => '1',
-    'from' => 'dbm3u8',
-    'show' => '百度m3u8',
-    'des' => '',
-    'target' => '_self',
-    'ps' => '0',
-    'parse' => '',
-    'sort' => '',
-    'tip' => '',
   ),
 );

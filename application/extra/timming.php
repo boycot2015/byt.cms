@@ -35,6 +35,19 @@ return array (
     'param' => '/start.php/admin/collect/api.html?ac=cj&cjflag=6c4b9deb0102572741f5169070ce1b56&cjurl=https%3A%2F%2Fapi.apibdzy.com%2Fapi.php%2Fprovide%2Fvod%2F%3Fac%3Dlist&h=24&t=&ids=&wd=&type=2&mid=1&opt=0&sync_pic_opt=0&filter=0&filter_from=&filter_year=&param=',
     'weeks' => '1,2,3,4,5,6,0',
     'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
-    'runtime' => 1741772963,
+    'runtime' => 1741846458,
+  ),
+  'wolong' => 
+  array (
+    'id' => '',
+    '__token__' => '15ec3b599746ba875b42cd8d12b91911',
+    'status' => '1',
+    'name' => 'wolong',
+    'des' => '',
+    'file' => 'collect',
+    'param' => '/start.php/admin/collect/api.html?ac=cj&cjflag=d5149e81ee454cc01d73310b5e2f9cd2&cjurl=https%3A%2F%2Fcollect.wolongzy.cc%2Fapi.php%2Fprovide%2Fvod%2Fat%2Fxml%2F%3Fac%3Dlist&h=24&t=&ids=&wd=&type=1&mid=1&opt=0&sync_pic_opt=0&filter=0&filter_from=&filter_year=&param=',
+    'weeks' => '1,2,3,4,5,6,0',
+    'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
+    'runtime' => 1741846639,
   ),
 );

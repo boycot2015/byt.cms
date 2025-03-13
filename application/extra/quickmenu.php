@@ -7,4 +7,7 @@ return array (
   4 => '文章管理,art/data',
   5 => 'vfed主题设置,/index.php/label/admin',
   6 => 'vfed采集资源,/index.php/label/union',
+  7 => '魔加主题,mojia/theme',
+  8 => 'MyTheme主题,/template/mytheme/admin/',
+  9 => 'mxoneX主题,/start.php/admin/mxone/mxoneset',
 );
