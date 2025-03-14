@@ -1,14 +1,14 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:86:"/Users/boycott/Desktop/my-project/byt.cms/application/admin/view_new/system/mxcms.html";i:1741872348;s:81:"/Users/boycott/Desktop/my-project/byt.cms/application/admin/view/public/head.html";i:1741746097;s:81:"/Users/boycott/Desktop/my-project/byt.cms/application/admin/view/public/foot.html";i:1741746097;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:82:"/Users/boycott/Desktop/my-project/byt.cms/application/admin/view/system/mxcms.html";i:1741853065;s:81:"/Users/boycott/Desktop/my-project/byt.cms/application/admin/view/public/head.html";i:1741746097;s:81:"/Users/boycott/Desktop/my-project/byt.cms/application/admin/view/public/foot.html";i:1741746097;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title><?php echo $title; ?> - <?php echo lang('admin/public/head/title'); ?></title>
-    <link rel="stylesheet" href="/static_new//layui/css/layui.css">
-    <link rel="stylesheet" href="/static_new//css/admin_style.css?<?php echo $MAC_VERSION; ?>">
-    <script type="text/javascript" src="/static_new//js/jquery.js"></script>
-    <script type="text/javascript" src="/static_new//layui/layui.js"></script>
+    <link rel="stylesheet" href="/static//layui/css/layui.css">
+    <link rel="stylesheet" href="/static//css/admin_style.css?<?php echo $MAC_VERSION; ?>">
+    <script type="text/javascript" src="/static//js/jquery.js"></script>
+    <script type="text/javascript" src="/static//layui/layui.js"></script>
     <script>
         var ROOT_PATH="",ADMIN_PATH="<?php echo $_SERVER['SCRIPT_NAME']; ?>", MAC_VERSION="v10";
     </script>
@@ -2676,7 +2676,7 @@
         </div>
     </form>
 </div>
-<script type="text/javascript" src="/static_new//js/admin_common.js?<?php echo $MAC_VERSION; ?>"></script>
+<script type="text/javascript" src="/static//js/admin_common.js?<?php echo $MAC_VERSION; ?>"></script>
 <script type="text/javascript">
     layui.use(['form','upload', 'layer'], function(){
         // 操作对象

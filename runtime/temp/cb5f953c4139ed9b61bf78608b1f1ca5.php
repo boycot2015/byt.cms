@@ -1,13 +1,11 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:9:{s:35:"template/mxone/html/actor/type.html";i:1640336526;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/seo/actor_type.html";i:1664247958;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/include.html";i:1664250000;s:78:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/head.html";i:1642429072;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/actor/actorbox.html";i:1639063528;s:78:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/foot.html";i:1664185344;s:82:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/tcnotice.html";i:1639063956;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/website.html";i:1639063970;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/ads/addb.html";i:1625104690;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:36:"template/mxone/html/public/jump.html";i:1639063934;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/include.html";i:1664250000;s:78:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/head.html";i:1642429072;}*/ ?>
 <!DOCTYPE html>
 <html lang="zh-cn">
-	<head>
-	    <title><?php echo $obj['type_name']; ?> - <?php echo $maccms['site_name']; ?> - <?php echo $maccms['site_url']; ?></title>
-<meta name="keywords" content="<?php echo $maccms['site_keywords']; ?>" />
-<meta name="description" content="<?php echo $maccms['site_description']; ?>" />    
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
-		<?php $file = 'template/mxone/asset/admin/Mxone.php'; $newfile = 'application/admin/controller/Mxone.php'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $file = 'template/mxone/asset/admin/mxonest.php'; $newfile = 'application/extra/mxonest.php'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $file = 'template/mxone/asset/admin/mxcms.html'; $newfile = 'application/admin/view/system/mxcms.html'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $mxonest = file_exists('application/extra/mxonest.php') ? require('application/extra/mxonest.php') : require(substr($maccms['path_tpl'], strlen($maccms['path'])).'asset/admin/mxonest.php'); if($mxonest['mxcms']['s4']['tbdm'] == 1): ?>
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>系统提示......</title>
+   <?php $file = 'template/mxone/asset/admin/Mxone.php'; $newfile = 'application/admin/controller/Mxone.php'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $file = 'template/mxone/asset/admin/mxonest.php'; $newfile = 'application/extra/mxonest.php'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $file = 'template/mxone/asset/admin/mxcms.html'; $newfile = 'application/admin/view/system/mxcms.html'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $mxonest = file_exists('application/extra/mxonest.php') ? require('application/extra/mxonest.php') : require(substr($maccms['path_tpl'], strlen($maccms['path'])).'asset/admin/mxonest.php'); if($mxonest['mxcms']['s4']['tbdm'] == 1): ?>
 <?php echo $mxonest['mxcms']['s4']['tbdmtips']; endif; ?>
 <script>var maccms={"path":"","mid":"<?php echo $maccms['mid']; ?>","url":"<?php echo $maccms['site_url']; ?>","wapurl":"<?php echo $maccms['site_wapurl']; ?>","mob_status":"<?php echo $maccms['mob_status']; ?>"};</script>
 <link rel="icon" href="<?php echo mac_url_img($mxonest['mxcms']['s1']['logo3']); ?>" type="image/png" />
@@ -102,10 +100,9 @@ if (clothes) {
 </style>
 <?php endif; ?>
 
-		<link href="<?php echo $maccms['path_tpl']; ?>mxstatic/css/mxone.css" rel="stylesheet" type="text/css">
-	</head>
-	<body class="page">
-		 <?php if($maccms['aid'] == 1): ?>
+</head>
+<body class="page">
+    <?php if($maccms['aid'] == 1): ?>
 <header id="header" class="wrapper" <?php if($mxonest['mxcms']['s2']['pcgddh'] == 0): ?>style="padding-top: 0!important;"<?php endif; ?>>
 	<div class="header-content <?php if($mxonest['mxcms']['s2']['pcgddh'] == 0): ?>qxgddh<?php endif; ?>" >
 		<div class="banyundog-com">
@@ -128,7 +125,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d3a8e5d4a78=explode(',',$maccms['search_hot']); if(is_array($_67d3a8e5d4a78) || $_67d3a8e5d4a78 instanceof \think\Collection || $_67d3a8e5d4a78 instanceof \think\Paginator): if( count($_67d3a8e5d4a78)==0 ) : echo "" ;else: foreach($_67d3a8e5d4a78 as $key2=>$vo2): ?>
+									<?php $_67d3a76771379=explode(',',$maccms['search_hot']); if(is_array($_67d3a76771379) || $_67d3a76771379 instanceof \think\Collection || $_67d3a76771379 instanceof \think\Paginator): if( count($_67d3a76771379)==0 ) : echo "" ;else: foreach($_67d3a76771379 as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -381,7 +378,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d3a8e5d4a07=explode(',',$maccms['search_hot']); if(is_array($_67d3a8e5d4a07) || $_67d3a8e5d4a07 instanceof \think\Collection || $_67d3a8e5d4a07 instanceof \think\Paginator): if( count($_67d3a8e5d4a07)==0 ) : echo "" ;else: foreach($_67d3a8e5d4a07 as $key2=>$vo2): ?>
+									<?php $_67d3a76771319=explode(',',$maccms['search_hot']); if(is_array($_67d3a76771319) || $_67d3a76771319 instanceof \think\Collection || $_67d3a76771319 instanceof \think\Paginator): if( count($_67d3a76771319)==0 ) : echo "" ;else: foreach($_67d3a76771319 as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -642,254 +639,38 @@ if (clothes) {
 	});
 </script>
 <?php endif; ?> 
-  
-		<main id="main" class="wrapper">
-			<div class="content">
-				<div class="module">
-			<div class="module-list">
-					<?php $_67d3a8e5d498f=explode(',','内地,韩国,美国,日本'); if(is_array($_67d3a8e5d498f) || $_67d3a8e5d498f instanceof \think\Collection || $_67d3a8e5d498f instanceof \think\Paginator): if( count($_67d3a8e5d498f)==0 ) : echo "" ;else: foreach($_67d3a8e5d498f as $key=>$vo): ?>
-
-									<div class="module-heading">
-										<h2 class="module-title"><?php echo $vo; ?>明星</h2>
-										<a class="more" href="<?php echo mac_url('actor/show',['area'=>$vo,'id'=>$obj['type_id']]); ?>" title="更多明星">更多明星
-											<i class="icon-arrow-right-o"></i>
-										</a>
-									</div>
-									<div class="module-list">
-										<div class="module-items module-lines-list">
-											<?php $__TAG__ = '{"num":"16","area":"'.$vo.'","order":"desc","by":"time","id":"vo","key":"key"}';$__LIST__ = model("Actor")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;?> 
-											                <div class="module-item">
-				<div class="module-item-cover">
-					<a href="<?php echo mac_url_actor_detail($vo); ?>">
-					   <div class="module-item-pic">
-					<img class="lazy lazyloaded"  data-src="<?php echo mac_url_img($vo['actor_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic']); ?>"  alt="<?php echo $vo['actor_name']; ?>">
-						<div class="loading"></div>
-					</div>
-					</a>
-					<div class="module-item-caption">
-						<span><?php echo mac_substring(mac_default($vo['actor_remarks'],'未知'),2); ?></span>
-					</div>
-				</div>
-				<div class="module-item-titlebox">
-					<a href="<?php echo mac_url_actor_detail($vo); ?>" class="module-item-title" title="<?php echo $vo['actor_name']; ?>"><?php echo $vo['actor_name']; ?></a>
-				</div>
-			</div>
- 
-											<?php endforeach; endif; else: echo "" ;endif; ?>
-										</div>
-									</div>
-							<?php endforeach; endif; else: echo "" ;endif; ?>
-															</div>
-							</div>
-						</div>
-		</main>
-
-		<footer id="footer" class="wrapper <?php if($mxonest['mxcms']['s2']['dbdh'] == 1): ?>pd60<?php endif; ?>">
-	<p class="sitemap"><img src="<?php echo mac_url_img($mxonest['mxcms']['s1']['logo3']); ?>" height="10">
-		 <?php if($mxonest['mxcms']['s2']['about'] == 1): ?>
-		<a target="_blank" href="<?php echo mac_url('label/about'); ?>">关于</a><span class="space-line-bold"></span>
-		<?php endif; ?>
-		<a target="_blank" href="<?php echo mac_url('label/banquan'); ?>">版权</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('label/help'); ?>">投屏</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('label/live'); ?>">直播</a><span class="space-line-bold"></span>
-		 <?php if($mxonest['mxcms']['s2']['dbtop'] == 1): ?>
-		<a target="_blank" href="<?php echo mac_url('label/top'); ?>">排行榜</a><span class="space-line-bold"></span>
-		<?php endif; ?>
-		<a target="_blank" href="<?php echo mac_url('map/index'); ?>">MAP</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('rss/index'); ?>">RSS</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('rss/baidu'); ?>">Baidu</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('rss/baidu'); ?>">Google</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('rss/bing'); ?>">Bing</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('rss/so'); ?>">so</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('rss/sogou'); ?>">Sogou</a><span class="space-line-bold"></span>
-		<a target="_blank" href="<?php echo mac_url('rss/sm'); ?>">SM</a>
-	</p>
-	<p><?php echo $mxonest['mxcms']['s1']['sm']; ?></p>
-	<?php if($mxonest['mxcms']['s4']['dbdm'] == 1): ?>
-    <?php echo $mxonest['mxcms']['s4']['dbdmtips']; endif; ?>
-</footer>
-
-
-<?php if($mxonest['mxcms']['s2']['yxjcd'] == 1): ?>
-<div class="fixed_right_bar">
-  <div class="mx-lrmenu">  
- <div class="ant-back-top dbicon" style="display:none;">
-	 <i class="iconfont icon-a-zhiding5"></i>	
+     <!-- 头部 -->  
+<main id="main" class="wrapper">
+<div class="content">
+<div class="page-heading">
+<div class="box nfmsg-box">
+<div class="nfmsg-left"></div>
+<div class="nfmsg-right">
+<div class="nfmsg-title">系统提示......</div>
+<div class="title">亲爱的：
 </div>
-  <?php if($mxonest['mxcms']['s2']['fontqh'] == 1): ?>
-<div class="dbicon">
-<a id="numerous" href="javascript:;" style="color: #ffffff; font-weight: bold;"></a>  
-<script src="<?php echo $maccms['path_tpl']; ?>mxstatic/js/font.js"></script>
+    <div class="text"><?php echo $msg; ?></div>
+    <div class="jump">页面自动 <a id="href" href="<?php echo($url);?>"><b>跳转</b></a> 等待时间： <b id="wait"><?php echo($wait);?></b></div>
+        <p><div class="nfmsg-content"></p>不想<b>登陆</b>，你也可以直接返回～
+    <a href="<?php echo $maccms['path']; ?>" class="btn-gray btn-base"><b>返回<?php echo $maccms['site_name']; ?></b></a>
 </div>
-<?php endif; if($mxonest['mxcms']['s2']['yjqh'] == 1): ?>
-<div class="dbicon"  id="clothes" onclick="clothesChange();">
-<?php if($mxonest['mxcms']['s2']['mryj'] == 1): ?>  
-<i class="iconfont icon-rijianmoshi"></i>
-<?php else: ?> 
-<i class="iconfont icon-a-yejian2"></i>
-<?php endif; ?>
 </div>
-<?php endif; if($mxonest['mxcms']['s2']['liuyan'] == 1): ?>
-<div class="dbicon ly">
-<a   href="<?php echo mac_url('gbook/index'); ?>" ><i class="iconfont icon-a-pinglun" ></i></a>
-<span class="anchor-txt">留言</span>
 </div>
-<?php endif; if($mxonest['mxcms']['s2']['topic'] == 1): ?>
-<div class="dbicon">
-<a  href="<?php echo mac_url('topic/index'); ?>" ><i class="iconfont icon-zhuanti-2" ></i></a>
 </div>
-<?php endif; ?>
 </div>
-<div class="moremeum">
-	    <i class="iconfont icon-a-gengduo1"></i>
-	</div>
-</div>
-<?php endif; if($mxonest['mxcms']['s2']['dbdh'] == 1): ?>
-<div class="mxonefoot">
-		<a class="item" href="<?php echo $maccms['path']; ?>">
-    	<i class="icon-home size20"></i>
-		<div class="grid-item-name" title="<?php echo $maccms['site_name']; ?>首页">首页</div>
-		</a>
-		 <?php $__TAG__ = '{"order":"asc","by":"sort","ids":"'.$mxonest['mxcms']['s6']['wapdaohangid'].'","id":"vo","key":"key"}';$__LIST__ = model("Type")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;?>	
-		<a class="item" href="<?php echo mac_url_type($vo); ?>">
-			<?php if($vo['type_id_1'] == $mxonest['mxcms']['s6']['num1']||$vo['type_id'] == $mxonest['mxcms']['s6']['num1']): ?>
-              <i class="size20 <?php echo $mxonest['mxcms']['s6']['icon1']; ?>"></i>
-               <?php elseif($vo['type_id_1'] == $mxonest['mxcms']['s6']['num2']||$vo['type_id'] == $mxonest['mxcms']['s6']['num2']): ?>
-               <i class="size20 <?php echo $mxonest['mxcms']['s6']['icon2']; ?>"></i>
-               <?php elseif($vo['type_id_1'] == $mxonest['mxcms']['s6']['num3']||$vo['type_id'] == $mxonest['mxcms']['s6']['num3']): ?>
-                <i class="size20 <?php echo $mxonest['mxcms']['s6']['icon3']; ?>"></i>
-                 <?php elseif($vo['type_id_1'] == $mxonest['mxcms']['s6']['num4']||$vo['type_id'] == $mxonest['mxcms']['s6']['num4']): ?>
-                 <i class="size20 <?php echo $mxonest['mxcms']['s6']['icon4']; ?>"></i>
-                 <?php elseif($vo['type_id_1'] == $mxonest['mxcms']['s6']['num5']||$vo['type_id'] == $mxonest['mxcms']['s6']['num5']): ?>
-               <i class="size20 <?php echo $mxonest['mxcms']['s6']['icon5']; ?>"></i> 
-                <?php else: ?>
-                 <i class="size20  <?php echo $mxonest['mxcms']['s6']['iconmr']; ?>"></i>
-               <?php endif; ?>
-		<div class="grid-item-name"><?php echo $vo['type_name']; ?></div>
-		</a>
-		<?php endforeach; endif; else: echo "" ;endif; if($mxonest['mxcms']['s6']['diy1'] == 1): ?>
-		<a class="item" href="<?php echo $mxonest['mxcms']['s6']['diy1url']; ?>">
-        <i class="size20  <?php echo $mxonest['mxcms']['s6']['diy1icon']; ?>"></i>
-		<div class="grid-item-name"><?php echo $mxonest['mxcms']['s6']['diy1name']; ?></div>
-		</a>
-		<?php endif; if($mxonest['mxcms']['s6']['diy2'] == 1): ?>
-		<a class="item" href="<?php echo $mxonest['mxcms']['s6']['diy2url']; ?>">
-        <i class="size20  <?php echo $mxonest['mxcms']['s6']['diy2icon']; ?>"></i>
-		<div class="grid-item-name"><?php echo $mxonest['mxcms']['s6']['diy2name']; ?></div>
-		</a>
-		<?php endif; ?>
-</div>
-<?php endif; ?>
-
+</main>
 <script type="text/javascript">
-<?php if($mxonest['mxcms']['s2']['mryj'] == 1): ?> 
- $("#clothes").on('click',function () {
-        $(this).children(".iconfont").toggleClass("icon-a-yejian2");
-        $(this).children(".iconfont").toggleClass("icon-rijianmoshi")
-    });
-  <?php else: ?>
-    $("#clothes").on('click',function () {
-        $(this).children(".iconfont").toggleClass("icon-rijianmoshi");
-        $(this).children(".iconfont").toggleClass("icon-a-yejian2")
-    });
- <?php endif; ?>
+    (function(){
+        var wait = document.getElementById('wait'),
+                href = document.getElementById('href').href;
+        var interval = setInterval(function(){
+            var time = --wait.innerHTML;
+            if(time <= 0) {
+                location.href = href;
+                clearInterval(interval);
+            };
+        }, 1000);
+    })();
 </script>
-
-<?php if($mxonest['mxcms']['s2']['tc'] == 1): ?>
-<div class="popup" id="note" style="display:none;">
-	<div class="popup-icon"><img src="<?php echo $maccms['path_tpl']; ?>mxstatic/picture/backhome.svg"></div>
-	<div class="popup-header">
-		<h3 class="popup-title">公告内容</h3>
-	</div>
-	<div class="popup-main">
-		<?php echo $mxonest['mxcms']['s2']['tc_noti']; ?>
-	</div>
-	<div class="popup-footer"><span class="popup-btn" onclick="closeclick()">我记住啦</span></div>
-</div>
- <!-- 弹窗公告-->
-<?php endif; if($mxonest['mxcms']['s2']['wz0'] == 1): ?>  
-<div class="popup popup-notice none">
-	<div class="popup-icon"><img src="<?php echo $maccms['path_tpl']; ?>mxstatic/picture/backhome.svg"></div>
-	<div class="popup-header">
-		<h3 class="popup-title">域名列表</h3></div>
-	<div class="popup-main">
-		<p>
-			<a><strong><?php echo $maccms['site_url']; ?></strong></a><br>
-		   	<?php if($mxonest['mxcms']['s2']['wz1'] == 1): ?>
-			<a><strong><?php echo $mxonest['mxcms']['s2']['web1']; ?></strong></a><br>
-			<?php endif; if($mxonest['mxcms']['s2']['wz2'] == 1): ?>
-			<a><strong><?php echo $mxonest['mxcms']['s2']['web2']; ?></strong></a><br>
-			<?php endif; if($mxonest['mxcms']['s2']['wz3'] == 1): ?>
-			<a><strong><?php echo $mxonest['mxcms']['s2']['web3']; ?></strong></a><br>
-			<?php endif; if($mxonest['mxcms']['s2']['wz4'] == 1): ?>
-			<a><strong><?php echo $mxonest['mxcms']['s2']['web4']; ?></strong></a><br>
-			<?php endif; if($mxonest['mxcms']['s2']['wz5'] == 1): ?>
-			<a><strong><?php echo $mxonest['mxcms']['s2']['web5']; ?></strong></a><br>
-			<?php endif; ?>
-		</p>
-	</div>
-	<div class="popup-footer">
-		<a href="<?php echo mac_url('label/web'); ?>" class="popup-btn-o">查看全部域名</a>
-	</div>
-	<div class="close-popup" id="close-popup"><i class="icon-close-o"></i></div>
-</div> <!-- 网址-->
-<?php endif; ?>
-<!--新的-->
-<script type="text/javascript">   
-	document.onkeydown=function(){
-	    
-		var e = window.event||arguments[0];
-		
-	     <?php if($mxonest['mxcms']['s4']['shier'] == 1): ?> 
-if(window.event&&window.event.keyCode==123){event.keyCode=0;event.returnValue=false;new Vue({data:function(){this.$notify({title:"<?php echo $mxonest['mxcms']['s4']['pbtips']; ?>",message:"你非要调试的话试试 Alt+Shift+Fn+F4",position:'bottom-right',offset:50,showClose:true,type:"error"});return{visible:false}}})
-				return false;
-			}
-        <?php endif; if($mxonest['mxcms']['s4']['ctrl'] == 1): ?> 
-if((event.ctrlKey)&&(event.shiftKey)&&(event.keyCode==73)){new Vue({data:function(){this.$notify({title:"<?php echo $mxonest['mxcms']['s4']['pbtips']; ?>",message:"老弟，好好看电影吧不要瞎调试换哟~",position:'bottom-right',offset:50,showClose:true,type:"error"});return{visible:false}}})
-			return false;
-		}
-if(e.ctrlKey&&window.event.keyCode==85){new Vue({data:function(){this.$notify({title:"<?php echo $mxonest['mxcms']['s4']['pbtips']; ?>",message:"老弟，在干嘛呢？好好看电影吧~",position:'bottom-right',offset:50,showClose:true,type:"error"});return{visible:false}}})
-		   return false;
-		}		
-if(event.ctrlKey&&window.event.keyCode==83){new Vue({data:function(){this.$notify({title:"<?php echo $mxonest['mxcms']['s4']['pbtips']; ?>",message:"看电影网页不需要保存哦~",position:'bottom-right',offset:50,showClose:true,type:"error"});return{visible:false}}})
-		   return false;
-		}
-        <?php endif; ?>
-	}
-  <?php if($mxonest['mxcms']['s4']['right'] == 1): ?> 
-document.oncontextmenu = function (){new Vue({data:function(){this.$notify({title:"<?php echo $mxonest['mxcms']['s4']['pbtips']; ?>",message:"复制请用键盘快捷键 Ctrl+C",position:'bottom-right',offset:50,showClose:true,type:"warning"});return{visible:false}}})
-		return false;
-	}
- <?php endif; if($mxonest['mxcms']['s4']['mode'] == 1): ?> 
-	var threshold = 160;
-	window.setInterval(function() {  
-	    if (window.outerWidth - window.innerWidth > threshold ||   
-	    window.outerHeight - window.innerHeight > threshold) {  
-			function disableDebugger() {
-				debugger;
-			}
-			$(document).ready(function () {
-				disableDebugger();
-			});
-	    }  
-	}, 1e3);
- <?php endif; ?>
-</script>
-<!--新的-->
-
-<div class="shortcuts-mobile-overlay"></div>
-<?php if($mxonest['mxcms']['s2']['yxjdiy'] == 1): ?>
-<style>
-.fixed_right_bar i{color:<?php echo $mxonest['mxcms']['s2']['iconztys']; ?>}.fixed_right_bar .moremeum{background:<?php echo $mxonest['mxcms']['s2']['cdbjys']; ?>}.fixed_right_bar .dbicon{background:<?php echo $mxonest['mxcms']['s2']['iconbjys']; ?>.fixed_right_bar .dbicon:hover {
-	background: <?php echo $mxonest['mxcms']['s2']['iconbjglys']; ?>;}}.fixed_right_bar .dbicon:hover {	background: <?php echo $mxonest['mxcms']['s2']['iconbjglys']; ?>;}}background: <?php echo $mxonest['mxcms']['s2']['iconbjglys']; ?>;color:<?php echo $mxonest['mxcms']['s2']['iconztys']; ?>}}}
-</style>
- <?php endif; if($mxonest['mxcms']['s2']['tc'] == 1): ?>
-<script src="<?php echo $maccms['path_tpl']; ?>mxstatic/js/mxhtml.js"></script>
- <?php endif; ?>
-<script src="<?php echo $maccms['path_tpl']; ?>mxstatic/js/mxui.js"></script>
-<?php if($mxonest['mxcms']['s3']['addb'] == 1): ?>
-<?php echo $mxonest['mxcms']['s3']['aaddb']; endif; ?>	 <!-- 底部广告位 -->
-
-	</body>
-
+</body>
 </html>

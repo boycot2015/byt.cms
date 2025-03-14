@@ -129,7 +129,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d2e1de3d0a1=explode(',',$maccms['search_hot']); if(is_array($_67d2e1de3d0a1) || $_67d2e1de3d0a1 instanceof \think\Collection || $_67d2e1de3d0a1 instanceof \think\Paginator): if( count($_67d2e1de3d0a1)==0 ) : echo "" ;else: foreach($_67d2e1de3d0a1 as $key2=>$vo2): ?>
+									<?php $_67d3a05ed94b2=explode(',',$maccms['search_hot']); if(is_array($_67d3a05ed94b2) || $_67d3a05ed94b2 instanceof \think\Collection || $_67d3a05ed94b2 instanceof \think\Paginator): if( count($_67d3a05ed94b2)==0 ) : echo "" ;else: foreach($_67d3a05ed94b2 as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -382,7 +382,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d2e1de3cf8a=explode(',',$maccms['search_hot']); if(is_array($_67d2e1de3cf8a) || $_67d2e1de3cf8a instanceof \think\Collection || $_67d2e1de3cf8a instanceof \think\Paginator): if( count($_67d2e1de3cf8a)==0 ) : echo "" ;else: foreach($_67d2e1de3cf8a as $key2=>$vo2): ?>
+									<?php $_67d3a05ed93b0=explode(',',$maccms['search_hot']); if(is_array($_67d3a05ed93b0) || $_67d3a05ed93b0 instanceof \think\Collection || $_67d3a05ed93b0 instanceof \think\Paginator): if( count($_67d3a05ed93b0)==0 ) : echo "" ;else: foreach($_67d3a05ed93b0 as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -689,7 +689,7 @@ if (clothes) {
 						      </a>
 				    	<div class="tag-link">
 						<span class="slash">/</span>    
-					    <?php $_67d2e1de3ce3b=explode(',',$obj['vod_class']); if(is_array($_67d2e1de3ce3b) || $_67d2e1de3ce3b instanceof \think\Collection || $_67d2e1de3ce3b instanceof \think\Paginator): if( count($_67d2e1de3ce3b)==0 ) : echo "" ;else: foreach($_67d2e1de3ce3b as $key2=>$vo2): ?>	    
+					    <?php $_67d3a05ed927d=explode(',',$obj['vod_class']); if(is_array($_67d3a05ed927d) || $_67d3a05ed927d instanceof \think\Collection || $_67d3a05ed927d instanceof \think\Paginator): if( count($_67d3a05ed927d)==0 ) : echo "" ;else: foreach($_67d3a05ed927d as $key2=>$vo2): ?>	    
 						<a href="<?php echo mac_url_type($obj['type']['type_id'],['id'=>$obj['type_id'],'class'=>$vo2],'show'); ?>"><?php echo $vo2; ?></a><span class="slash">/</span>
 						<?php endforeach; endif; else: echo "" ;endif; ?>
 						</div>

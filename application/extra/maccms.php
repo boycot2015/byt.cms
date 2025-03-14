@@ -202,7 +202,7 @@ return array (
   'interface' => 
   array (
     'status' => 0,
-    'pass' => 'UOE7NIMUWWHDRTCM',
+    'pass' => 'T4795SE5MBQJO4XB',
     'vodtype' => '动作片=动作',
     'arttype' => '头条=头条',
     'actortype' => '',
@@ -259,12 +259,18 @@ return array (
       'psename' => '1',
       'psernd' => '0',
       'psesyn' => '0',
+      'pseplayer' => '0',
+      'psearea' => '0',
+      'pselang' => '0',
       'urlrole' => '0',
       'inrule' => ',f,g',
-      'uprule' => ',a',
+      'uprule' => ',a,b',
       'filter' => '色戒,色即是空',
       'namewords' => '第1季=第一季#第2季=第二季#第3季=第三季#第4季=第四季',
       'thesaurus' => ' =',
+      'playerwords' => '',
+      'areawords' => '',
+      'langwords' => '',
       'words' => 'aaa#bbb#ccc#ddd#eee',
     ),
     'art' => 

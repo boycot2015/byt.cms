@@ -127,7 +127,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d2e3ac3ab3b=explode(',',$maccms['search_hot']); if(is_array($_67d2e3ac3ab3b) || $_67d2e3ac3ab3b instanceof \think\Collection || $_67d2e3ac3ab3b instanceof \think\Paginator): if( count($_67d2e3ac3ab3b)==0 ) : echo "" ;else: foreach($_67d2e3ac3ab3b as $key2=>$vo2): ?>
+									<?php $_67d3a0939562b=explode(',',$maccms['search_hot']); if(is_array($_67d3a0939562b) || $_67d3a0939562b instanceof \think\Collection || $_67d3a0939562b instanceof \think\Paginator): if( count($_67d3a0939562b)==0 ) : echo "" ;else: foreach($_67d3a0939562b as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -380,7 +380,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d2e3ac3aa38=explode(',',$maccms['search_hot']); if(is_array($_67d2e3ac3aa38) || $_67d2e3ac3aa38 instanceof \think\Collection || $_67d2e3ac3aa38 instanceof \think\Paginator): if( count($_67d2e3ac3aa38)==0 ) : echo "" ;else: foreach($_67d2e3ac3aa38 as $key2=>$vo2): ?>
+									<?php $_67d3a09395536=explode(',',$maccms['search_hot']); if(is_array($_67d3a09395536) || $_67d3a09395536 instanceof \think\Collection || $_67d3a09395536 instanceof \think\Paginator): if( count($_67d3a09395536)==0 ) : echo "" ;else: foreach($_67d3a09395536 as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -797,7 +797,7 @@ if (clothes) {
             <a class="block-box-content" href="<?php echo mac_url_type($vo2,[],'show'); ?>"  title="<?php echo $vo2['type_name']; ?>"><strong class="title"><?php echo $vo2['type_name']; ?></strong></a>
             <div class="block-box-bg"><?php echo $vo2['type_name']; ?></div>
           </div>
-          	<?php endforeach; endif; else: echo "" ;endif; endif; else: $_67d2e3ac3a6d2=explode(',',$obj['type_extend']['class']); if(is_array($_67d2e3ac3a6d2) || $_67d2e3ac3a6d2 instanceof \think\Collection || $_67d2e3ac3a6d2 instanceof \think\Paginator): if( count($_67d2e3ac3a6d2)==0 ) : echo "" ;else: foreach($_67d2e3ac3a6d2 as $key1=>$vo1): ?> 
+          	<?php endforeach; endif; else: echo "" ;endif; endif; else: $_67d3a0939533f=explode(',',$obj['type_extend']['class']); if(is_array($_67d3a0939533f) || $_67d3a0939533f instanceof \think\Collection || $_67d3a0939533f instanceof \think\Paginator): if( count($_67d3a0939533f)==0 ) : echo "" ;else: foreach($_67d3a0939533f as $key1=>$vo1): ?> 
           <div class="block-box-item">
             <a class="block-box-content" href="<?php echo mac_url_type($obj,['class'=>$vo1],'show'); ?>"  title="<?php echo $vo1; ?><?php echo $obj['type_name']; ?>"><strong class="title"><?php echo $vo1; ?><?php echo $obj['type_name']; ?></strong></a>
             <div class="block-box-bg"><?php echo $vo1; ?><?php echo $obj['type_name']; ?></div>
@@ -834,11 +834,11 @@ if (clothes) {
                       <path d="M5 15h10V3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2h2z" fill="#FF5C38"></path>
                       <path d="M6.007 4.138l3.726 2.26c.286.238.353.7.148 1.032a.698.698 0 0 1-.148.172l-3.726 2.26c-.286.238-.684.16-.888-.172C5.04 9.565 5 9.154 5 9V5c0-.408.285-1 .637-1a.58.58 0 0 1 .37.138z" fill="#FFB821"></path>
                    </svg><?php echo $obj['type_name']; ?>片库</a>
-             <?php $_67d2e3ac3a6b5=explode(',',$obj['type_extend']['class']); if(is_array($_67d2e3ac3a6b5) || $_67d2e3ac3a6b5 instanceof \think\Collection || $_67d2e3ac3a6b5 instanceof \think\Paginator): if( count($_67d2e3ac3a6b5)==0 ) : echo "" ;else: foreach($_67d2e3ac3a6b5 as $key1=>$vo1): if($key1 < 10): ?>
+             <?php $_67d3a09395323=explode(',',$obj['type_extend']['class']); if(is_array($_67d3a09395323) || $_67d3a09395323 instanceof \think\Collection || $_67d3a09395323 instanceof \think\Paginator): if( count($_67d3a09395323)==0 ) : echo "" ;else: foreach($_67d3a09395323 as $key1=>$vo1): if($key1 < 10): ?>
           <a href="<?php echo mac_url_type($obj,['class'=>$vo1],'show'); ?>" class="nav_link " title="<?php echo $vo1; ?><?php echo $obj['type_name']; ?>"><?php echo $vo1; ?></a>
-             <?php endif; endforeach; endif; else: echo "" ;endif; $_67d2e3ac3a6a3=explode(',',$obj['type_extend']['area']); if(is_array($_67d2e3ac3a6a3) || $_67d2e3ac3a6a3 instanceof \think\Collection || $_67d2e3ac3a6a3 instanceof \think\Paginator): if( count($_67d2e3ac3a6a3)==0 ) : echo "" ;else: foreach($_67d2e3ac3a6a3 as $key1=>$vo1): if($key1 < 4): ?>
+             <?php endif; endforeach; endif; else: echo "" ;endif; $_67d3a09395314=explode(',',$obj['type_extend']['area']); if(is_array($_67d3a09395314) || $_67d3a09395314 instanceof \think\Collection || $_67d3a09395314 instanceof \think\Paginator): if( count($_67d3a09395314)==0 ) : echo "" ;else: foreach($_67d3a09395314 as $key1=>$vo1): if($key1 < 4): ?>
           <a href="<?php echo mac_url_type($obj,['area'=>$vo1],'show'); ?>" class="nav_link " title="<?php echo $vo1; ?><?php echo $obj['type_name']; ?>"><?php echo $vo1; ?></a>
-             <?php endif; endforeach; endif; else: echo "" ;endif; $_67d2e3ac3a65d=explode(',',$obj['type_extend']['year']); if(is_array($_67d2e3ac3a65d) || $_67d2e3ac3a65d instanceof \think\Collection || $_67d2e3ac3a65d instanceof \think\Paginator): if( count($_67d2e3ac3a65d)==0 ) : echo "" ;else: foreach($_67d2e3ac3a65d as $key1=>$vo1): if($key1 < 4): ?>
+             <?php endif; endforeach; endif; else: echo "" ;endif; $_67d3a09395303=explode(',',$obj['type_extend']['year']); if(is_array($_67d3a09395303) || $_67d3a09395303 instanceof \think\Collection || $_67d3a09395303 instanceof \think\Paginator): if( count($_67d3a09395303)==0 ) : echo "" ;else: foreach($_67d3a09395303 as $key1=>$vo1): if($key1 < 4): ?>
           <a href="<?php echo mac_url_type($obj,['year'=>$vo1],'show'); ?>" class="nav_link " title="<?php echo $vo1; ?><?php echo $obj['type_name']; ?>"><?php echo $vo1; ?></a>
              <?php endif; endforeach; endif; else: echo "" ;endif; ?>               
                 
@@ -1218,7 +1218,7 @@ if (clothes) {
     </div>
      <?php endforeach; endif; else: echo "" ;endif; ?>  <!-- 有二级分类 -->
         
-	    <?php else: $_67d2e3ac3a37b=explode(',',$obj['type_extend']['area']); if(is_array($_67d2e3ac3a37b) || $_67d2e3ac3a37b instanceof \think\Collection || $_67d2e3ac3a37b instanceof \think\Paginator): if( count($_67d2e3ac3a37b)==0 ) : echo "" ;else: foreach($_67d2e3ac3a37b as $key1=>$vo1): ?> 			
+	    <?php else: $_67d3a09394ff9=explode(',',$obj['type_extend']['area']); if(is_array($_67d3a09394ff9) || $_67d3a09394ff9 instanceof \think\Collection || $_67d3a09394ff9 instanceof \think\Paginator): if( count($_67d3a09394ff9)==0 ) : echo "" ;else: foreach($_67d3a09394ff9 as $key1=>$vo1): ?> 			
         <div class="module module-bg">
       <div class="module-heading">
         <h2 class="module-title"><?php if($vo1 == $param['area']): ?><?php echo mac_data_count($obj['type_id'],'all'); ?>部<?php endif; ?><?php echo $vo1; ?><?php echo $obj['type_name']; ?></h2>

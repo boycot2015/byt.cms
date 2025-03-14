@@ -128,7 +128,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d2dce5875dc=explode(',',$maccms['search_hot']); if(is_array($_67d2dce5875dc) || $_67d2dce5875dc instanceof \think\Collection || $_67d2dce5875dc instanceof \think\Paginator): if( count($_67d2dce5875dc)==0 ) : echo "" ;else: foreach($_67d2dce5875dc as $key2=>$vo2): ?>
+									<?php $_67d3a0573bbe2=explode(',',$maccms['search_hot']); if(is_array($_67d3a0573bbe2) || $_67d3a0573bbe2 instanceof \think\Collection || $_67d3a0573bbe2 instanceof \think\Paginator): if( count($_67d3a0573bbe2)==0 ) : echo "" ;else: foreach($_67d3a0573bbe2 as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -381,7 +381,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d2dce587518=explode(',',$maccms['search_hot']); if(is_array($_67d2dce587518) || $_67d2dce587518 instanceof \think\Collection || $_67d2dce587518 instanceof \think\Paginator): if( count($_67d2dce587518)==0 ) : echo "" ;else: foreach($_67d2dce587518 as $key2=>$vo2): ?>
+									<?php $_67d3a0573bb0f=explode(',',$maccms['search_hot']); if(is_array($_67d3a0573bb0f) || $_67d3a0573bb0f instanceof \think\Collection || $_67d3a0573bb0f instanceof \think\Paginator): if( count($_67d3a0573bb0f)==0 ) : echo "" ;else: foreach($_67d3a0573bb0f as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -798,7 +798,7 @@ if (clothes) {
             <div class="homepage_main_tabs_new">
 	          <a class="homepage_main_tabs_title_new" href="<?php echo mac_url_type($vo1); ?>" target="_blank" ><?php echo $vo1['type_name']; ?></a>
 	          <div class="homepage_main_tabs_sub_new">
-	             		<?php $_67d2dce587396=explode(',',$vo1['type_extend']['class']); if(is_array($_67d2dce587396) || $_67d2dce587396 instanceof \think\Collection || $_67d2dce587396 instanceof \think\Paginator): if( count($_67d2dce587396)==0 ) : echo "" ;else: foreach($_67d2dce587396 as $key2=>$vo2): if($key2 < 2): ?>
+	             		<?php $_67d3a0573b981=explode(',',$vo1['type_extend']['class']); if(is_array($_67d3a0573b981) || $_67d3a0573b981 instanceof \think\Collection || $_67d3a0573b981 instanceof \think\Paginator): if( count($_67d3a0573b981)==0 ) : echo "" ;else: foreach($_67d3a0573b981 as $key2=>$vo2): if($key2 < 2): ?>
 	                  	<a class="homepage_sub_title_new" target="_blank" href="<?php echo mac_url_type($vo1,['class'=>$vo2],'show'); ?>" title="<?php echo $vo2; ?>"><?php echo mac_substring($vo2,2); ?></a>     <?php endif; endforeach; endif; else: echo "" ;endif; ?>
 	          </div>
      <div class="homepage_channel_video_wrap">

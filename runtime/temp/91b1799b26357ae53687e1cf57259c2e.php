@@ -144,7 +144,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d2e1e7090fa=explode(',',$maccms['search_hot']); if(is_array($_67d2e1e7090fa) || $_67d2e1e7090fa instanceof \think\Collection || $_67d2e1e7090fa instanceof \think\Paginator): if( count($_67d2e1e7090fa)==0 ) : echo "" ;else: foreach($_67d2e1e7090fa as $key2=>$vo2): ?>
+									<?php $_67d3a9038b1c1=explode(',',$maccms['search_hot']); if(is_array($_67d3a9038b1c1) || $_67d3a9038b1c1 instanceof \think\Collection || $_67d3a9038b1c1 instanceof \think\Paginator): if( count($_67d3a9038b1c1)==0 ) : echo "" ;else: foreach($_67d3a9038b1c1 as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -397,7 +397,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d2e1e708ff9=explode(',',$maccms['search_hot']); if(is_array($_67d2e1e708ff9) || $_67d2e1e708ff9 instanceof \think\Collection || $_67d2e1e708ff9 instanceof \think\Paginator): if( count($_67d2e1e708ff9)==0 ) : echo "" ;else: foreach($_67d2e1e708ff9 as $key2=>$vo2): ?>
+									<?php $_67d3a9038b0be=explode(',',$maccms['search_hot']); if(is_array($_67d3a9038b0be) || $_67d3a9038b0be instanceof \think\Collection || $_67d3a9038b0be instanceof \think\Paginator): if( count($_67d3a9038b0be)==0 ) : echo "" ;else: foreach($_67d3a9038b0be as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -724,7 +724,7 @@ if (clothes) {
                  
                 <div class="tag-link">
 				<span class="slash">/</span>    
-				<?php $_67d2e1e708ea5=explode(',',$obj['vod_class']); if(is_array($_67d2e1e708ea5) || $_67d2e1e708ea5 instanceof \think\Collection || $_67d2e1e708ea5 instanceof \think\Paginator): if( count($_67d2e1e708ea5)==0 ) : echo "" ;else: foreach($_67d2e1e708ea5 as $key2=>$vo2): ?>	    
+				<?php $_67d3a9038af77=explode(',',$obj['vod_class']); if(is_array($_67d3a9038af77) || $_67d3a9038af77 instanceof \think\Collection || $_67d3a9038af77 instanceof \think\Paginator): if( count($_67d3a9038af77)==0 ) : echo "" ;else: foreach($_67d3a9038af77 as $key2=>$vo2): ?>	    
 				<a href="<?php echo mac_url_type($obj['type']['type_id'],['id'=>$obj['type_id'],'class'=>$vo2],'show'); ?>"><?php echo $vo2; ?></a><span class="slash">/</span>
                 <?php if($key2>='1'): break; endif; endforeach; endif; else: echo "" ;endif; ?>
 				</div>
@@ -895,7 +895,7 @@ strstr($obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['url'],"wasu.
           <a href="/label/app.html"   target="_blank">
          <div  class="button-container button-app"><div class="content-ad">客户端下载，点击直达！</div></div>
          </a>        
-         <?php endif; $_67d2e1e708e2d=explode(',',$mxonest['mxcms']['s2']['play']['jxxlhost']); if(is_array($_67d2e1e708e2d) || $_67d2e1e708e2d instanceof \think\Collection || $_67d2e1e708e2d instanceof \think\Paginator): if( count($_67d2e1e708e2d)==0 ) : echo "" ;else: foreach($_67d2e1e708e2d as $key2=>$vo2): ?> 
+         <?php endif; $_67d3a9038aef4=explode(',',$mxonest['mxcms']['s2']['play']['jxxlhost']); if(is_array($_67d3a9038aef4) || $_67d3a9038aef4 instanceof \think\Collection || $_67d3a9038aef4 instanceof \think\Paginator): if( count($_67d3a9038aef4)==0 ) : echo "" ;else: foreach($_67d3a9038aef4 as $key2=>$vo2): ?> 
        if (strstr($obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['url'],$vo2)==true){ 
          <a href="">
          <div  class="button-container button-app"><div class="content-ad">播放失败点我【切换】解析或线路！</div></div>
