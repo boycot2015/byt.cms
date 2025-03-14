@@ -1,5 +1,57 @@
 <?php
 return array (
+  'bwm3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'bwm3u8',
+    'show' => 'bwm3u8',
+    'des' => '',
+    'target' => '_self',
+    'ps' => '1',
+    'parse' => 'https://bo.baiwanapi.com/?url=',
+    'sort' => '99999',
+    'tip' => '',
+    'id' => 'bwm3u8',
+  ),
+  'dadim3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'dadim3u8',
+    'show' => 'dadim3u8',
+    'des' => 'dadim3u8 大地资源 www.dadizy.com',
+    'target' => '_self',
+    'ps' => '1',
+    'parse' => '',
+    'sort' => '1001',
+    'tip' => '',
+    'id' => 'dadim3u8',
+  ),
+  'lzm3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'lzm3u8',
+    'show' => '量子m3u8',
+    'des' => '',
+    'target' => '_self',
+    'ps' => '1',
+    'parse' => '',
+    'sort' => '1000',
+    'tip' => '',
+    'id' => 'lzm3u8',
+  ),
+  'wolong' => 
+  array (
+    'status' => '1',
+    'from' => 'wolong',
+    'show' => 'wolong',
+    'des' => '卧龙资源',
+    'target' => '_self',
+    'ps' => '1',
+    'parse' => 'https://jx.wolongzywcdn.com:65/m3u8.php?url=',
+    'sort' => '1000',
+    'tip' => '',
+    'id' => 'wolong',
+  ),
   'dplayer' => 
   array (
     'status' => '1',
@@ -87,31 +139,17 @@ return array (
     'tip' => '无需安装任何插件	',
     'id' => 'flv',
   ),
-  'lzm3u8' => 
+  '1080zyk' => 
   array (
     'status' => '1',
-    'from' => 'lzm3u8',
-    'show' => '量子m3u8',
-    'des' => '',
-    'target' => '_self',
+    'from' => '1080zyk',
+    'show' => '1080zyk',
+    'des' => 'http://1080zyku.com/',
     'ps' => '1',
-    'parse' => '',
-    'sort' => '1000',
-    'tip' => '',
-    'id' => 'lzm3u8',
-  ),
-  'wolong' => 
-  array (
-    'status' => '1',
-    'from' => 'wolong',
-    'show' => 'wolong',
-    'des' => '卧龙资源',
-    'target' => '_self',
-    'ps' => '1',
-    'parse' => 'https://jx.wolongzywcdn.com:65/m3u8.php?url=',
-    'sort' => '1000',
-    'tip' => '',
-    'id' => 'wolong',
+    'parse' => 'https://vip.zykbf.com/?url=',
+    'sort' => '99',
+    'tip' => '在线播放,无需安装播放器',
+    'id' => '1080zyk',
   ),
   'zykyun' => 
   array (
@@ -125,16 +163,17 @@ return array (
     'tip' => '在线播放,无需安装播放器',
     'id' => 'zykyun',
   ),
-  '1080zyk' => 
+  'wjm3u8' => 
   array (
     'status' => '1',
-    'from' => '1080zyk',
-    'show' => '1080zyk',
-    'des' => 'http://1080zyku.com/',
+    'from' => 'wjm3u8',
+    'show' => '无尽',
+    'des' => '',
+    'target' => '_self',
     'ps' => '1',
-    'parse' => 'https://vip.zykbf.com/?url=',
-    'sort' => '99',
-    'tip' => '在线播放,无需安装播放器',
-    'id' => '1080zyk',
+    'parse' => 'https://jx.wujinkk.com/dplayer/?url=',
+    'sort' => '1',
+    'tip' => '',
+    'id' => 'wjm3u8',
   ),
 );
