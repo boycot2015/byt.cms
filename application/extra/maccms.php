@@ -216,9 +216,9 @@ return array (
     array (
       'url' => '',
     ),
-    'alipay' => 
+    'epay' => 
     array (
-      'account' => '111',
+      'api_url' => '',
       'appid' => '',
       'appkey' => '',
     ),
@@ -233,6 +233,12 @@ return array (
     array (
       'appid' => '222',
       'mchid' => '',
+      'appkey' => '',
+    ),
+    'alipay' => 
+    array (
+      'account' => '111',
+      'appid' => '',
       'appkey' => '',
     ),
     'zhapay' => 

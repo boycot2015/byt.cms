@@ -41,7 +41,7 @@ return array (
   array (
     'id' => '',
     '__token__' => '15ec3b599746ba875b42cd8d12b91911',
-    'status' => '1',
+    'status' => '0',
     'name' => 'wolong',
     'des' => '',
     'file' => 'collect',

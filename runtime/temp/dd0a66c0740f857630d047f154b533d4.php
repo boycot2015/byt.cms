@@ -1,13 +1,14 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:18:{s:33:"template/mxone/html/vod/type.html";i:1664179340;s:79:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/seo/vod_type.html";i:1664247958;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/include.html";i:1664250000;s:78:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/head.html";i:1741942424;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/index/bigslide.html";i:1651601364;s:87:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/swiper_banner.html";i:1651638674;s:77:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/typetb.html";i:1651601308;s:77:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/typeyk.html";i:1664183370;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/ads/adqj.html";i:1625104690;s:77:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/typeho.html";i:1640264036;s:80:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/vodbox.html";i:1664246986;s:77:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/typefl.html";i:1639064510;s:77:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/typedq.html";i:1640241500;s:80:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/paging.html";i:1639063948;s:78:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/foot.html";i:1664185344;s:82:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/tcnotice.html";i:1639063956;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/website.html";i:1639063970;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/ads/addb.html";i:1625104690;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:19:{s:35:"template/mxone/html/vod/detail.html";i:1639064358;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/seo/vod_detail.html";i:1664247958;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/include.html";i:1664250000;s:78:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/head.html";i:1741942424;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/desc.html";i:1664244664;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/ads/adqj.html";i:1625104690;s:79:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/playlist.html";i:1664205106;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/actor_vbox.html";i:1639673002;s:80:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/vodbox.html";i:1664246986;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/plot.html";i:1639064442;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/ads/ad22.html";i:1639673308;s:74:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/art.html";i:1640348994;s:76:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/serie.html";i:1639064484;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/like.html";i:1639064412;s:74:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/vod/hot.html";i:1640349510;s:78:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/foot.html";i:1664185344;s:82:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/tcnotice.html";i:1639063956;s:81:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/public/website.html";i:1639063970;s:75:"/Users/boycott/Desktop/my-project/byt.cms/template/mxone/html/ads/addb.html";i:1625104690;}*/ ?>
 <!DOCTYPE html>
 <html lang="zh-cn">
- <head>
- <title>最新<?php echo $obj['type_name']; ?><?php echo $obj['type_title']; ?>推荐<?php echo $obj['type_title']; ?> - 第<?php echo $param['page']; ?>页 - 高清免费在线观看- <?php echo $maccms['site_name']; ?> - <?php echo $maccms['site_url']; ?></title>
-<meta name="keywords" content="<?php echo $obj['type_key']; ?><?php echo $maccms['site_keywords']; ?>,电影,电视剧,综艺,新闻,财经,音乐,MV,高清,视频,在线观看,全网搜,搜全网" />
-<meta name="description" content="<?php echo $obj['type_des']; ?><?php echo $maccms['site_description']; ?>" />  
- <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-<?php $file = 'template/mxone/asset/admin/Mxone.php'; $newfile = 'application/admin/controller/Mxone.php'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $file = 'template/mxone/asset/admin/mxonest.php'; $newfile = 'application/extra/mxonest.php'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $file = 'template/mxone/asset/admin/mxcms.html'; $newfile = 'application/admin/view/system/mxcms.html'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $mxonest = file_exists('application/extra/mxonest.php') ? require('application/extra/mxonest.php') : require(substr($maccms['path_tpl'], strlen($maccms['path'])).'asset/admin/mxonest.php'); if($mxonest['mxcms']['s4']['tbdm'] == 1): ?>
+ <head> 
+ <title>《<?php echo $obj['vod_name']; ?>》详情介绍_<?php echo $obj['vod_name']; ?><?php echo $obj['vod_remarks']; ?>在线观看_<?php echo $obj['vod_name']; ?>迅雷下载_<?php echo $obj['type']['type_name']; ?>_<?php echo $maccms['site_name']; ?> - <?php echo $maccms['site_url']; ?></title>
+<meta name="keywords" content="<?php echo $obj['vod_name']; ?><?php echo $obj['vod_play_list'][$param['sid']]['urls'][$param['nid']]['name']; ?><?php echo $obj['type']['type_name']; ?>高清免费在线观看,<?php echo $obj['vod_name']; ?><?php echo $obj['vod_remarks']; ?>迅雷下载,,<?php echo $obj['vod_name']; ?>完整版在线播放,<?php echo $obj['vod_name']; ?>主演:<?php echo $obj['vod_actor']; ?>">
+<meta name="description" content="<?php echo $maccms['site_name']; ?>为您提供,热播<?php echo $obj['type']['type_name']; ?>,<?php echo $obj['vod_name']; ?>完整版免费免VIP无广告在线观看以及迅雷下载;<?php echo $obj['vod_name']; ?>剧情:<?php echo $obj['vod_blurb']; ?>">
+ 
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+   <?php $file = 'template/mxone/asset/admin/Mxone.php'; $newfile = 'application/admin/controller/Mxone.php'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $file = 'template/mxone/asset/admin/mxonest.php'; $newfile = 'application/extra/mxonest.php'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $file = 'template/mxone/asset/admin/mxcms.html'; $newfile = 'application/admin/view/system/mxcms.html'; if (file_exists($newfile)) {} else { copy($file,$newfile); } $mxonest = file_exists('application/extra/mxonest.php') ? require('application/extra/mxonest.php') : require(substr($maccms['path_tpl'], strlen($maccms['path'])).'asset/admin/mxonest.php'); if($mxonest['mxcms']['s4']['tbdm'] == 1): ?>
 <?php echo $mxonest['mxcms']['s4']['tbdmtips']; endif; ?>
 <script>var maccms={"path":"","mid":"<?php echo $maccms['mid']; ?>","url":"<?php echo $maccms['site_url']; ?>","wapurl":"<?php echo $maccms['site_wapurl']; ?>","mob_status":"<?php echo $maccms['mob_status']; ?>"};</script>
 <link rel="icon" href="<?php echo mac_url_img($mxonest['mxcms']['s1']['logo3']); ?>" type="image/png" />
@@ -102,8 +103,9 @@ if (clothes) {
 </style>
 <?php endif; ?>
 
- </head>
- <body   class="page">
+</head>
+<body class="view page">
+    
     <?php if($maccms['aid'] == 1): ?>
 <header id="header" class="wrapper" <?php if($mxonest['mxcms']['s2']['pcgddh'] == 0): ?>style="padding-top: 0!important;"<?php endif; ?>>
 	<div class="header-content <?php if($mxonest['mxcms']['s2']['pcgddh'] == 0): ?>qxgddh<?php endif; ?>" >
@@ -127,7 +129,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d3ff5f47b30=explode(',',$maccms['search_hot']); if(is_array($_67d3ff5f47b30) || $_67d3ff5f47b30 instanceof \think\Collection || $_67d3ff5f47b30 instanceof \think\Paginator): if( count($_67d3ff5f47b30)==0 ) : echo "" ;else: foreach($_67d3ff5f47b30 as $key2=>$vo2): ?>
+									<?php $_67d7775358cdc=explode(',',$maccms['search_hot']); if(is_array($_67d7775358cdc) || $_67d7775358cdc instanceof \think\Collection || $_67d7775358cdc instanceof \think\Paginator): if( count($_67d7775358cdc)==0 ) : echo "" ;else: foreach($_67d7775358cdc as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -380,7 +382,7 @@ if (clothes) {
 							<div class="drop-content-items ac_hot none">
 								<div class="list-item list-item-title"><strong>大家都在搜这些影片</strong></div>
 								<div class="search-tag">
-									<?php $_67d3ff5f479c8=explode(',',$maccms['search_hot']); if(is_array($_67d3ff5f479c8) || $_67d3ff5f479c8 instanceof \think\Collection || $_67d3ff5f479c8 instanceof \think\Paginator): if( count($_67d3ff5f479c8)==0 ) : echo "" ;else: foreach($_67d3ff5f479c8 as $key2=>$vo2): ?>
+									<?php $_67d7775358bdb=explode(',',$maccms['search_hot']); if(is_array($_67d7775358bdb) || $_67d7775358bdb instanceof \think\Collection || $_67d7775358bdb instanceof \think\Paginator): if( count($_67d7775358bdb)==0 ) : echo "" ;else: foreach($_67d7775358bdb as $key2=>$vo2): ?>
 									<a href="<?php echo mac_url('vod/search',['wd'=>$vo2]); ?>" class="<?php if($key2 < 4): ?>hot <?php else: endif; ?>"><i class="icon-hot"></i><?php echo $vo2; ?></a>
 									<?php endforeach; endif; else: echo "" ;endif; ?>
 								</div>
@@ -642,258 +644,267 @@ if (clothes) {
 </script>
 <?php endif; ?> 
      <!-- 头部 -->
-         <?php if($mxonest['mxcms']['s2']['bigslide'] == 1): ?> <link rel="stylesheet" href="<?php echo $maccms['path_tpl']; ?>mxstatic/css/swiper.min.css" type="text/css">
-<link rel="stylesheet" href="<?php echo $maccms['path_tpl']; ?>mxstatic/css/hdp.css" type="text/css">
-   <div class="swiper-container">
-      <div class="swiper-wrapper">
-          
-           		<?php if($mxonest['mxcms']['s2']['slidediy1'] == 1): ?>
-           	<div class="swiper-slide">
-        <a class="dymrslide banner" data-name="<?php echo $mxonest['mxcms']['s2']['slidediy1name']; ?>" data-fname="<?php if($mxonest['mxcms']['s2']['slidediy1fname'] != ''): ?><?php echo $mxonest['mxcms']['s2']['slidediy1fname']; else: ?>暂无<?php endif; ?>" href="<?php echo $mxonest['mxcms']['s2']['slidediy1url']; ?>" target="_blank" style="background: url(<?php echo $mxonest['mxcms']['s2']['slidediy1pic']; ?>) center no-repeat;  background-size: cover;">
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>
-          <div class="txt-info">
-            <p class="gate"><span>广告</span></p>  
-            <p class="name"><?php echo $mxonest['mxcms']['s2']['slidediy1name']; ?></p>
-            <p class="info"><?php if($mxonest['mxcms']['s2']['slidediy1fname'] != ''): ?><?php echo $mxonest['mxcms']['s2']['slidediy1fname']; else: ?>暂无<?php endif; ?> </p>            
-          </div>
-          </a>
-        </div>
-           	  <?php endif; if($mxonest['mxcms']['s2']['slidediy2'] == 1): ?>
-           	<div class="swiper-slide">
-        <a class="dymrslide banner" data-name="<?php echo $mxonest['mxcms']['s2']['slidediy2name']; ?>" data-fname="<?php if($mxonest['mxcms']['s2']['slidediy2fname'] != ''): ?><?php echo $mxonest['mxcms']['s2']['slidediy2fname']; else: ?>暂无<?php endif; ?>" href="<?php echo $mxonest['mxcms']['s2']['slidediy2url']; ?>" target="_blank"  style="background: url(<?php echo $mxonest['mxcms']['s2']['slidediy2pic']; ?>) center no-repeat;  background-size: cover;">
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>            
-          <div class="txt-info">
-            <p class="gate"><span>广告</span></p>    
-            <p class="name"><?php echo $mxonest['mxcms']['s2']['slidediy2name']; ?></p>
-            <p class="info"><?php if($mxonest['mxcms']['s2']['slidediy2fname'] != ''): ?><?php echo $mxonest['mxcms']['s2']['slidediy2fname']; else: ?>暂无<?php endif; ?> </p>     
-          </div>
-          </a>
-        </div>
-           	  <?php endif; if($mxonest['mxcms']['s2']['slidediy3'] == 1): ?>
-           	<div class="swiper-slide">
-        <a class="dymrslide banner" data-name="<?php echo $mxonest['mxcms']['s2']['slidediy3name']; ?>" data-fname="<?php if($mxonest['mxcms']['s2']['slidediy3fname'] != ''): ?><?php echo $mxonest['mxcms']['s2']['slidediy3fname']; else: ?>暂无<?php endif; ?>" href="<?php echo $mxonest['mxcms']['s2']['slidediy3url']; ?>" target="_blank"  style="background: url(<?php echo $mxonest['mxcms']['s2']['slidediy3pic']; ?>) center no-repeat;  background-size: cover;">
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>            
-          <div class="txt-info">
-            <p class="gate"><span>广告</span></p>    
-            <p class="name"><?php echo $mxonest['mxcms']['s2']['slidediy3name']; ?></p>
-            <p class="info"><?php if($mxonest['mxcms']['s2']['slidediy3fname'] != ''): ?><?php echo $mxonest['mxcms']['s2']['slidediy3fname']; else: ?>暂无<?php endif; ?> </p>
-          </div>
-          </a>
-        </div>
-
-
-           	  <?php endif; ?>          
- <style>
- .gifpic{display:none}
- </style>
-  <?php if($maccms['aid'] == 7): $__TAG__ = '{"num":"'.$mxonest['mxcms']['s2']['slidenum'].'","type":"all","order":"desc","by":"time","level":"9","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;?>
-                        <div class="swiper-slide">
-         <div class=" gifpic" style="background: url(<?php if($vo['vod_pic_thumb'] == ''): ?><?php echo mac_url_img($vo['vod_pic_slide']); else: ?><?php echo $vo['vod_pic_thumb']; endif; ?>) center no-repeat;  background-size: cover;padding-top: 30%;border-radius: 5px;position: relative;">            
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>                        
-            <div class="txt-info">
-            <p class="gate"><span><?php echo $vo['type']['type_name']; ?></span></p>
-            <p class="name"><?php echo $vo['vod_name']; ?></p>
-            <p class="info"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?> </p>
-            </div>           
-         </div> 
-        <a class="dymrslide banner jpgpic" data-name="<?php echo $vo['vod_name']; ?>" data-fname="<?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_sub'] != ''): ?><?php echo $vo['vod_sub']; else: ?><?php echo $vo['vod_tag']; endif; ?>" href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" style="background: url(<?php echo mac_url_img($vo['vod_pic_slide']); ?>) center no-repeat;  background-size: cover;">
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>                        
-           <div class="txt-info">
-            <p class="gate"><span><?php echo $vo['type']['type_name']; ?></span></p>
-            <p class="name"><?php echo $vo['vod_name']; ?></p>
-            <p class="info"><?php if($vo['vod_actor'] != ''): ?><?php echo $vo['vod_actor']; elseif($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; else: ?><?php echo $vo['vod_state']; endif; ?>  </p><!--左边顺序主演-备注-资源类别--->
-          </div>
-          </a>
-	     </div>	
-           	<?php endforeach; endif; else: echo "" ;endif; elseif($maccms['aid'] == 11): $__TAG__ = '{"num":"'.$mxonest['mxcms']['s2']['slidenum'].'","type":"current","order":"desc","by":"time","level":"9,8","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;?>
-                        <div class="swiper-slide">
-         <div class=" gifpic" style="background: url(<?php if($vo['vod_pic_thumb'] == ''): ?><?php echo mac_url_img($vo['vod_pic_slide']); else: ?><?php echo $vo['vod_pic_thumb']; endif; ?>) center no-repeat;  background-size: cover;padding-top: 30%;border-radius: 5px;position: relative;">            
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>                        
-            <div class="txt-info">
-            <p class="gate"><span><?php echo $vo['type']['type_name']; ?></span></p>
-            <p class="name"><?php echo $vo['vod_name']; ?></p>
-            <p class="info"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?> </p>
-            </div>           
-         </div> 
-        <a class="dymrslide banner jpgpic" data-name="<?php echo $vo['vod_name']; ?>" data-fname="<?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_sub'] != ''): ?><?php echo $vo['vod_sub']; else: ?><?php echo $vo['vod_tag']; endif; ?>" href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" style="background: url(<?php echo mac_url_img($vo['vod_pic_slide']); ?>) center no-repeat;  background-size: cover;">
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>                        
-           <div class="txt-info">
-            <p class="gate"><span><?php echo $vo['type']['type_name']; ?></span></p>
-            <p class="name"><?php echo $vo['vod_name']; ?></p>
-            <p class="info"><?php if($vo['vod_actor'] != ''): ?><?php echo $vo['vod_actor']; elseif($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; else: ?><?php echo $vo['vod_state']; endif; ?>  </p><!--左边顺序主演-备注-资源类别--->
-          </div>
-          </a>
-	     </div>	
-           	<?php endforeach; endif; else: echo "" ;endif; ?>	 <!--分类页幻灯默认取推荐9的分类图片,若需要额外推荐,选择对于的分类推荐8-->
-<?php else: $__TAG__ = '{"num":"'.$mxonest['mxcms']['s2']['slidenum'].'","type":"all","order":"desc","by":"time","level":"'.$mxonest['mxcms']['s2']['slidetj'].'","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;?>
-                        <div class="swiper-slide">
-         <div class=" gifpic" style="background: url(<?php if($vo['vod_pic_thumb'] == ''): ?><?php echo mac_url_img($vo['vod_pic_slide']); else: ?><?php echo $vo['vod_pic_thumb']; endif; ?>) center no-repeat;  background-size: cover;padding-top: 30%;border-radius: 5px;position: relative;">            
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>                        
-            <div class="txt-info">
-            <p class="gate"><span><?php echo $vo['type']['type_name']; ?></span></p>
-            <p class="name"><?php echo $vo['vod_name']; ?></p>
-            <p class="info"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?> </p>
-            </div>           
-         </div> 
-        <a class="dymrslide banner jpgpic" data-name="<?php echo $vo['vod_name']; ?>" data-fname="<?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_sub'] != ''): ?><?php echo $vo['vod_sub']; else: ?><?php echo $vo['vod_tag']; endif; ?>" href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" style="background: url(<?php echo mac_url_img($vo['vod_pic_slide']); ?>) center no-repeat;  background-size: cover;">
-            <div class="focus_leftshode focusleftshode"></div>
-            <div class="focus_rightshode focusrightshode"></div>
-            <div class="focus_topshode focustopshode"></div>
-            <div class="focus_bottomshode focusbottomshode"></div>                        
-           <div class="txt-info">
-            <p class="gate"><span><?php echo $vo['type']['type_name']; ?></span></p>
-            <p class="name"><?php echo $vo['vod_name']; ?></p>
-            <p class="info"><?php if($vo['vod_actor'] != ''): ?><?php echo $vo['vod_actor']; elseif($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; else: ?><?php echo $vo['vod_state']; endif; ?>  </p><!--左边顺序主演-备注-资源类别--->
-          </div>
-          </a>
-	     </div>	
-           	<?php endforeach; endif; else: echo "" ;endif; ?>		  <!--首页幻灯-->
-<?php endif; ?>         	
- 
-
-        			
-      </div>
-      <div class="swiper-pagination"></div>
-    </div>
-
-  <?php endif; ?><!-- 轮播图 --> 
    <main id="main" class="wrapper">
-  <div class="content">
-                <div class="page-heading">
-      <h1 class="page-title"><?php echo $obj['type_name']; ?></h1>
-      <div class="list-header scroll-box">
-        <div class="block-box-items scroll-content">
-       <?php if($obj['childids']||$obj['parent']['childids']): if($obj['type_pid'] == 0): $__TAG__ = '{"parent":"'.$obj['type_id'].'","order":"asc","by":"sort","id":"vo2","key":"key2"}';$__LIST__ = model("Type")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key2 = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo2): $mod = ($key2 % 2 );++$key2;?>
-          <div class="block-box-item <?php if($vo2['type_id'] == $obj['type_id']): ?>selected<?php endif; ?>">
-            <a class="block-box-content" href="<?php echo mac_url_type($vo2,[],'show'); ?>"  title="<?php echo $vo2['type_name']; ?>"><strong class="title"><?php echo $vo2['type_name']; ?></strong></a>
-            <div class="block-box-bg"><?php echo $vo2['type_name']; ?></div>
+   	<div class="content">   
+   	
+                <div class="box view-heading">
+			<div class="mobile-play">
+				<div class="module-item-cover">
+					<div class="module-item-pic"><img class="lazyload" data-src="<?php echo mac_url_img($obj['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic']); ?>"></div>
+				</div>
+			</div>
+			<div class="video-cover">
+				<div class="module-item-cover">
+					<div class="module-item-pic">
+						<a href="<?php echo mac_url_vod_play($obj); ?>" title="立刻播放<?php echo $obj['vod_name']; ?>"><i class="icon-play"></i></a><img class="lazyload" alt="<?php echo $obj['vod_name']; ?>" data-src="<?php echo mac_url_img($obj['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic']); ?>">
+						<div class="loading"></div>
+					</div>
+					{if condition="$obj.vod_points gt 0"}
+					<?php if($mxonest['mxcms']['s2']['descjiaobiao'] == 1): ?> 
+					<div class="module-item-ru">
+						<span class="yugao"><?php echo $mxonest['mxcms']['s2']['descjiaobiaowenzi']; ?></span>
+					</div> <?php endif; ?>
+				</div>
+			</div>
+			<div class="video-info">
+				<div class="video-info-header">
+					<h1 class="page-title"><?php echo $obj['vod_name']; ?></h1>
+					<?php if($mxonest['mxcms']['s2']['detailen'] == 1): ?>
+					<h2 class="video-subtitle" title="又名：<?php echo $obj['vod_en']; ?>"><?php echo $obj['vod_en']; ?></h2>
+					<?php endif; ?>
+					<div class="scroll-box">
+					<div class="video-info-aux scroll-content">
+						<a href="<?php if($obj['type_1']!=''): ?><?php echo mac_url_type($obj['type_1']); else: ?><?php echo mac_url_type($obj['type']); endif; ?>" title="<?php if($obj['type_1']!=''): ?><?php echo $obj['type_1']['type_name']; else: ?><?php echo $obj['type']['type_name']; endif; ?>" class="tag-link">
+						    <span class="video-tag-icon">
+						  <?php if($obj['type_id_1'] == 1||$obj['type_id'] == 1): ?>
+                            <i class="icon-cate-dy"></i>
+                             <?php elseif($obj['type_id_1'] == 2||$obj['type_id'] == 2): ?>
+                            <i class="icon-cate-ds"></i>
+                            <?php elseif($obj['type_id_1'] == 3||$obj['type_id'] == 3): ?>
+                            <i class="icon-cate-zy"></i>
+                            <?php elseif($obj['type_id_1'] == 4||$obj['type_id'] == 4): ?>
+                             <i class="icon-cate-dm"></i>
+                             <?php else: endif; if($obj['type_1']!=''): ?><?php echo $obj['type_1']['type_name']; else: ?><?php echo $obj['type']['type_name']; endif; ?>
+						     </span>
+						      </a>
+				    	<div class="tag-link">
+						<span class="slash">/</span>    
+					    <?php $_67d7775358a9f=explode(',',$obj['vod_class']); if(is_array($_67d7775358a9f) || $_67d7775358a9f instanceof \think\Collection || $_67d7775358a9f instanceof \think\Paginator): if( count($_67d7775358a9f)==0 ) : echo "" ;else: foreach($_67d7775358a9f as $key2=>$vo2): ?>	    
+						<a href="<?php echo mac_url_type($obj['type']['type_id'],['id'=>$obj['type_id'],'class'=>$vo2],'show'); ?>"><?php echo $vo2; ?></a><span class="slash">/</span>
+						<?php endforeach; endif; else: echo "" ;endif; ?>
+						</div>
+						
+						<a class="tag-link" href="<?php echo mac_url_type($obj['type']['type_id'],['id'=>$obj['type_id'],'year'=>$obj['vod_year']],'show'); ?>"><?php echo mac_default($obj['vod_year'],'未知'); ?>	</a>
+						
+                        <a class="tag-link" href="<?php echo mac_url_type($obj['type']['type_id'],['id'=>$obj['type_id'],'area'=>$obj['vod_area']],'show'); ?>"><?php echo mac_default($obj['vod_area'],'未知'); ?>	</a>
+                      	</div>  
+					</div>
+					<?php if($obj['vod_play_list']): ?>
+					<a href="<?php echo mac_url_vod_play($obj); ?>" class="btn-important btn-large shadow-drop video-info-play" title="立刻播放<?php echo $obj['vod_name']; ?>"><i class="icon-play"></i><strong>立即播放</strong></a>
+					<?php else: ?>
+					<a class="noplaylist btn-large video-info-play" href="javaScript:;"><i class="icon-warn"></i>暂无片源</a>
+					<?php endif; if($mxonest['mxcms']['s2']['shoucang'] == 1): if($maccms['user_status'] == 1): ?>
+					<a href="javascript:void(0);"  data-type="2" data-mid="<?php echo $maccms['mid']; ?>" data-id="<?php echo $obj['vod_id']; ?>" class="mac_ulog btn-large btn-collect video-info-play"><i class="iconfont  icon-shoucang"></i>收藏</a>	
+					<?php endif; endif; if(!(empty($obj[vod_down_from]) || (($obj[vod_down_from] instanceof \think\Collection || $obj[vod_down_from] instanceof \think\Paginator ) && $obj[vod_down_from]->isEmpty()))): ?>
+					<a href="<?php echo mac_url_vod_down($obj); ?>" class="video-info-downbtn video-info-play gotodownloadlist gotodownloadlist"><i class="icon-download"></i><strong>影片下载</strong></a>
+					<?php endif; ?>
+				</div>
+				
+				<div class="video-info-main">
+
+					<div class="video-info-items"><span class="video-info-itemtitle">导演：</span>
+						<div class="video-info-item video-info-actor"><span class="slash">/</span>
+					    <?php echo mac_url_create(mac_default($obj['vod_director'],'未知'),'director','vod','search','<span class="slash">/</span>'); ?>
+						</div>
+					</div>
+					<div class="video-info-items"><span class="video-info-itemtitle">主演：</span>
+						<div class="video-info-item video-info-actor"><span class="slash">/</span>
+						<?php echo mac_url_create(mac_default($obj['vod_actor'],'未知'),'actor','vod','search','<span class="slash">/</span>'); ?>
+						</div>
+					</div>
+					<div class="video-info-items"><span class="video-info-itemtitle">上映：</span>
+						<div class="video-info-item"><?php echo mac_default($obj['vod_pubdate'],'未知'); ?></div>
+					</div>
+					<div class="video-info-items"><span class="video-info-itemtitle">更新：</span>
+						<div class="video-info-item"><?php echo mac_day($obj['vod_time']); ?>，最后更新于
+					<?php 
+					$t = time() - $obj['vod_time'];
+					$retArr = array('刚刚','分钟前','小时前','天前','月前','年前');
+					switch($t){
+					case $t <= 0:
+					$text = date('Y-m-d',$time);
+					break;
+					case $t < 60:
+					$text = $retArr[0];
+					break;
+					case $t < 3600:
+					$text = floor($t / 60).$retArr[1];
+					break;
+					case $t < 86400:
+					$text = floor($t / 3600).$retArr[2];
+					break;
+					case $t < 2592000: 
+					$text = floor($t / 86400).$retArr[3];
+					break;
+					case $t < 31536000:
+					$text = floor($t / 2592000).$retArr[4];
+					break;
+					default : 
+					$text = floor($t / 31536000).$retArr[5];
+					}
+					echo $text;
+					 ?></div>
+					</div>		
+					<div class="video-info-items"><span class="video-info-itemtitle">  <?php if($obj['type_id_1'] == 4||$obj['type_id'] == 4): ?>连载：<?php elseif($obj['type_id_1'] == 2||$obj['type_id'] == 2): ?>集数：<?php else: ?>备注：<?php endif; ?></span>
+						<div class="video-info-item"><?php if($obj['vod_remarks'] != ''): ?><?php echo $obj['vod_remarks']; elseif($obj['vod_serial'] > 0): ?>第<?php echo $obj['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
+					</div>					
+					 <?php if($mxonest['mxcms']['s2']['doubanlj'] == 1): ?>
+					 <div class="video-info-items"><span class="video-info-itemtitle">评价：</span>
+    <span class="text-muted" style="margin-right: 10px;"><a href="https://search.douban.com/movie/subject_search?search_text=<?php echo $obj['vod_name']; ?>" target="_blank" title="到豆瓣页面查看《<?php echo $obj['vod_name']; ?>》" rel="nofollow"><img src="https://img3.doubanio.com/favicon.ico" style="width:15px; height:15px"></a></span>
+    <span class="text-muted" style="margin-right: 10px;"><a href="https://www.douyin.com/search/<?php echo $obj['vod_name']; ?>" target="_blank" title="到抖音页面查看《<?php echo $obj['vod_name']; ?>》" rel="nofollow"><img src="https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin/search/public/favicon.ico" style="width:15px; height:15px"></a></span>
+    <span class="text-muted" style="margin-right: 10px;"><a href="https://www.kuaishou.com/search/video?searchKey=<?php echo $obj['vod_name']; ?>" target="_blank" title="到快手页面查看《<?php echo $obj['vod_name']; ?>》" rel="nofollow"><img src="https://static.yximgs.com/udata/pkg/WEB-LIVE/kwai_icon.8f6787d8.ico" style="width:15px; height:15px"></a></span>    
+    <span class="text-muted" style="margin-right: 10px;"><a href="https://www.ixigua.com/search/<?php echo $obj['vod_name']; ?>" target="_blank" title="到西瓜视频页面查看《<?php echo $obj['vod_name']; ?>》" rel="nofollow"><img src="https://sf1-cdn-tos.douyinstatic.com/obj/eden-cn/lpqpflo/ixigua_favicon.ico" style="width:15px; height:15px"></a></span>     
+    <span class="text-muted" style="margin-right: 10px;"><a href="https://s.weibo.com/weibo?q=<?php echo $obj['vod_name']; ?>" target="_blank" title="到微博页面查看《<?php echo $obj['vod_name']; ?>》" rel="nofollow"><img src="https://weibo.com/favicon.ico" style="width:15px; height:15px"></a></span>  
+    
+    <span class="text-muted" style="margin-right: 10px;"><a href="https://www.toutiao.com/search?keyword=<?php echo $obj['vod_name']; ?>" target="_blank" title="到头条页面查看《<?php echo $obj['vod_name']; ?>》" rel="nofollow"><img src="https://so.toutiao.com/favicon.ico" style="width:15px; height:15px"></a></span>
+	<span class="text-muted" style="margin-right: 10px;"><a href="https://www.baidu.com/s?wd=<?php echo $obj['vod_name']; ?>" target="_blank" title="到百度页面查看《<?php echo $obj['vod_name']; ?>》" rel="nofollow"><img src="https://www.baidu.com/favicon.ico" style="width:15px; height:15px"></a></span>					 
+					 
+					 
+					 </div>
+						<?php endif; if($mxonest['mxcms']['s2']['tagkg'] == 1): ?>
+					<div class="video-info-items"><span class="video-info-itemtitle">TAG：</span>
+						<div class="video-info-item"><?php echo mac_url_create($obj['vod_tag'],'tag'); ?></div>
+					</div>
+					<?php endif; ?>
+					<div class="video-info-items"><span class="video-info-itemtitle">剧情：</span>
+						<div class="video-info-item video-info-content vod_content">
+						    <span><?php echo mac_default(mac_filter_html($obj['vod_content']),'内详'); ?></span>
+							<a href="javaScript:;" class="shrink">收起</a>
+						</div>
+					</div>
+
+					<?php if($mxonest['mxcms']['s3']['ad2'] == 1): ?>
+                    <div class="video-info-items"><span class="video-info-itemtitle">AD：</span>
+						<div class="video-info-item">
+						   <?php echo $mxonest['mxcms']['s3']['aad2']; ?>
+						</div>
+					</div>					
+					<?php endif; ?>
+					
+					
+					
+				</div>
+				<div class="video-info-footer display">
+					<div class="video-info-share">
+						<button class="share-btn" data-clipboard-text="<?php echo $maccms['site_url']; ?><?php echo mac_url_vod_detail($obj); ?> 我正在<?php echo $maccms['site_name']; ?>观看《<?php echo $obj['vod_name']; ?>》，推荐给你一起看！">好影片，与好朋友一起分享<i class="icon-happy"></i></button>
+					</div>
+					<?php if($obj['vod_play_list']): ?>
+					<a href="<?php echo mac_url_vod_play($obj); ?>" class="btn-important btn-large shadow-drop" title="立刻播放<?php echo $obj['vod_name']; ?>"><i class="icon-play"></i><strong>立即播放</strong></a>
+					<?php else: ?>
+					<a class="noplaylist btn-large" href="javaScript:;"><i class="icon-warn"></i>暂无片源</a>
+					<?php endif; if($mxonest['mxcms']['s2']['shoucang'] == 1): if($maccms['user_status'] == 1): ?>
+					<a href="javascript:void(0);"  data-type="2" data-mid="<?php echo $maccms['mid']; ?>" data-id="<?php echo $obj['vod_id']; ?>" class="mac_ulog  btn-large btn-collect"><i class="iconfont  icon-shoucang"></i>收藏</a>	
+					<?php endif; endif; if(!(empty($obj[vod_down_from]) || (($obj[vod_down_from] instanceof \think\Collection || $obj[vod_down_from] instanceof \think\Paginator ) && $obj[vod_down_from]->isEmpty()))): ?>
+					<a href="<?php echo mac_url_vod_down($obj); ?>" class="btn-aux btn-aux-o btn-large gotodownloadlist"><i class="icon-download"></i><strong>下载</strong></a>
+					<?php endif; ?>
+				</div>
+			</div>
+		</div>       <!-- 简介 -->
+    
+<?php if($mxonest['mxcms']['s3']['adqj'] == 1): if($mxonest['mxcms']['s3']['adqj'] == 1): ?>
+<?php echo $mxonest['mxcms']['s3']['aadqj']; endif; ?>	 <!-- 全局广告位 -->	<?php endif; if(!(empty($obj[vod_play_from]) || (($obj[vod_play_from] instanceof \think\Collection || $obj[vod_play_from] instanceof \think\Paginator ) && $obj[vod_play_from]->isEmpty()))): ?>
+    <style>
+  .module-blocklist a em  {    color: rgb(0 0 0 / 92%);position: absolute; top: -1px;right: 2px;z-index: 3; transform: scale(0.78); transform-origin: top right;border-radius: 1px 5px 0 5px; background: linear-gradient(90deg, #FFEB3B, #f9e326);padding: 0 3px; line-height: 16px;font-size: 12px; border-radius: 5px; display: inline-block !important;}
+   @media (min-width: 659px){ 
+       .module-blocklist a{ overflow: initial; width:auto}
+       .module-blocklist a em{ top: -5px; right: -5px;}
+   }
+ </style>  
+
+        <div class="module">
+      <div class="module-heading">
+          <h2 class="module-title" title="<?php echo $obj['vod_name']; ?>在线观看列表">选集播放:</h2>
+          <div class="module-tab module-player-tab ">
+            <input type="hidden" name="tab" id="tab" class="module-tab-input">
+            <label class="module-tab-name"><span class="module-tab-value"><strong>切换线路</strong></span><i class="icon-arrow-bottom-o"></i></label>
+              <div class="module-tab-items">
+              <div class="module-tab-title">播放节点列表<span class="close-drop"><i class="icon-close-o"></i></span></div>
+              <div class="module-tab-content">
+               <?php if(is_array($obj['vod_play_list']) || $obj['vod_play_list'] instanceof \think\Collection || $obj['vod_play_list'] instanceof \think\Paginator): if( count($obj['vod_play_list'])==0 ) : echo "" ;else: foreach($obj['vod_play_list'] as $key=>$vo): ?>	  
+               <div class="module-tab-item tab-item" data-dropdown-value="<?php echo $vo['player_info']['show']; ?>"><span><?php echo $vo['player_info']['show']; ?></span><small><?php echo $vo['url_count']; ?></small></div>
+               <?php endforeach; endif; else: echo "" ;endif; ?>	
+                </div>
+            </div>
           </div>
-          	<?php endforeach; endif; else: echo "" ;endif; else: $__TAG__ = '{"parent":"'.$obj['type_pid'].'","order":"asc","by":"sort","id":"vo2","key":"key2"}';$__LIST__ = model("Type")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key2 = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo2): $mod = ($key2 % 2 );++$key2;?>
-          <div class="block-box-item <?php if($vo2['type_id'] == $obj['type_id']): ?>selected<?php endif; ?>">
-            <a class="block-box-content" href="<?php echo mac_url_type($vo2,[],'show'); ?>"  title="<?php echo $vo2['type_name']; ?>"><strong class="title"><?php echo $vo2['type_name']; ?></strong></a>
-            <div class="block-box-bg"><?php echo $vo2['type_name']; ?></div>
+          <div class="shortcuts-mobile-overlay"></div>
+        </div>
+        <?php if(is_array($obj['vod_play_list']) || $obj['vod_play_list'] instanceof \think\Collection || $obj['vod_play_list'] instanceof \think\Paginator): if( count($obj['vod_play_list'])==0 ) : echo "" ;else: foreach($obj['vod_play_list'] as $key=>$vo): ?>	
+        <div class="module-list module-player-list tab-list sort-list <?php switch($obj['type_id_1']): case "3": ?>module-vod-list<?php break; endswitch; ?>" id="glist-<?php echo $key; ?>">
+          <div class="module-tab module-sorttab">
+            <input type="hidden" name="tab-sort" id="tab-sort" class="module-tab-input">
+            <label class="module-tab-name"><i class="icon-sort"></i>选集</label>
+            <div class="module-tab-items">
+              <div class="module-tab-title">选集<span class="close-drop"><i class="icon-close-o"></i></span><a class="desc sort-button" href="javascript:void(0);" to="#sort-item-<?php echo $key; ?>"><i class="icon-sort"></i>排序</a></div>
+              <div class="module-tab-content">
+                <div class="module-blocklist">
+                  <div class="sort-item" id="sort-item-<?php echo $key; ?>">
+                   <?php if(is_array($vo['urls']) || $vo['urls'] instanceof \think\Collection || $vo['urls'] instanceof \think\Paginator): if( count($vo['urls'])==0 ) : echo "" ;else: foreach($vo['urls'] as $key2=>$vo2): ?> 
+                   
+                 <a href="<?php echo mac_url_vod_play($obj,['sid'=>$vo['sid'],'nid'=>$vo2['nid']]); ?>" title="播放<?php echo $obj['vod_name']; ?><?php echo $vo2['name']; ?>"><span><?php echo $vo2['name']; ?></span>
+                 <?php if($vo2 == end($vo['urls'])&&$obj['vod_points'] > 0): ?> <em>VIP</em> 
+                 <?php elseif($vo2['nid'] > $vo['url_count'] -2&&$vo['url_count'] > 2): ?> <em style="background:#FF008C;color:#FFFFFF">最新</em><?php endif; if($vo2 == end($vo['urls'])&&$obj['vod_level'] == '3'): ?> <em style="background:#00BFFF;color:#FFFFFF">预告</em><?php endif; ?></a>
+                    <?php endforeach; endif; else: echo "" ;endif; ?>                  
+                    </div>
+                </div>
+              </div>
+            </div>
           </div>
-          	<?php endforeach; endif; else: echo "" ;endif; endif; else: $_67d3ff5f47779=explode(',',$obj['type_extend']['class']); if(is_array($_67d3ff5f47779) || $_67d3ff5f47779 instanceof \think\Collection || $_67d3ff5f47779 instanceof \think\Paginator): if( count($_67d3ff5f47779)==0 ) : echo "" ;else: foreach($_67d3ff5f47779 as $key1=>$vo1): ?> 
-          <div class="block-box-item">
-            <a class="block-box-content" href="<?php echo mac_url_type($obj,['class'=>$vo1],'show'); ?>"  title="<?php echo $vo1; ?><?php echo $obj['type_name']; ?>"><strong class="title"><?php echo $vo1; ?><?php echo $obj['type_name']; ?></strong></a>
-            <div class="block-box-bg"><?php echo $vo1; ?><?php echo $obj['type_name']; ?></div>
-          </div>
-           <?php endforeach; endif; else: echo "" ;endif; endif; ?>
-           <div class="space-line-bold"></div>
-          <div class="block-box-item"><a class="block-box-content" href="<?php echo mac_url_type($obj,[],'show'); ?>" title="查看全部影片"><strong class="title"><?php echo $obj['type_name']; ?>影片库</strong></a>
-            <div class="block-box-bg"><i class="icon-cate-dy"></i></div>
+          <div class="shortcuts-mobile-overlay"></div>
+          <div class="module-blocklist scroll-box scroll-box-y">
+            <div class="scroll-content">
+             <?php if(is_array($vo['urls']) || $vo['urls'] instanceof \think\Collection || $vo['urls'] instanceof \think\Paginator): if( count($vo['urls'])==0 ) : echo "" ;else: foreach($vo['urls'] as $key2=>$vo2): ?> 
+            <a href="<?php echo mac_url_vod_play($obj,['sid'=>$vo['sid'],'nid'=>$vo2['nid']]); ?>" title="播放<?php echo $obj['vod_name']; ?><?php echo $vo2['name']; ?>"><span><?php echo $vo2['name']; ?></span>
+             <?php if($vo2 == end($vo['urls'])&&$obj['vod_points'] > 0): ?> <em>VIP</em> 
+               <?php elseif($vo2['nid'] > $vo['url_count'] -2&&$vo['url_count'] > 2): ?> <em style="background:#FF008C;color:#FFFFFF">最新</em><?php endif; if($vo2 == end($vo['urls'])&&$obj['vod_level'] == '3'): ?> <em style="background:#00BFFF;color:#FFFFFF">预告</em><?php endif; ?></a>
+             <?php endforeach; endif; else: echo "" ;endif; ?>                   
+           </div>
           </div>
         </div>
-      </div>
-    </div>
-     <!-- 分类页分类 -->
-        <style>
-.site_subnav{z-index:100;width:100%;}
-.site_subnav .site_subnav_inner{position:relative;height:40px;margin:0 auto;padding-left:10px;letter-spacing:-3px;white-space:nowrap}
-.site_subnav .nav_link{display:inline-block;margin:0 30px 0 0;padding:0;font-size:16px;letter-spacing:normal;line-height:40px;vertical-align:top}
-.site_subnav .current{position:relative;color:#ff5c38;font-weight:700}
-.site_subnav .nav_link_more{position:relative;margin-right:30px;margin-left:20px;white-space:nowrap}
-.site_subnav .svg_vstore{position:absolute;top:11px;left:-20px;width:17px;height:17px}
-.site_subnav .svg_icon_expand{width:13px;height:8px;vertical-align:1px}
-.site_subnav .open .svg_path_down,.site_subnav .svg_path_up{display:none}
-.site_subnav .open .svg_path_up{display:block}
-    @media (min-width: 899px){
-   .site_subnav{    margin: 20px 0;     overflow: hidden;} 
-    }
-</style>
+        <?php endforeach; endif; else: echo "" ;endif; ?>
+        </div>
+        <script type="text/javascript">$(".tab-item:first,.module-list:first").addClass("selected");</script>   <!-- 播放列表 -->
+    <?php endif; if($obj['vod_actor'] != ''): $__TAG__ = '{"num":"1","order":"desc","name":"'.$obj[vod_actor].'","id":"vo1","key":"key"}';$__LIST__ = model("Actor")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo1): $mod = ($key % 2 );++$key;if($vo1['actor_name'] != ''): ?>    
+        <div class="module">
+			<div class="module-heading">
+			<h2 class="module-title" title="<?php echo $obj['vod_name']; ?>相关演员">相关演员</h2>
+			</div>
+      <div class="module-actor-list  ">
+         <div class="module-list module-line-list"> 
+					<div class="module-items actor-list  scroll-box ">
+                      <div class="scroll-content" style="display: inline-flex;">
+                          
+                          <?php $__TAG__ = '{"num":"6","order":"desc","name":"'.$obj[vod_actor].'","id":"vo2","key":"key"}';$__LIST__ = model("Actor")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo2): $mod = ($key % 2 );++$key;?>
+                          
+						<div><a class="actor_part" title="<?php echo $vo2['actor_name']; ?>" >
+						    <div class="actor_pic">
+						<img class=" lazy lazyloaded" data-src="<?php echo mac_url_img($vo2['actor_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic']); ?>">
+						   </div>
+                			<div class="actor_name"><?php echo $vo2['actor_name']; ?></div>
+                			</a>
+                			<i class="actor_arrow"></i>
+                       </div>
+                           	<?php endforeach; endif; else: echo "" ;endif; ?>
+                       
+                      </div>
+                      <div class="actor_xian"></div>   
+			    	</div>		    
 
-<div class="site_subnav scroll-box">
-  <div class="site_subnav_inner scroll-content">
-              <a href="<?php echo mac_url_type($obj,[],'type'); ?>" class="nav_link nav_link_more">
-                  <svg width="17" height="17" class="svg_vstore">
-                      <path d="M2 2v10h10V2H2zm0-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" fill="#FF5C38"></path>
-                      <path d="M5 15h10V3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2h2z" fill="#FF5C38"></path>
-                      <path d="M6.007 4.138l3.726 2.26c.286.238.353.7.148 1.032a.698.698 0 0 1-.148.172l-3.726 2.26c-.286.238-.684.16-.888-.172C5.04 9.565 5 9.154 5 9V5c0-.408.285-1 .637-1a.58.58 0 0 1 .37.138z" fill="#FFB821"></path>
-                   </svg><?php echo $obj['type_name']; ?>片库</a>
-             <?php $_67d3ff5f47756=explode(',',$obj['type_extend']['class']); if(is_array($_67d3ff5f47756) || $_67d3ff5f47756 instanceof \think\Collection || $_67d3ff5f47756 instanceof \think\Paginator): if( count($_67d3ff5f47756)==0 ) : echo "" ;else: foreach($_67d3ff5f47756 as $key1=>$vo1): if($key1 < 10): ?>
-          <a href="<?php echo mac_url_type($obj,['class'=>$vo1],'show'); ?>" class="nav_link " title="<?php echo $vo1; ?><?php echo $obj['type_name']; ?>"><?php echo $vo1; ?></a>
-             <?php endif; endforeach; endif; else: echo "" ;endif; $_67d3ff5f47705=explode(',',$obj['type_extend']['area']); if(is_array($_67d3ff5f47705) || $_67d3ff5f47705 instanceof \think\Collection || $_67d3ff5f47705 instanceof \think\Paginator): if( count($_67d3ff5f47705)==0 ) : echo "" ;else: foreach($_67d3ff5f47705 as $key1=>$vo1): if($key1 < 4): ?>
-          <a href="<?php echo mac_url_type($obj,['area'=>$vo1],'show'); ?>" class="nav_link " title="<?php echo $vo1; ?><?php echo $obj['type_name']; ?>"><?php echo $vo1; ?></a>
-             <?php endif; endforeach; endif; else: echo "" ;endif; $_67d3ff5f476d1=explode(',',$obj['type_extend']['year']); if(is_array($_67d3ff5f476d1) || $_67d3ff5f476d1 instanceof \think\Collection || $_67d3ff5f476d1 instanceof \think\Paginator): if( count($_67d3ff5f476d1)==0 ) : echo "" ;else: foreach($_67d3ff5f476d1 as $key1=>$vo1): if($key1 < 4): ?>
-          <a href="<?php echo mac_url_type($obj,['year'=>$vo1],'show'); ?>" class="nav_link " title="<?php echo $vo1; ?><?php echo $obj['type_name']; ?>"><?php echo $vo1; ?></a>
-             <?php endif; endforeach; endif; else: echo "" ;endif; ?>               
-                
-  </div>
-</div>
+		             <div class="module-list module-line-list trochanter-actorvbox">
+<?php $__TAG__ = '{"num":"6","order":"desc","name":"'.$obj[vod_actor].'","id":"vo2","key":"key"}';$__LIST__ = model("Actor")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo2): $mod = ($key % 2 );++$key;?>        
+                       <div class="module-items scroll-box dd">
+                        <div class="scroll-content">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- <!-- 分类页分类2 -->        
-<?php if($mxonest['mxcms']['s3']['adqj'] == 1): if($mxonest['mxcms']['s3']['adqj'] == 1): ?>
-<?php echo $mxonest['mxcms']['s3']['aadqj']; endif; ?>	 <!-- 全局广告位 -->	<?php endif; if($obj['type_extend']['area']): ?>
-         <div class="module module-bg">
-      <div class="module-heading">
-        <h2 class="module-title">热播<?php echo $obj['type_name']; ?></h2>
-      </div>
-      <div class="module-list module-lines-list">
-        <div class="module-items">
-            <?php if($mxonest['mxcms']['s2']['qzslt'] == 1): $__TAG__ = '{"num":"12","type":"current","order":"desc","by":"hits_month","level":"'.$mxonest['mxcms']['s2']['hotlevel'].'","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
+			    <?php $__TAG__ = '{"num":"","actor":"'.$vo2['actor_name'].'","order":"desc","by":"time","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
                 <div class="module-item">
 				<div class="module-item-cover">
 					<div class="module-item-pic">
@@ -995,7 +1006,209 @@ if (clothes) {
 					</div>
 					<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
 				</div>
-        <?php endif; endforeach; endif; else: echo "" ;endif; else: $__TAG__ = '{"num":"16","type":"current","order":"desc","by":"hits_month","level":"'.$mxonest['mxcms']['s2']['hotlevel'].'","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
+        <?php endif; endforeach; endif; else: echo "" ;endif; ?>
+						</div>	
+					   </div>
+<?php endforeach; endif; else: echo "" ;endif; ?>							
+							
+                     </div>
+				</div>
+			</div>
+	
+		</div> 
+
+  					 <?php endif; endforeach; endif; else: echo "" ;endif; endif; ?>	       <!-- 演员表 -->
+   
+    <?php if($obj['vod_plot'] == 1): ?>
+            <div class="module">
+      <div class="module-heading">
+          <h2 class="module-title" title="<?php echo $obj['vod_name']; ?>分集剧情">分集剧情</h2>
+        </div>
+        <div class="module-list module-player-list">
+          <div class="module-blocklist scroll-box scroll-box-y">
+            <div class="scroll-content">
+            <?php if(is_array($obj['vod_plot_list']) || $obj['vod_plot_list'] instanceof \think\Collection || $obj['vod_plot_list'] instanceof \think\Paginator): $i = 0; $__LIST__ = $obj['vod_plot_list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
+            <a href="<?php echo mac_url_plot_detail($obj,['page'=>$key]); ?>" title="<?php echo $obj['vod_name']; ?>分集剧情">
+            <span><?php echo $vo['name']; ?></span></a>
+      	 <?php endforeach; endif; else: echo "" ;endif; ?>               
+           </div>
+          </div>
+        </div>
+        </div>   <!-- 分集剧情 -->
+    <?php endif; if($mxonest['mxcms']['s3']['ad22'] == 1): ?><?php echo $mxonest['mxcms']['s3']['aad22']; ?>	 <!-- 详情图片广告位 -->	<?php endif; if(!(empty($obj[vod_rel_art]) || (($obj[vod_rel_art] instanceof \think\Collection || $obj[vod_rel_art] instanceof \think\Paginator ) && $obj[vod_rel_art]->isEmpty()))): ?>
+<div class="module module-bg">
+   <div class="module-heading">
+      <h2 class="module-title">相关话题</h2>
+      <div class="module-tab">
+			<div class="module-tab-items">
+<a class="module-tab-item" href="https://www.douyin.com/search/<?php echo $obj['vod_name']; ?>" title="<?php echo $obj['vod_name']; ?>" target="_blank">
+      <img src="https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin/search/public/favicon.ico" style="width: 12px;">&nbsp;<span class=""><?php echo $obj['vod_name']; ?></span></a>
+<a class="module-tab-item" href="https://www.toutiao.com/search?keyword=<?php echo $obj['vod_name']; ?>" title="<?php echo $obj['vod_name']; ?>" target="_blank">
+      <img src="https://so.toutiao.com/favicon.ico" style="width: 12px;">&nbsp;<span class=""><?php echo $obj['vod_name']; ?></span></a>
+<a class="module-tab-item" href="https://s.weibo.com/weibo?q=<?php echo $obj['vod_name']; ?>" title="<?php echo $obj['vod_name']; ?>" target="_blank">
+      <img src="https://s.weibo.com/favicon.ico" style="width: 12px;">&nbsp;<span class=""><?php echo $obj['vod_name']; ?></span></a> 
+<a class="module-tab-item" href="https://www.baidu.com/s?wd=<?php echo $obj['vod_name']; ?>" title="<?php echo $obj['vod_name']; ?>" target="_blank">
+          <img src="https://www.baidu.com/favicon.ico" style="width: 12px;">&nbsp;<span class=""><?php echo $obj['vod_name']; ?></span></a>       
+			</div>
+		</div>
+   </div>
+   <div class="module-list module-line-list">
+      <div class="module-items">
+  <?php $__TAG__ = '{"rel":"'.$obj['vod_rel_art'].'","order":"desc","by":"time","id":"vo","key":"key"}';$__LIST__ = model("Art")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;?>  	
+<div class="module-search-item ovhidden">
+	<div class="video-info">
+				<div class="module-item-style video-name">
+			<a rel="nofollow" href="<?php echo mac_url_art_detail($vo); ?>" title="<?php echo $vo['art_name']; ?>"><?php echo $vo['art_name']; ?></a>
+		</div>
+	<div class="module-item-style video-text"><?php echo mac_filter_html($vo['art_content']); ?></div>
+    </div>
+    </div>
+ 	<?php endforeach; endif; else: echo "" ;endif; ?>                
+ </div>
+   </div>
+</div>
+
+
+<?php endif; ?>   <!-- 相关话题 -->
+    
+    
+    <?php if(!(empty($obj[vod_rel_vod]) || (($obj[vod_rel_vod] instanceof \think\Collection || $obj[vod_rel_vod] instanceof \think\Paginator ) && $obj[vod_rel_vod]->isEmpty()))): ?>
+<div class="module">
+	<div class="module-heading">
+		<h2 class="module-title" title="<?php echo $obj['vod_name']; ?>同系列影片">系列影片</h2></div>
+	<div class="module-list module-lines-list">
+		<div class="module-items scroll-box">
+			<div class="scroll-content">
+			    <?php $__TAG__ = '{"num":"6","rel":"'.$obj['vod_rel_vod'].'","order":"desc","by":"time","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;?>
+				<div class="module-item module-item-go">
+					<div class="module-item-cover">
+						<div class="module-item-pic">
+							<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>"><i class="icon-play"></i></a><img class=" ls-is-cached  lazy lazyloaded" data-src="<?php echo mac_url_img($vo['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic']); ?>" alt="<?php echo $vo['vod_name']; ?>">
+							<div class="loading"></div>
+						</div>
+						<div class="module-item-caption"></div>
+					</div>
+					<div class="module-item-titlebox">
+						<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" class="module-item-title" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+					</div>
+					<div class="module-item-text"><span><?php echo $vo['vod_year']; ?>年</span></div>
+				</div>
+				    <?php endforeach; endif; else: echo "" ;endif; ?>
+			</div>
+		</div>
+	</div>
+</div>
+<?php endif; ?>   <!-- 系列影片 -->
+    
+        	<div class="module">
+			<div class="module-heading">
+			<h2 class="module-title" title="与<?php echo $obj['vod_name']; ?>相关的影片列表">相关影片</h2>
+			</div>
+			<div class="module-list module-lines-list">
+				<div class="module-items">
+			  <?php if($mxonest['mxcms']['s2']['qzslt'] == 1): $__TAG__ = '{"num":"12","type":"current","order":"desc","by":"time","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
+                <div class="module-item">
+				<div class="module-item-cover">
+					<div class="module-item-pic">
+						<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>" >
+							<i class="icon-play"></i>
+						</a>
+						<img class="lazy lazyloaded"  data-src="<?php echo mac_url_img($vo['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic']); ?>"  alt="<?php echo $vo['vod_name']; ?>">
+						<div class="loading"></div>
+					</div>
+					<div class="module-item-caption">
+						<span><?php echo $vo['vod_year']; ?></span>
+						<span class="video-class"><?php echo $vo['type']['type_name']; ?></span>
+						<span><?php echo $vo['vod_area']; ?></span>
+					</div>
+			
+					<?php if($vo['vod_points'] > '0'): ?>
+					<div class="module-item-ru">
+						<span class="vip">VIP</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == $mxonest['mxcms']['s2']['hotlevel']): ?>
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['rebocss']; ?>">热播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '9'): ?>
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['vipcss']; ?>">独家推荐</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '2'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">首播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '3'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">预告</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '4'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">独播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '5'): ?><!--热播标题的左侧额外的推荐电影名称：视频推荐 5-->
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['tuijiancss']; ?>">推荐</span>
+					</div>
+					<?php endif; if($vo['vod_class'] == '院线'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">院线</span>
+					</div>
+					<?php endif; ?>					
+					
+					<div class="module-item-content">
+						<div class="module-item-style video-name">
+							<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+						</div>
+						<div class="module-item-style video-tag">
+						<?php echo mac_url_create(mac_default($vo['vod_actor'],'未知'),'actor'); ?>
+						</div>
+						<div class="module-item-style video-text"><?php echo $vo['vod_blurb']; ?></div>
+					</div>
+				</div>
+				<div class="module-item-titlebox">
+					<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" class="module-item-title" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+				</div>
+				<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
+			</div>
+			<?php else: ?>
+				<div class="module-item module-item-go w16">
+					<div class="module-item-cover">
+						<div class="module-item-pic">
+							<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>">
+							    	<i class="icon-play"></i>
+							</a>
+							<img class=" ls-is-cached  lazy lazyloaded" data-src="<?php echo mac_url_img($vo['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic1']); ?>" alt="<?php echo $vo['vod_name']; ?>">
+							<div class="loading"></div>
+						</div>
+						<div class="module-item-caption">
+						   <span><?php echo $vo['vod_year']; ?></span>
+						  <span class="video-class"><?php echo $vo['type']['type_name']; ?></span>
+						</div>
+					<?php if($vo['vod_points'] > '0'): ?>
+					<div class="module-item-ru">
+						<span class="vip">VIP</span>
+					</div>
+					<?php endif; if($vo['vod_levels'] == '8'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">热播</span>
+					</div>
+					<?php endif; if($vo['vod_levels'] == '9'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">独家推荐</span>
+					</div>
+					<?php endif; if($vo['vod_class'] == '院线'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">院线</span>
+					</div>
+					<?php endif; ?>						
+					</div>
+					<div class="module-item-titlebox">
+						<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" class="module-item-title" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+					</div>
+					<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
+				</div>
+        <?php endif; endforeach; endif; else: echo "" ;endif; else: $__TAG__ = '{"num":"16","type":"current","order":"desc","by":"time","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
                 <div class="module-item">
 				<div class="module-item-cover">
 					<div class="module-item-pic">
@@ -1098,19 +1311,19 @@ if (clothes) {
 					<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
 				</div>
         <?php endif; endforeach; endif; else: echo "" ;endif; endif; ?>
-       </div>
-      </div>
-    </div>
-    <?php endif; ?>  <!-- 分类页热播 -->
-        
-       	<?php if(!$obj['childids'] == ''): $__TAG__ = '{"parent":"current","order":"asc","by":"sort","id":"vo","key":"key"}';$__LIST__ = model("Type")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;?>
-        <div class="module module-bg">
-      <div class="module-heading">
-        <h2 class="module-title"><a href="<?php echo mac_url_type($vo,[],'type'); ?>" title="<?php echo $vo['type_name']; ?>"><?php echo $vo['type_name']; ?></a></h2>
-        <a class="more" href="<?php echo mac_url_type($vo,[],'type'); ?>" title="更多<?php echo $vo1['type_name']; ?>">更多<?php echo $vo['type_name']; ?><i class="icon-arrow-right-o"></i></a></div>
-      <div class="module-list module-line-list">
-        <div class="module-items">
-        <?php $__TAG__ = '{"num":"32","type":"'.$vo['type_id'].'","order":"desc","by":"time","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
+				</div>
+			</div>
+		</div>
+		       <!-- 相关影片 -->
+    <?php if($mxonest['mxcms']['s2']['hot'] == 1): if($mxonest['mxcms']['s2']['hot'] == 1): ?>
+	   <div class="module">
+			<div class="module-heading">
+				<h2 class="module-title">正在热播</h2>
+				<a class="more" href="<?php echo mac_url_type($vo,[],'show'); ?>" title="更多">更多<i class="icon-arrow-right-o"></i></a>
+			</div>
+			<div class="module-list module-lines-list">
+				<div class="module-items">
+		    <?php if($mxonest['mxcms']['s2']['hotlevels'] == levels): if($mxonest['mxcms']['s2']['qzslt'] == 1): $__TAG__ = '{"num":"12","type":"'.$mxonest['mxcms']['s2']['hotall'].'","order":"desc","by":"time","levels":"'.$mxonest['mxcms']['s2']['hotlevel'].'","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
                 <div class="module-item">
 				<div class="module-item-cover">
 					<div class="module-item-pic">
@@ -1212,21 +1425,7 @@ if (clothes) {
 					</div>
 					<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
 				</div>
-        <?php endif; endforeach; endif; else: echo "" ;endif; ?>        
-          </div>
-      </div>
-    </div>
-     <?php endforeach; endif; else: echo "" ;endif; ?>  <!-- 有二级分类 -->
-        
-	    <?php else: $_67d3ff5f471d5=explode(',',$obj['type_extend']['area']); if(is_array($_67d3ff5f471d5) || $_67d3ff5f471d5 instanceof \think\Collection || $_67d3ff5f471d5 instanceof \think\Paginator): if( count($_67d3ff5f471d5)==0 ) : echo "" ;else: foreach($_67d3ff5f471d5 as $key1=>$vo1): ?> 			
-        <div class="module module-bg">
-      <div class="module-heading">
-        <h2 class="module-title"><?php if($vo1 == $param['area']): ?><?php echo mac_data_count($obj['type_id'],'all'); ?>部<?php endif; ?><?php echo $vo1; ?><?php echo $obj['type_name']; ?></h2>
-		<a class="more" href="<?php echo mac_url_type($obj,['area'=>$vo1],'show'); ?>" title="更多<?php echo $vo1['type_name']; ?>">更多<?php if($vo1 == $param['area']): ?><?php echo mac_data_count($obj['type_id'],'all'); ?>部<?php endif; ?><?php echo $vo1; ?><?php echo $obj['type_name']; ?><i class="icon-arrow-right-o"></i></a>
-      </div>
-      <div class="module-list  <?php if($obj['type_extend']['area']): ?>module-line-list<?php endif; ?>">
-        <div class="module-items">
-     <?php $__TAG__ = '{"num":"72","type":"current","area":"'.$vo1.'","order":"desc","by":"time","paging":"yes","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__);$__PAGING__ = mac_page_param($__LIST__['total'],$__LIST__['limit'],$__LIST__['page'],$__LIST__['pageurl'],$__LIST__['half']); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
+        <?php endif; endforeach; endif; else: echo "" ;endif; else: $__TAG__ = '{"num":"16","type":"'.$mxonest['mxcms']['s2']['hotall'].'","order":"desc","by":"time","levels":"'.$mxonest['mxcms']['s2']['hotlevel'].'","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
                 <div class="module-item">
 				<div class="module-item-cover">
 					<div class="module-item-pic">
@@ -1328,36 +1527,222 @@ if (clothes) {
 					</div>
 					<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
 				</div>
-        <?php endif; endforeach; endif; else: echo "" ;endif; ?>        
-          </div>
-      </div>
-    </div>
-     <?php endforeach; endif; else: echo "" ;endif; ?>    <!-- 无二级分类显示地区 -->
-        
-         <?php if($__PAGING__['page_total'] > 1): ?>
-<div class="module-footer">
-      <div id="page">
-        <a href="<?php echo mac_url_page($__PAGING__['page_url'],1); ?>" class="page-number page-previous" title="首页">首页</a>
-        <a href="<?php echo mac_url_page($__PAGING__['page_url'],$__PAGING__['page_prev']); ?>" class="page-number page-previous" title="上一页">上一页</a>
-        <?php if(is_array($__PAGING__['page_num']) || $__PAGING__['page_num'] instanceof \think\Collection || $__PAGING__['page_num'] instanceof \think\Paginator): if( count($__PAGING__['page_num'])==0 ) : echo "" ;else: foreach($__PAGING__['page_num'] as $key=>$num): if($__PAGING__['page_current'] == $num): ?>
-        <span class="page-number page-current display"><?php echo $num; ?></span>
-        <?php else: ?>
-          <a href="<?php echo mac_url_page($__PAGING__['page_url'],$num); ?>" class="page-number display" title="第<?php echo $num; ?>页"><?php echo $num; ?></a>
-            <?php endif; endforeach; endif; else: echo "" ;endif; ?>
-           <a href="<?php echo mac_url_page($__PAGING__['page_url'],$__PAGING__['page_next']); ?>" class="page-number page-next" title="下一页">下一页</a>
-        <a href="<?php echo mac_url_page($__PAGING__['page_url'],$__PAGING__['page_total']); ?>" class="page-number page-next" title="尾页">尾页</a>
-      </div>
-    </div>
-<?php endif; ?>  <!-- 分页 -->
-         
-       <?php endif; ?>   
-    </div>
-    
-    <div class="module-footer module-type">
-    <a href="<?php echo mac_url_type($obj,[],'show'); ?>" class="load-all" title="全部<?php echo $obj['type_name']; ?>">全部<?php echo $obj['type_name']; ?><i class="icon-arrow-right-o"></i></a>
-    </div>
-</main>
-    <footer id="footer" class="wrapper <?php if($mxonest['mxcms']['s2']['dbdh'] == 1): ?>pd60<?php endif; ?>">
+        <?php endif; endforeach; endif; else: echo "" ;endif; endif; else: if($mxonest['mxcms']['s2']['qzslt'] == 1): $__TAG__ = '{"num":"12","type":"'.$mxonest['mxcms']['s2']['hotall'].'","order":"desc","by":"time","level":"'.$mxonest['mxcms']['s2']['hotlevel'].'","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
+                <div class="module-item">
+				<div class="module-item-cover">
+					<div class="module-item-pic">
+						<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>" >
+							<i class="icon-play"></i>
+						</a>
+						<img class="lazy lazyloaded"  data-src="<?php echo mac_url_img($vo['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic']); ?>"  alt="<?php echo $vo['vod_name']; ?>">
+						<div class="loading"></div>
+					</div>
+					<div class="module-item-caption">
+						<span><?php echo $vo['vod_year']; ?></span>
+						<span class="video-class"><?php echo $vo['type']['type_name']; ?></span>
+						<span><?php echo $vo['vod_area']; ?></span>
+					</div>
+			
+					<?php if($vo['vod_points'] > '0'): ?>
+					<div class="module-item-ru">
+						<span class="vip">VIP</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == $mxonest['mxcms']['s2']['hotlevel']): ?>
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['rebocss']; ?>">热播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '9'): ?>
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['vipcss']; ?>">独家推荐</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '2'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">首播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '3'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">预告</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '4'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">独播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '5'): ?><!--热播标题的左侧额外的推荐电影名称：视频推荐 5-->
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['tuijiancss']; ?>">推荐</span>
+					</div>
+					<?php endif; if($vo['vod_class'] == '院线'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">院线</span>
+					</div>
+					<?php endif; ?>					
+					
+					<div class="module-item-content">
+						<div class="module-item-style video-name">
+							<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+						</div>
+						<div class="module-item-style video-tag">
+						<?php echo mac_url_create(mac_default($vo['vod_actor'],'未知'),'actor'); ?>
+						</div>
+						<div class="module-item-style video-text"><?php echo $vo['vod_blurb']; ?></div>
+					</div>
+				</div>
+				<div class="module-item-titlebox">
+					<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" class="module-item-title" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+				</div>
+				<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
+			</div>
+			<?php else: ?>
+				<div class="module-item module-item-go w16">
+					<div class="module-item-cover">
+						<div class="module-item-pic">
+							<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>">
+							    	<i class="icon-play"></i>
+							</a>
+							<img class=" ls-is-cached  lazy lazyloaded" data-src="<?php echo mac_url_img($vo['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic1']); ?>" alt="<?php echo $vo['vod_name']; ?>">
+							<div class="loading"></div>
+						</div>
+						<div class="module-item-caption">
+						   <span><?php echo $vo['vod_year']; ?></span>
+						  <span class="video-class"><?php echo $vo['type']['type_name']; ?></span>
+						</div>
+					<?php if($vo['vod_points'] > '0'): ?>
+					<div class="module-item-ru">
+						<span class="vip">VIP</span>
+					</div>
+					<?php endif; if($vo['vod_levels'] == '8'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">热播</span>
+					</div>
+					<?php endif; if($vo['vod_levels'] == '9'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">独家推荐</span>
+					</div>
+					<?php endif; if($vo['vod_class'] == '院线'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">院线</span>
+					</div>
+					<?php endif; ?>						
+					</div>
+					<div class="module-item-titlebox">
+						<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" class="module-item-title" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+					</div>
+					<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
+				</div>
+        <?php endif; endforeach; endif; else: echo "" ;endif; else: $__TAG__ = '{"num":"16","type":"'.$mxonest['mxcms']['s2']['hotall'].'","order":"desc","by":"time","level":"'.$mxonest['mxcms']['s2']['hotlevel'].'","id":"vo","key":"key"}';$__LIST__ = model("Vod")->listCacheData($__TAG__); if(is_array($__LIST__['list']) || $__LIST__['list'] instanceof \think\Collection || $__LIST__['list'] instanceof \think\Paginator): $key = 0; $__LIST__ = $__LIST__['list'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($key % 2 );++$key;if($mxonest['mxcms']['s2']['qzslt'] == 0): ?>	  
+                <div class="module-item">
+				<div class="module-item-cover">
+					<div class="module-item-pic">
+						<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>" >
+							<i class="icon-play"></i>
+						</a>
+						<img class="lazy lazyloaded"  data-src="<?php echo mac_url_img($vo['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic']); ?>"  alt="<?php echo $vo['vod_name']; ?>">
+						<div class="loading"></div>
+					</div>
+					<div class="module-item-caption">
+						<span><?php echo $vo['vod_year']; ?></span>
+						<span class="video-class"><?php echo $vo['type']['type_name']; ?></span>
+						<span><?php echo $vo['vod_area']; ?></span>
+					</div>
+			
+					<?php if($vo['vod_points'] > '0'): ?>
+					<div class="module-item-ru">
+						<span class="vip">VIP</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == $mxonest['mxcms']['s2']['hotlevel']): ?>
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['rebocss']; ?>">热播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '9'): ?>
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['vipcss']; ?>">独家推荐</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '2'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">首播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '3'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">预告</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '4'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">独播</span>
+					</div>
+					<?php endif; if($vo['vod_level'] == '5'): ?><!--热播标题的左侧额外的推荐电影名称：视频推荐 5-->
+					<div class="module-item-ru">
+						<span class="<?php echo $mxonest['mxcms']['s2']['tuijiancss']; ?>">推荐</span>
+					</div>
+					<?php endif; if($vo['vod_class'] == '院线'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">院线</span>
+					</div>
+					<?php endif; ?>					
+					
+					<div class="module-item-content">
+						<div class="module-item-style video-name">
+							<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+						</div>
+						<div class="module-item-style video-tag">
+						<?php echo mac_url_create(mac_default($vo['vod_actor'],'未知'),'actor'); ?>
+						</div>
+						<div class="module-item-style video-text"><?php echo $vo['vod_blurb']; ?></div>
+					</div>
+				</div>
+				<div class="module-item-titlebox">
+					<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" class="module-item-title" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+				</div>
+				<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
+			</div>
+			<?php else: ?>
+				<div class="module-item module-item-go w16">
+					<div class="module-item-cover">
+						<div class="module-item-pic">
+							<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" title="<?php echo $vo['vod_name']; ?>">
+							    	<i class="icon-play"></i>
+							</a>
+							<img class=" ls-is-cached  lazy lazyloaded" data-src="<?php echo mac_url_img($vo['vod_pic']); ?>" src="<?php echo mac_url_img($mxonest['mxcms']['s1']['pic1']); ?>" alt="<?php echo $vo['vod_name']; ?>">
+							<div class="loading"></div>
+						</div>
+						<div class="module-item-caption">
+						   <span><?php echo $vo['vod_year']; ?></span>
+						  <span class="video-class"><?php echo $vo['type']['type_name']; ?></span>
+						</div>
+					<?php if($vo['vod_points'] > '0'): ?>
+					<div class="module-item-ru">
+						<span class="vip">VIP</span>
+					</div>
+					<?php endif; if($vo['vod_levels'] == '8'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">热播</span>
+					</div>
+					<?php endif; if($vo['vod_levels'] == '9'): ?>
+					<div class="module-item-ru">
+						<span class="rebo">独家推荐</span>
+					</div>
+					<?php endif; if($vo['vod_class'] == '院线'): ?>
+					<div class="module-item-ru">
+						<span class="yugao">院线</span>
+					</div>
+					<?php endif; ?>						
+					</div>
+					<div class="module-item-titlebox">
+						<a href="<?php if($mxonest['mxcms']['s2']['tzzt'] == 1): ?><?php echo mac_url_vod_play($vo); else: ?><?php echo mac_url_vod_detail($vo); endif; ?>" class="module-item-title" title="<?php echo $vo['vod_name']; ?>"><?php echo $vo['vod_name']; ?></a>
+					</div>
+					<div class="module-item-text"><?php if($vo['vod_remarks'] != ''): ?><?php echo $vo['vod_remarks']; elseif($vo['vod_serial'] > 0): ?>第<?php echo $vo['vod_serial']; ?>集<?php else: ?>已完结<?php endif; ?></div>
+				</div>
+        <?php endif; endforeach; endif; else: echo "" ;endif; endif; endif; ?>
+				</div>
+			</div>
+		</div>
+		<?php endif; ?>       <!-- 正在热播 -->
+     <?php endif; ?>
+   	</div>
+   </main>
+   
+   
+   
+   <footer id="footer" class="wrapper <?php if($mxonest['mxcms']['s2']['dbdh'] == 1): ?>pd60<?php endif; ?>">
 	<p class="sitemap"><img src="<?php echo mac_url_img($mxonest['mxcms']['s1']['logo3']); ?>" height="10">
 		 <?php if($mxonest['mxcms']['s2']['about'] == 1): ?>
 		<a target="_blank" href="<?php echo mac_url('label/about'); ?>">关于</a><span class="space-line-bold"></span>
@@ -1563,5 +1948,9 @@ document.oncontextmenu = function (){new Vue({data:function(){this.$notify({titl
 <?php if($mxonest['mxcms']['s3']['addb'] == 1): ?>
 <?php echo $mxonest['mxcms']['s3']['aaddb']; endif; ?>	 <!-- 底部广告位 -->
  <!-- 底部-->
+    <script type="text/javascript"  src="<?php echo $maccms['path_tpl']; ?>mxstatic/js/desc.js"></script>
+   <div class="shortcuts-box"><div id="shortcuts-info"></div></div>
+   <span style="display:none" class="mac_ulog_set" alt="设置内容页浏览记录" data-type="1" data-mid="<?php echo $maccms['mid']; ?>" data-id="<?php echo $obj['vod_id']; ?>" data-sid="<?php echo $param['sid']; ?>" data-nid="<?php echo $param['nid']; ?>"></span>
+<span style="display:none" class="mac_history_set" alt="设置History历史记录" data-name="[<?php echo $obj['type']['type_name']; ?>]<?php echo $obj['vod_name']; ?>" data-pic="<?php echo mac_url_img($obj['vod_pic']); ?>"></span>
  </body>
 </html>
