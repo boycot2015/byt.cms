@@ -1,0 +1,116 @@
+
+{include file="../../../application/admin/view/public/head" /}
+<div class="page-container p10" style="background-color: #f5f5f5">
+    <div class="my-toolbar-box">
+        <div class="center mb10">
+            <form class="layui-form " method="post" action="{:url('index')}">
+                <label class="">影片名字</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="name" class="layui-input" value='{if condition="$param.name neq ''"}{$param.name}{/if}' placeholder="影片名字">
+                </div>
+                <label class="">分类：</label>
+                <div class="layui-input-inline">
+                    <select name="type" lay-verify="required">
+                        <option value="" {if condition="$param.type eq ''"}selected{/if}>全部</option>
+                        <option value="1" {if condition="$param.type eq 1"}selected{/if}>电影</option>
+                        <option value="2" {if condition="$param.type eq 2"}selected{/if}>剧集</option>
+                        <option value="3" {if condition="$param.type eq 3"}selected{/if}>综艺</option>
+                        <option value="4" {if condition="$param.type eq 4"}selected{/if}>动漫</option>
+                    </select>
+                </div>
+                <input type="hidden" name="repeat" value="{$param['repeat']}" />
+                <button class="layui-btn mgl-20 j-search" >条件查询</button>
+            </form>
+        </div>
+    </div>
+    <style>
+        .addon-list img{background:#f4f4f4;display:block;position:absolute;left:0;top:14px}
+        .addon-list a{color:#2366a8;font-size:12px}
+        .addon-list span{margin:0 6px;font-size:12px;color:#999}
+        .slide-list-img{margin-top:20px}
+        .cmdlist-container{background-color:#fff;border-radius:8px}
+        .slide-pic{overflow:hidden;border-radius:8px 8px 0 0;position:relative;padding-top:60%}
+        .slide-pic-images{position:absolute;width:100%;height:100%;left:0;top:0;color:#fff;z-index:2;background-size:cover;background-position:center;background-repeat:no-repeat}
+        .slide-list-img .operate{padding:10px}
+        .layui-btn-sm {margin-top: 2px}
+        .slide-list-img .info{color:#009adb;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;-o-text-overflow:ellipsis;line-height:26px}
+        .slide-list-img .plot{height:40px;color:#888;size:12px;line-height:20px}
+        .slide-list-img .btn-group{margin-top:10px}
+        .slide-ico{background:rgba(31,105,255,.8);min-width:46px;padding:0 4px;height:19px;line-height:19px;color:#fff;border-radius:3px;text-align:center;right:8px;top:4px;font-size:12px;z-index:15;position:absolute}
+    </style>
+    <div class="slide-list-img layui-row layui-col-space30">
+        {if condition="$total eq 0"}
+        <p>没找到相关数据，可加入QQ群（792135526）反馈增加需要的海报图</p>
+        {/if}
+        {volist name="list" id="vo"}
+        <div class="layui-col-md2 layui-col-sm4">
+            <div class="cmdlist-container">
+                <div class="slide-pic">
+                    <div class="slide-pic-images" style="background-image: url({$vo.wap_img});">
+                        <div class="slide-ico">
+                            {if condition="$vo.type eq 1"}电影{/if}
+                            {if condition="$vo.type eq 2"}剧集{/if}
+                            {if condition="$vo.type eq 3"}综艺{/if}
+                            {if condition="$vo.type eq 4"}动漫{/if}
+                        </div>
+                        <div class="slide-ico" style="right: 68px;">
+                            {if condition="$vo.source eq 'youku'"}优酷{/if}
+                            {if condition="$vo.source eq 'mgtv'"}芒果TV{/if}
+                            {if condition="$vo.source eq 'qq'"}腾讯视频{/if}
+                            {if condition="$vo.source eq 'iqiyi'"}爱奇艺{/if}
+                            {if condition="$vo.source eq 'hezi'"}自制{/if}
+                        </div>
+                    </div>
+                </div>
+                <div class="operate">
+                    <div>
+                        <p class="info">{$vo.name}</p>
+                        <p class="plot">{$vo.plot}</p>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn layui-btn-radius layui-btn layui-btn-sm" data-clipboard-text="{$vo.pc_img}">电脑图</button>
+                        {if condition="$vo.wap_img neq ''"}
+                        <button class="btn layui-btn-radius layui-btn layui-btn-sm btn-uninstall" data-clipboard-text="{$vo.wap_img}">手机图</button>
+                        {/if}
+                        <button class="layui-btn layui-btn-radius j-iframe" style="width: 100%;margin-top: 10px;margin-left: 0;height: 30px;line-height: 30px;" data-href="{:url('info')}?wd={$vo.name}&pc={$vo.pc_img}&wap={$vo.wap_img}&plot={$vo.plot}" data-title="一键设置幻灯片"><i class="layui-icon"></i>一键幻灯片</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/volist}
+    </div>
+        <div id="pages" class="center"></div>
+    </form>
+</div>
+<style>.ipa{text-decoration: revert;color: #2440b3;}</style>
+<script src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/1.6.1/clipboard.min.js"></script>
+{include file="../../../application/admin/view/public/foot" /}
+<script>
+    var curUrl="{:url('index',$param)}";
+    layui.use(['laypage', 'layer','form'], function() {
+        var laypage = layui.laypage
+            , layer = layui.layer,
+            form = layui.form;
+        laypage.render({
+            elem: 'pages'
+            ,count: {$total}
+            ,limit: 18
+            ,curr: {$page}
+            ,layout: ['count', 'prev', 'page', 'next',  'skip']
+            ,jump: function(obj,first){
+                if(!first){
+                    location.href = curUrl.replace('%7Bpage%7D',obj.curr).replace('%7Blimit%7D',obj.limit);
+                }
+            }
+        });
+    });
+    var clipboard = new Clipboard('.btn');
+    clipboard.on('success', function(e) {
+        layer.msg('复制成功！');
+    });
+    clipboard.on('error', function(e) {
+        layer.msg('当前浏览器不支持此功能，请手动复制。');
+    });
+</script>
+</body>
+</html>

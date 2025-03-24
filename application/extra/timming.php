@@ -61,4 +61,39 @@ return array (
     'weeks' => '1,2,3,4,5,6,0',
     'hours' => '00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23',
   ),
+  'xiaolanmaozyoffi01week' => 
+  array (
+    '__token__' => '50e6786e6329d0a3ac46995ca357ef12',
+    'status' => '1',
+    'name' => 'xiaolanmaozyoffi01week',
+    'des' => '采集本周：小懒猫资源【综合接口多种播放源】',
+    'file' => 'collect',
+    'param' => 'ac=cj&h=168&cjflag=xiaolanmaozy&cjurl=http%3A%2F%2F121.62.21.54%3A81%2Fapi.php%2Fprovide%2Fvod%2Fat%2Fjson%2F',
+    'weeks' => '1',
+    'hours' => '00',
+    'runtime' => 1742536545,
+  ),
+  'feifanzyyun16week' => 
+  array (
+    '__token__' => '105794206c30713c3a07d3fb0e3189d2',
+    'status' => '1',
+    'name' => 'feifanzyyun16week',
+    'des' => '采集本周：非凡资源站【HTTPS资源,无需播放器】',
+    'file' => 'collect',
+    'param' => 'ac=cj&h=168&cjflag=feifanzy&cjurl=http%3A%2F%2Fcj.ffzyapi.com%2Fapi.php%2Fprovide%2Fvod%2Ffrom%2Ffeifan%2Fat%2Fjson%2F',
+    'weeks' => '1',
+    'hours' => '00',
+    'runtime' => 1742538082,
+  ),
+  'ziyuan789faves03week' => 
+  array (
+    '__token__' => '7111807bcae7d021472acc0d27a6d24a',
+    'status' => '1',
+    'name' => 'ziyuan789faves03week',
+    'des' => '采集本周：789资源站【综合腾讯优酷爱奇艺等直连】',
+    'file' => 'collect',
+    'param' => 'ac=cj&h=168&cjflag=ziyuan789&cjurl=https%3A%2F%2Fwww.caiji.cyou%2Fapi.php%2Fprovide%2Fvod%2Fat%2Fjson%2F&type=2&mid=&param=&opt=0&filter=0&filter_from=&=sync_pic_opt=0',
+    'weeks' => '1',
+    'hours' => '00',
+  ),
 );
