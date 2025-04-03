@@ -52,6 +52,19 @@ return array (
     'tip' => '无需安装任何插件',
     'id' => 'ukyun',
   ),
+  'okm3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'okm3u8',
+    'show' => 'OK资源',
+    'des' => '支持手机电脑在线播放',
+    'target' => '_self',
+    'ps' => 0,
+    'parse' => '',
+    'sort' => '1050',
+    'tip' => '无需安装任何插件',
+    'id' => 'okm3u8',
+  ),
   'jsyun' => 
   array (
     'status' => '1',
