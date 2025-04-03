@@ -1,0 +1,85 @@
+ <table class="layui-table">
+
+            <thead>
+              <tr>
+                <th colspan="" scope="col"> <h3>
+ 使用说明【必看】
+<br>一、使用要求
+<br>1、虚拟机、带宽小的不要使用【约下载120-160mb数据】
+<br>2、设置PHP nginx超时响应 建议大于1800 完成后再去修改
+<br>3、只推荐新站使用
+<br>4、不支持多资源站同时采集
+<br>二、操作步骤
+<br>1、点击添加播放器【或手动添加】
+<br>2、点击导入分类【此功能会清空原有分类！！！】
+<br>3、点击导入全部 或分页采集【此功能会覆盖原数据！！！】
+<br>4、复制每日更新链接到-宝塔设置计划任务 【推荐1小时访问一次】
+<br>三、测试数据【数据来源无尽资源】
+<br>1、CPU 1 Core(s) RAM 1G SSD 1Mb 采集全部数据【不推荐】分页采集【1w数据 19-40秒】
+<br>2、CPU 4 Core(s) RAM 8G SSD 1GB 采集全部数据 101-145秒 分页采集【1w数据 10-25秒】
+<br>3、CPU 56 Core(s) RAM 64G SSD 1Gb 采集全部数据 18-35秒 分页采集【1w数据 3-8秒】                  
+                          </h3>
+                        </th>
+              </tr>
+            </thead>
+          </table>
+ <table class="layui-table">
+            <thead>
+              <tr>
+                <th>资源站推荐 </th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <?php $i=0;if($apijsonlist) { foreach($apijsonlist as &$_api ) { $i++; ?>
+
+              <?php         
+if($i <= 5){
+echo '<tr style="background-color: #cff5f7;">';
+}elseif($i <=10){
+echo '<tr style="background-color: #f9d1e5;">';
+}else{
+echo '<tr style="background-color: #e6f9ce;">';
+} 
+?>
+
+              <td width="70" align="center"><span class="layui-badge layui-bg-red">
+                  <?php echo $_api['type'];?>
+                </span></td>
+              <td><a href="<?php echo $_api['url'];?>" target="_blank">
+                  <?php echo $_api['name'];?>【<?php echo $_api['newname'];?>】<span style="color:red;">【<?php echo $_api['sn_name'];?>】<?php         
+if($i <= 5){
+echo '<img src="/addons/auto/img/h.gif">';
+}elseif($i <=10){
+echo '<img src="/addons/auto/img/z.gif">';
+}else{
+echo '<img src="/addons/auto/img/l.gif">';
+} 
+?></span>
+                </a></td>
+                
+              <td width="85" align="center"><a style="color:#1E90FF;" href="<?php echo $_api['url'];?>" target="_blank">资源站官网</a>
+              <td width="85" align="center"><a style="color:#1E90FF;" href="<?php echo $_api['help'];?>" target="_blank">采集帮助</a> </td>
+              <td width="85" align="center"><a style="color:#1E90FF;" href="<?php echo $_api['tggroup'];?>" target="_blank">TG群组</a> </td>
+              
+               <td width="85" align="center"><a style="color:#1E90FF;" href="/<?php  echo str_replace("/","",$GLOBALS['in_file']);?>/admin/Auto/addplay?name=<?php echo $_api['name'];?>&apiinfo=<?php echo $_api['apiinfo'];?>&playurl=<?php echo $_api['play'];?>">添加播放器</a>
+              </td> 
+               <td width="85" align="center"><a style="color:#1E90FF;" href="/<?php  echo str_replace("/","",$GLOBALS['in_file']);?>/admin/Auto/type?api=<?php echo $_api['types'];?>">导入分类</a>
+              </td> 
+               <td width="85" align="center"><a style="color:#1E90FF;" href="/<?php  echo str_replace("/","",$GLOBALS['in_file']);?>/admin/Auto/allvod?api=<?php echo $_api['allvod'];?>">采集全部</a>
+              </td> 
+              <td width="85" align="center"><a style="color:#1E90FF;" href="/<?php  echo str_replace("/","",$GLOBALS['in_file']);?>/admin/Auto/pageallvod?api=<?php echo $_api['pageallvod'];?>">分页采集</a>
+              </td>
+             <td width="85" align="center"><a style="color:#1E90FF;" href="/<?php  echo str_replace("/","",$GLOBALS['in_file']);?>/admin/Auto/dayvod?api=<?php echo $_api['dayvod'];?>">采集今日</a>
+              </td> 
+             <td width="85" align="center"><a style="color:#1E90FF;" href="/api.php/Auto/dayvod?api=<?php echo $_api['dayvod'];?>">计划任务链接</a>
+              </td>
+             
+              </tr>
+              <?php }} else { ?>
+              暂无相关数据
+              <?php } ?>
+
+            </tbody>
+          </table>
+          

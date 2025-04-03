@@ -1,0 +1,69 @@
+<table class="layui-table">
+            <colgroup>
+              <col width="100">
+              <col width="150">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th colspan="2" scope="col">插件简介</th>
+                <th colspan="1" scope="col">使用说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>名称</td>
+                <td> <?php echo $version['title'] ;?> </td>
+                <td>1. PHP版本≥5.6</td>
+              </tr>
+              <tr>
+                <td>官网</td>
+                <td>
+                  <a style="color:#1E90FF;" href="<?php echo $version['web_site'] ;?>"
+                    target="_blank"><?php echo $version['author'] ;?></a>
+                </td>
+                <td align='left'>2. 插件均为作者原创开发，不定时更新。</td>
+              </tr>
+              <tr>
+                <td>TG群</td>
+                <td>
+                  <a style="color:#1E90FF;" href="<?php echo $version['tg'] ;?>" target="_blank">TG群组</a>
+                </td>
+                <td align='left'>3. 意见、反馈、功能建议，请加入群组一起沟通交流！</td>
+              </tr>
+              <tr>
+                <td>客服TG</td>
+                <td>
+                  <a style="color:#1E90FF;" href="<?php echo $version['qq'] ;?>" target="_blank">在线客服</a></td>
+                <td align='left'>4. 非官方制作源码，技术支持及售后服务联系客服！</td>
+              </tr>
+              <tr>
+                <td style="color:red;">更新时间</td>
+                <td><?php echo $version['updatetime'] ;?></td>
+                <td align='left'>5. 有好的建议请联系我们</td>
+              </tr>
+              <tr>
+                
+                <tr>
+                <td style="color:red;">当前版本</td>
+                <td>
+                    <?php 
+                    if($version['macv10']==$hostversion){
+                    echo $version['macv10'] .'</td><td align="left">当前为最新版本无需升级</td>'; 
+                    }else{
+                    $upuri=str_replace("/","",$GLOBALS['in_file']).'/admin/Auto/update?to='.$version['macv10'];
+                    echo '<a href="/'.$upuri.'" class="layui-btn">立即升级</a></td><td align="left" style="color:red;">发现新版本立即升级</td>'; 
+                    }
+                    ?>
+              </tr>
+              <tr>
+                
+                <td style="color:red;">更新日志</td>
+                <td colspan="2" style="color:#2E8B57;">
+                  <?php echo $version['updatelog'] ;?></td>
+              </tr>
+              <tr>
+                <td colspan="3" align='left'>感谢您选择使用本插件，希望我们的努力能为您提供一个简单、强大的自动化解决方案</td>
+              </tr>
+            </tbody>
+          </table>

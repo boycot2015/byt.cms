@@ -17,15 +17,15 @@ return array (
   ),
   'site' => 
   array (
-    'site_name' => '免费视频大全 - 中国',
-    'site_url' => 'movie.boycot.top',
-    'site_wapurl' => 'movie.boycot.top',
+    'site_name' => '免费短视频分享大全 - 大中国',
+    'site_url' => 'www.test.cn',
+    'site_wapurl' => 'wap.test.cn',
     'site_keywords' => '短视频,搞笑视频,视频分享,免费视频,在线视频,预告片',
     'site_description' => '提供最新最快的视频分享数据',
-    'site_icp' => '粤ICP备18002072号',
-    'site_qq' => '1134573460',
-    'site_email' => '1134573460@qq.com',
-    'install_dir' => '/index/',
+    'site_icp' => 'icp123',
+    'site_qq' => '123456',
+    'site_email' => '123456@test.cn',
+    'install_dir' => '/',
     'site_logo' => 'static/images/logo.jpg',
     'site_waplogo' => 'static/images/logo.jpg',
     'template_dir' => 'mxone',
@@ -46,12 +46,12 @@ return array (
     'suffix' => 'html',
     'popedom_filter' => '0',
     'cache_type' => 'file',
-    'cache_host' => 'redis://default:Sxdwvv4TqNjGNMFoAoRNXUO4LzCdW76x@redis-18577.c321.us-east-1-2.ec2.redns.redis-cloud.com',
-    'cache_port' => '18577',
+    'cache_host' => '127.0.0.1',
+    'cache_port' => '6379',
     'cache_username' => '',
     'cache_password' => '',
     'cache_flag' => 'a6bcf9aa58',
-    'cache_core' => '1',
+    'cache_core' => '0',
     'cache_time' => '3600',
     'cache_page' => '0',
     'cache_time_page' => '3600',
@@ -65,9 +65,8 @@ return array (
     'search_verify' => '0',
     'search_len' => '',
     'search_timespan' => '3',
-    'search_vod_rule' => 'vod_en',
-    'search_art_rule' => 'art_en',
-    'vod_search_optimise' => 'frontend',
+    'search_vod_rule' => 'vod_en|vod_sub',
+    'search_art_rule' => 'art_en|art_sub',
     'vod_search_optimise_cache_minutes' => 20160,
     'copyright_status' => '1',
     'copyright_notice' => '该视频由于版权限制，暂不提供播放。',
@@ -75,7 +74,7 @@ return array (
     'page_404' => '404',
     'player_sort' => '1',
     'encrypt' => '0',
-    'search_hot' => '凡人修仙传,仙逆,斗破苍穹,难哄,变形金刚,火影忍者,复仇者联盟,战狼,红海行动',
+    'search_hot' => '变形金刚,火影忍者,复仇者联盟,战狼,红海行动',
     'art_extend_class' => '段子手,私房话,八卦精,爱生活,汽车迷,科技咖,美食家,辣妈帮',
     'vod_extend_class' => '爱情,动作,喜剧,战争,科幻,剧情,武侠,冒险,枪战,恐怖,微电影,其它',
     'vod_extend_state' => '正片,预告片,花絮',
@@ -88,11 +87,12 @@ return array (
     'filter_words' => 'www,http,com,net',
     'extra_var' => '',
     'collect_timespan' => '3',
-    'pagesize' => '50',
-    'makesize' => '50',
+    'pagesize' => '20',
+    'makesize' => '30',
     'admin_login_verify' => '1',
     'editor' => 'Ueditor',
     'lang' => 'zh-cn',
+    'vod_search_optimise' => '',
   ),
   'user' => 
   array (
@@ -201,7 +201,7 @@ return array (
   'interface' => 
   array (
     'status' => 0,
-    'pass' => 'FVMLFS229ORQQERH',
+    'pass' => 'A8KBRCDKEIWGM0OE',
     'vodtype' => '动作片=动作',
     'arttype' => '头条=头条',
     'actortype' => '',
@@ -215,9 +215,9 @@ return array (
     array (
       'url' => '',
     ),
-    'epay' => 
+    'alipay' => 
     array (
-      'api_url' => '',
+      'account' => '111',
       'appid' => '',
       'appkey' => '',
     ),
@@ -232,12 +232,6 @@ return array (
     array (
       'appid' => '222',
       'mchid' => '',
-      'appkey' => '',
-    ),
-    'alipay' => 
-    array (
-      'account' => '111',
-      'appid' => '',
       'appkey' => '',
     ),
     'zhapay' => 
@@ -258,8 +252,8 @@ return array (
       'updown_start' => '1',
       'updown_end' => '1000',
       'score' => '1',
-      'pic' => '0',
-      'tag' => '0',
+      'pic' => '1',
+      'tag' => '1',
       'class_filter' => '1',
       'psename' => '1',
       'psernd' => '0',
@@ -268,8 +262,8 @@ return array (
       'psearea' => '0',
       'pselang' => '0',
       'urlrole' => '0',
-      'inrule' => ',a,f,g',
-      'uprule' => ',a,b',
+      'inrule' => ',f,g',
+      'uprule' => ',a,b,d,l',
       'filter' => '色戒,色即是空',
       'namewords' => '第1季=第一季#第2季=第二季#第3季=第三季#第4季=第四季',
       'thesaurus' => ' =',
@@ -286,8 +280,8 @@ return array (
       'updown_start' => '1',
       'updown_end' => '1000',
       'score' => '1',
-      'pic' => '0',
-      'tag' => '0',
+      'pic' => '1',
+      'tag' => '1',
       'psernd' => '0',
       'psesyn' => '0',
       'inrule' => ',b',
@@ -298,16 +292,16 @@ return array (
     ),
     'actor' => 
     array (
-      'status' => '1',
+      'status' => '0',
       'hits_start' => '1',
       'hits_end' => '999',
       'updown_start' => '1',
       'updown_end' => '999',
       'score' => '0',
-      'pic' => '1',
-      'psernd' => '1',
-      'psesyn' => '1',
-      'uprule' => ',a,b,c,d',
+      'pic' => '0',
+      'psernd' => '0',
+      'psesyn' => '0',
+      'uprule' => ',a,b,c',
       'filter' => '无奈的人',
       'thesaurus' => '',
       'words' => '',
@@ -315,14 +309,14 @@ return array (
     ),
     'role' => 
     array (
-      'status' => '1',
+      'status' => '0',
       'hits_start' => '1',
       'hits_end' => '999',
       'updown_start' => '1',
       'updown_end' => '999',
       'score' => '0',
-      'pic' => '1',
-      'psernd' => '1',
+      'pic' => '0',
+      'psernd' => '0',
       'psesyn' => '0',
       'uprule' => ',a,b,c',
       'filter' => '',
@@ -349,10 +343,10 @@ return array (
     ),
     'comment' => 
     array (
-      'status' => '1',
+      'status' => '0',
       'updown_start' => '1',
       'updown_end' => '100',
-      'psernd' => '1',
+      'psernd' => '0',
       'psesyn' => '0',
       'inrule' => ',b',
       'filter' => '',
@@ -365,9 +359,9 @@ return array (
   array (
     'vod' => 
     array (
-      'status' => 0,
+      'status' => '1',
       'charge' => '0',
-      'detail_inc_hits' => '1',
+      'detail_inc_hits' => '0',
       'pagesize' => '20',
       'imgurl' => 'http://img.test.com/',
       'typefilter' => '',
@@ -378,7 +372,7 @@ return array (
     ),
     'art' => 
     array (
-      'status' => 0,
+      'status' => '0',
       'charge' => '0',
       'pagesize' => '20',
       'imgurl' => '',
@@ -389,7 +383,7 @@ return array (
     ),
     'actor' => 
     array (
-      'status' => '1',
+      'status' => '0',
       'charge' => '0',
       'pagesize' => '20',
       'imgurl' => '',
@@ -400,7 +394,7 @@ return array (
     ),
     'role' => 
     array (
-      'status' => '1',
+      'status' => '0',
       'charge' => '0',
       'pagesize' => '20',
       'imgurl' => '',
@@ -411,13 +405,17 @@ return array (
     ),
     'website' => 
     array (
-      'status' => '1',
+      'status' => '0',
       'charge' => '0',
       'pagesize' => '20',
       'imgurl' => '',
       'typefilter' => '',
       'datafilter' => 'website_status=1',
       'cachetime' => '',
+      'auth' => '',
+    ),
+    'publicapi' => 
+    array (
       'auth' => '',
     ),
   ),
@@ -599,8 +597,8 @@ plotdetail/<id>   => plot/detail',
     'widthpop' => '0',
     'heightpop' => '600',
     'second' => '5',
-    'prestrain' => '//union.maccms.site/html/prestrain.html',
-    'buffer' => '//union.maccms.site/html/buffer.html',
+    'prestrain' => '//union.maccms.la/html/prestrain.html',
+    'buffer' => '//union.maccms.la/html/buffer.html',
     'parse' => '',
     'autofull' => '0',
     'showtop' => '1',

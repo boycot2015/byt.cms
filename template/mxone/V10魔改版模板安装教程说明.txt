@@ -9,10 +9,10 @@
 
 4、主题后台地址： 苹果cms后台点击，自定义菜单配置
 
-mxoneX主题,/start.php/admin/mxone/mxoneset
+mxoneX主题,/admin.php/admin/mxone/mxoneset
 admin.php改成你登录后台的xxx.php
 
-5、首页4K专区设置 视频推荐 4
+5、首页4K专区设置视频推荐 4
 
 6、首页最新热播的左侧额外的推荐电影名称：视频推荐 5
 

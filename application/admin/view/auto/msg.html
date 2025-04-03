@@ -1,0 +1,30 @@
+<div class="layui-form-item">
+            <label class="layui-form-label">影片名称：</label>
+            <div class="layui-input-inline">
+              <input type="text" name="rq_Auto_name" placeholder="影片名称" value="" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">资源站：</label>
+            <div class="layui-input-inline">
+              <select name="rq_Auto_apiinfo" lay-filter="rq_Auto_apiinfo">
+                <option value="">选择资源站</option>
+                <?php if($apilist) { foreach($apilist as &$_api) { ?>
+                <option value="<?php echo $_api['name'];?>"><?php echo $_api['name'];?></option>
+                <?php }} else { ?>
+                暂无相关数据
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">留言内容：</label>
+            <div class="layui-input-inline w500">
+              <textarea name="rq_Auto_info" class="layui-textarea" placeholder="输入内容 下载链接，上映时间 类型 豆瓣链接等信息"></textarea>
+            </div>
+          </div>
+          <!-- 保存 -->
+          <div class="layui-form-item">
+            <div class="layui-input-block">
+              <button class="layui-btn" lay-submit lay-filter="systemsave">提交内容</button></div>
+          </div>

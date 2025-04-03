@@ -1,82 +1,68 @@
 <?php
 return array (
-  'bwm3u8' => 
+  'wjm3u8' => 
   array (
     'status' => '1',
-    'from' => 'bwm3u8',
-    'show' => 'bwm3u8',
-    'des' => '',
+    'from' => 'wjm3u8',
+    'show' => '无尽资源',
+    'des' => '无尽资源',
     'target' => '_self',
     'ps' => '1',
-    'parse' => 'https://bo.baiwanapi.com/?url=',
-    'sort' => '99999',
-    'tip' => '',
-    'id' => 'bwm3u8',
-  ),
-  'liangzi' => 
-  array (
-    'status' => '1',
-    'from' => 'liangzi',
-    'show' => '量子资源2',
-    'des' => '支持手机电脑在线播放',
-    'target' => '_self',
-    'ps' => '0',
-    'parse' => '',
-    'sort' => '1230',
+    'parse' => 'https://jx.wuvodbf.com/dplayer/?url=',
+    'sort' => '10000',
     'tip' => '无需安装任何插件',
-    'id' => 'liangzi',
   ),
-  'gsyun' => 
+  '1080zy' => 
   array (
     'status' => '1',
-    'from' => 'gsyun',
-    'show' => '光速云资源①',
-    'des' => '支持手机电脑在线播放',
-    'target' => '_self',
-    'ps' => '0',
-    'parse' => '',
-    'sort' => '1215',
-    'tip' => '无需安装任何插件',
-    'id' => 'gsyun',
-  ),
-  'ukyun' => 
-  array (
-    'status' => '1',
-    'from' => 'ukyun',
-    'show' => 'U酷云播',
-    'des' => '支持手机电脑在线播放',
-    'target' => '_self',
-    'ps' => '0',
-    'parse' => '',
-    'sort' => '1210',
-    'tip' => '无需安装任何插件',
-    'id' => 'ukyun',
-  ),
-  'okm3u8' => 
-  array (
-    'status' => '1',
-    'from' => 'okm3u8',
-    'show' => 'OK资源',
+    'from' => '1080zy',
+    'show' => '1080资源',
     'des' => '支持手机电脑在线播放',
     'target' => '_self',
     'ps' => 0,
     'parse' => '',
-    'sort' => '1050',
+    'sort' => '1235',
     'tip' => '无需安装任何插件',
-    'id' => 'okm3u8',
+    'id' => '1080zy',
   ),
-  'jsyun' => 
+  '1080zyk' => 
   array (
     'status' => '1',
-    'from' => 'jsyun',
-    'show' => '极速云播',
+    'from' => '1080zyk',
+    'show' => '优质资源1',
     'des' => '支持手机电脑在线播放',
     'target' => '_self',
     'ps' => 0,
     'parse' => '',
-    'sort' => '1043',
+    'sort' => '1231',
     'tip' => '无需安装任何插件',
-    'id' => 'jsyun',
+    'id' => '1080zyk',
+  ),
+  'lzm3u8' => 
+  array (
+    'status' => '1',
+    'from' => 'lzm3u8',
+    'show' => '量子资源1',
+    'des' => '支持手机电脑在线播放',
+    'target' => '_self',
+    'ps' => 0,
+    'parse' => '',
+    'sort' => '1229',
+    'tip' => '无需安装任何插件',
+    'id' => 'lzm3u8',
+  ),
+  'wolong' => 
+  array (
+    'status' => '1',
+    'from' => 'wolong',
+    'show' => '卧龙资源',
+    'des' => '支持手机电脑在线播放',
+    'target' => '_self',
+    'ps' => 0,
+    'parse' => '',
+    'sort' => '1214',
+    'tip' => '无需安装任何插件',
+    'id' => 'wolong',
   ),
   'mgtv' => 
   array (
@@ -130,19 +116,6 @@ return array (
     'tip' => '无需安装任何插件',
     'id' => 'sohu',
   ),
-  'feifan' => 
-  array (
-    'status' => '1',
-    'from' => 'feifan',
-    'show' => '非凡播放②',
-    'des' => '支持手机电脑在线播放',
-    'target' => '_self',
-    'ps' => 0,
-    'parse' => '',
-    'sort' => '1002',
-    'tip' => '无需安装任何插件',
-    'id' => 'feifan',
-  ),
   'qiyi' => 
   array (
     'status' => '1',
@@ -155,19 +128,6 @@ return array (
     'sort' => '1002',
     'tip' => '无需安装任何插件',
     'id' => 'qiyi',
-  ),
-  'dadim3u8' => 
-  array (
-    'status' => '1',
-    'from' => 'dadim3u8',
-    'show' => 'dadim3u8',
-    'des' => 'dadim3u8 大地资源 www.dadizy.com',
-    'target' => '_self',
-    'ps' => '1',
-    'parse' => '',
-    'sort' => '1001',
-    'tip' => '',
-    'id' => 'dadim3u8',
   ),
   'youku' => 
   array (
@@ -182,44 +142,18 @@ return array (
     'tip' => '无需安装任何插件',
     'id' => 'youku',
   ),
-  'kuaiyun' => 
+  'heimuer' => 
   array (
     'status' => '1',
-    'from' => 'kuaiyun',
-    'show' => '快云资源1',
+    'from' => 'heimuer',
+    'show' => '黑木耳资源',
     'des' => '支持手机电脑在线播放',
     'target' => '_self',
     'ps' => 0,
     'parse' => '',
     'sort' => '1000',
     'tip' => '无需安装任何插件',
-    'id' => 'kuaiyun',
-  ),
-  'kuaiyunbo' => 
-  array (
-    'status' => '1',
-    'from' => 'kuaiyunbo',
-    'show' => '快云资源2',
-    'des' => '支持手机电脑在线播放',
-    'target' => '_self',
-    'ps' => 0,
-    'parse' => '',
-    'sort' => '1000',
-    'tip' => '无需安装任何插件',
-    'id' => 'kuaiyunbo',
-  ),
-  'lzm3u8' => 
-  array (
-    'status' => '1',
-    'from' => 'lzm3u8',
-    'show' => '量子m3u8',
-    'des' => '',
-    'target' => '_self',
-    'ps' => '1',
-    'parse' => '',
-    'sort' => '1000',
-    'tip' => '',
-    'id' => 'lzm3u8',
+    'id' => 'heimuer',
   ),
   'qq' => 
   array (
@@ -233,19 +167,6 @@ return array (
     'sort' => '1000',
     'tip' => '无需安装任何插件',
     'id' => 'qq',
-  ),
-  'wolong' => 
-  array (
-    'status' => '1',
-    'from' => 'wolong',
-    'show' => 'wolong',
-    'des' => '卧龙资源',
-    'target' => '_self',
-    'ps' => '1',
-    'parse' => 'https://jx.wolongzywcdn.com:65/m3u8.php?url=',
-    'sort' => '1000',
-    'tip' => '',
-    'id' => 'wolong',
   ),
   'bilibili' => 
   array (
@@ -346,42 +267,5 @@ return array (
     'sort' => '902',
     'tip' => '无需安装任何插件	',
     'id' => 'flv',
-  ),
-  '1080zyk' => 
-  array (
-    'status' => '1',
-    'from' => '1080zyk',
-    'show' => '1080zyk',
-    'des' => 'http://1080zyku.com/',
-    'ps' => '1',
-    'parse' => 'https://vip.zykbf.com/?url=',
-    'sort' => '99',
-    'tip' => '在线播放,无需安装播放器',
-    'id' => '1080zyk',
-  ),
-  'zykyun' => 
-  array (
-    'status' => '1',
-    'from' => 'zykyun',
-    'show' => 'zykyun',
-    'des' => 'http://1080zyku.com/',
-    'ps' => '1',
-    'parse' => '',
-    'sort' => '99',
-    'tip' => '在线播放,无需安装播放器',
-    'id' => 'zykyun',
-  ),
-  'wjm3u8' => 
-  array (
-    'status' => '1',
-    'from' => 'wjm3u8',
-    'show' => '无尽',
-    'des' => '',
-    'target' => '_self',
-    'ps' => '1',
-    'parse' => 'https://jx.wujinkk.com/dplayer/?url=',
-    'sort' => '1',
-    'tip' => '',
-    'id' => 'wjm3u8',
   ),
 );

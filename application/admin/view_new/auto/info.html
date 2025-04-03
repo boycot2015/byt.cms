@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title><?php echo config("autoconf")['name'];?>插件设置</title>
+  <link href="/static/layui/css/layui.css" rel="stylesheet" type="text/css" />
+  <script src="/static/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/static/js/jquery.js"></script>
+</head>
+<body style="margin:20px 20px">
+  <style>
+{include file="../../../application/admin/view/auto/css" /}
+  </style>
+  <div class="showpic" style="display:none;"><img class="showpic_img" width="100%" height="100%"></div>
+  <form class="layui-form layui-form-pane" action="">
+    <div class="layui-tab">
+      {include file="../../../application/admin/view/auto/nva" /}
+      <div class="layui-tab-content">
+        <!-- 介绍页 -->
+        <div class="layui-tab-item layui-show">
+          {include file="../../../application/admin/view/auto/auto" /}
+          {include file="../../../application/admin/view/auto/date" /}
+        </div>
+        <!--基础设置-->
+        <div class="layui-tab-item">
+          {include file="../../../application/admin/view/auto/auto" /}
+          {include file="../../../application/admin/view/auto/seting" /}
+        </div>
+        <!-- 赞助支持 -->
+        <div class="layui-tab-item">
+          {include file="../../../application/admin/view/auto/auto" /}
+          {include file="../../../application/admin/view/auto/zyw" /}
+        </div>
+
+        <!--求片-->
+        <div class="layui-tab-item">
+      {include file="../../../application/admin/view/auto/auto" /}
+          <hr>
+          {include file="../../../application/admin/view/auto/msg" /}   
+        </div>
+        <!-- 日志列表 -->
+        <div class="layui-tab-item">
+          {include file="../../../application/admin/view/auto/auto" /}
+          <blockquote class="layui-elem-quote layui-quote-nm">
+            <iframe
+              src="<?php echo $ssl.$_SERVER['HTTP_HOST'];?>/<?php  echo str_replace("/","",$GLOBALS['in_file']);?>/admin/Auto/log"
+              width="100%" height="460px" frameborder="0" scrolling="yes"></iframe>
+          </blockquote>
+        </div>
+
+        <!-- 定时任务 -->
+        <div class="layui-tab-item">
+          {include file="../../../application/admin/view/auto/auto" /}
+          <blockquote class="layui-elem-quote layui-quote-nm">
+            <iframe
+              src="<?php echo $ssl.$_SERVER['HTTP_HOST'];?>/<?php  echo str_replace("/","",$GLOBALS['in_file']);?>/admin/timming/index"
+              width="100%" height="460px" frameborder="0" scrolling="yes"></iframe>
+          </blockquote>
+        </div>
+        <!-- 影视教程 -->
+        <div class="layui-tab-item">
+          {include file="../../../application/admin/view/auto/auto" /}
+          {include file="../../../application/admin/view/auto/news" /}
+        </div>
+
+        <!-- 模板下载 -->
+        <div class="layui-tab-item">
+          {include file="../../../application/admin/view/auto/auto" /}
+          {include file="../../../application/admin/view/auto/theme" /}
+        </div>
+    </div>
+  </form>
+  <script>
+    layui.use(['layer', 'form', 'table', 'element'], function () {
+      var layer = layui.layer,
+        form = layui.form,
+        table = layui.table,
+        element = layui.element
+      form.on('submit(systemsave)', function (data) {
+        console.log(JSON.stringify(data.field));
+        data.field.rq_Auto_type = data.field.rq_Auto_type ? data.field.rq_Auto_type : '2';
+        $.ajax({
+          url: "/addons/auto/save.php",
+          data: data.field,
+          type: "post",
+          dataType: 'json',
+          success: function (data) {
+            layer.msg(data.msg, {
+              icon: data.icon
+            });
+            form.render();
+            location.reload();
+          },
+          error: function () {
+            layer.alert("保存配置执行异常!", {
+              icon: 5
+            });
+          }
+        });
+        return false;
+      });
+    });
+  </script>
+</body>
+</html>

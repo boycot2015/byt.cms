@@ -6,4 +6,5 @@ return array (
   3 => 'mxoneX主题,/start.php/admin/mxone/mxoneset',
   4 => 'BBJ管理,/bbj/index.php',
   5 => '萌芽采集资源,mycj/union',
+  6 => '牛牛助手,auto/index',
 );

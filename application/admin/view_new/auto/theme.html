@@ -1,0 +1,26 @@
+ <blockquote class="layui-elem-quote layui-quote-nm">
+              模板下载【暂不提供下载服务:请联系【<a style="color:#1E90FF;" href="<?php echo $version['tg2'] ;?>" target="_blank">在线客服</a>】获取模板压缩文件 </blockquote>
+  <div class="layui-fluid layadmin-cmdlist-fluid">
+          <div class="layui-row layui-col-space30">
+            <?php if($themelist) { foreach($themelist as &$_theme) { ?>
+            <div class="layui-col-md2 layui-col-sm4">
+                <div class="cmdlist-container">
+                    <a href="#">
+                      <img src="<?php echo $_theme['img'];?>" style="height: 242px;">
+                    </a>
+                    <a href="#">
+                      <div class="cmdlist-text">
+                        <p class="info"><?php echo $_theme['name'];?></p>
+                        <div class="price">
+                            <p>模板编号:<?php echo $_theme['pathname'];?></p> 
+                             
+                        </div>
+                      </div>
+                    </a>
+                </div>
+            </div>
+            <?php }} else { ?>
+              暂无相关数据
+              <?php } ?>
+          </div>
+        </div>

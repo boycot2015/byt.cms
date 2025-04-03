@@ -1,0 +1,45 @@
+<div class="page-container p10"> 
+<h3>请根据自身需求进行手动替换【点击API替换后如出现（502 超时 请刷新页面继续替换 显示 ok--*** 即手动替换成功）】</h3>
+    <form class="layui-form " method="post" id="pageListForm">
+        <table class="layui-table" lay-size="big">
+            <thead>
+                <tr>
+                    <th width="50">编号</th>
+                    <th width="80">资源名称</th>
+                    <th width="80">播放标识</th>
+                    <th width="240">旧链接</th>
+                    <th width="240">新链接</th>
+                    <th width="100">时间</th>
+                    <th width="100">类型</th>
+                    <th width="100">替换</th>
+                    <th width="100">sql替换</th>
+                    
+                </tr>
+            </thead>
+            {volist name="replist" id="vo"}
+            <tr>
+                <td>{$vo.sid}</td>
+                 <td>{$vo.apiinfo}</td>
+                <td>{$vo.typename}</td>
+                <td>{$vo.old}</td>
+                <td>{$vo.new}</td>
+                <td>{$vo.addtime}</td>
+                <td>{$vo.type}</td>
+                <td><a href="/api.php/auto/replace?token=<?php echo $rq['Auto']['token'];?>&types={$vo.type}&old={$vo.old}&new={$vo.new}" target="_blank" class="layui-btn layui-btn-normal">API替换</button></td>
+                <td><?php
+               $types=$vo['type']; $old=$vo['old']; $new=$vo['new']; $pre = config('database.prefix');;
+                if($types=='play'){ 
+                
+                echo 'UPDATE ' . $pre . 'vod SET vod_url=REPLACE(vod_url, "' . $old . '", "' . $new . '")';
+                }
+                if($types=='img'){
+                echo 'UPDATE ' . $pre . 'vod SET vod_pic=REPLACE(vod_pic, "' . $old . '", "' . $new . '")';
+                }
+                ?></td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+       
+    </form>
+</div>
