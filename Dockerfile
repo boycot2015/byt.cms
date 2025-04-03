@@ -13,7 +13,7 @@ RUN docker-php-ext-install mysqli
 # 让 Apache 服务运行在前台
 CMD ["apache2-foreground"]
 
-RUN chmod 777 /var/www/html/runtime
+RUN chmod 777 ./runtime
 RUN chmod 777 ./application/extra/cjfaves.php
 RUN chmod 777 ./application/extra/cjuser.php
 RUN chmod 777 ./application/extra/cjversion.php
