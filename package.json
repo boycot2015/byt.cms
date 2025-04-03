@@ -1,0 +1,22 @@
+{
+    "private": true,
+    "name": "byt-cms",
+    "version": "1.0.0",
+    "description": "byt-cms for Cloudflare Workers",
+    "main": "index.js",
+    "scripts": {
+      "build": "babel install.php -o index.js",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "format": "prettier --write '**/*.{js,css,json,md}'"
+    },
+    "author": "boycot2017@163.com",
+    "license": "MIT",
+    "devDependencies": {
+      "prettier": "^1.18.2",
+      "@babel/cli": "^7.21.0",
+      "@babel/core": "^7.8.4"
+    },
+    "dependencies": {
+      "babel-preset-php": "^2.0.0"
+    }
+  }
