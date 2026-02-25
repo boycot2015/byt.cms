@@ -205,7 +205,7 @@ function App() {
       fetchVideos();
     } catch (err) {
       message.error('删除失败');
-      console.error(err);
+      // console.error(err);
     }
   };
 
