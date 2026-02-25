@@ -431,10 +431,10 @@ export default {
 
         // 生成图片访问链接（两种方式二选一）
         // 方式1：R2 公共访问（需开启存储桶公共访问）
-        const imageUrl = `file.boycot.dpdns.org/${fileName}`; // 替换为你的 R2 公共域名
+        const imageUrl = `https://file.boycot.dpdns.org/${fileName}`; // 替换为你的 R2 公共域名
         
         // 方式2：通过 Workers 代理访问（无需公共访问，更安全）
-        // const imageUrl = `https://cms-api.your-username.workers.dev/api/image/${fileName}`;
+        // const imageUrl = `https://file.boycot.dpdns.org/${fileName}`;
 
         return new Response(JSON.stringify({
           success: true,
