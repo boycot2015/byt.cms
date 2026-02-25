@@ -144,30 +144,47 @@ class JianguoYunWebDAV {
   }
 
   private parseWebDAVResponse(xmlText: string): any[] {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(xmlText, "application/xml");
-    const responses = xmlDoc.getElementsByTagName("d:response");
     const files: any[] = [];
-    for (let i = 0; i < responses.length; i++) {
-      const resp = responses[i];
-      const href = resp.getElementsByTagName("d:href")[0]?.textContent || "";
-      const displayName = resp.getElementsByTagName("d:displayname")[0]?.textContent || "";
-      const resType = resp.getElementsByTagName("d:resourcetype")[0];
-      const isFolder = resType?.getElementsByTagName("d:collection").length > 0;
-      const size = resp.getElementsByTagName("d:getcontentlength")[0]?.textContent || "0";
-      const contentType = resp.getElementsByTagName("d:getcontenttype")[0]?.textContent || "";
-      const lastModified = resp.getElementsByTagName("d:getlastmodified")[0]?.textContent || "";
+    
+    // 正则匹配每个 <d:response> 块
+    const responseRegex = /<d:response>([\s\S]*?)<\/d:response>/g;
+    let responseMatch;
+    
+    while ((responseMatch = responseRegex.exec(xmlText)) !== null) {
+      const responseBlock = responseMatch[1];
+      
+      // 提取各个字段（使用正则匹配）
+      const hrefMatch = responseBlock.match(/<d:href>([\s\S]*?)<\/d:href>/);
+      const href = hrefMatch ? hrefMatch[1].trim() : "";
+      
+      const displayNameMatch = responseBlock.match(/<d:displayname>([\s\S]*?)<\/d:displayname>/);
+      const displayName = displayNameMatch ? displayNameMatch[1].trim() : "";
+      
+      // 判断是否是文件夹
+      const isFolder = /<d:resourcetype>[\s\S]*?<d:collection>[\s\S]*?<\/d:collection>[\s\S]*?<\/d:resourcetype>/.test(responseBlock);
+      
+      const sizeMatch = responseBlock.match(/<d:getcontentlength>([\s\S]*?)<\/d:getcontentlength>/);
+      const size = sizeMatch ? sizeMatch[1].trim() : "0";
+      
+      const contentTypeMatch = responseBlock.match(/<d:getcontenttype>([\s\S]*?)<\/d:getcontenttype>/);
+      const contentType = contentTypeMatch ? contentTypeMatch[1].trim() : "";
+      
+      const lastModifiedMatch = responseBlock.match(/<d:getlastmodified>([\s\S]*?)<\/d:getlastmodified>/);
+      const lastModified = lastModifiedMatch ? lastModifiedMatch[1].trim() : "";
+      
+      // 只处理文件（非文件夹）且有有效路径的条目
       if (!isFolder && href) {
         files.push({
           path: decodeURIComponent(href),
-          name: displayName,
-          size: parseInt(size, 10),
+          name: displayName || href.split("/").pop() || "", // 兜底：从路径提取文件名
+          size: parseInt(size, 10) || 0,
           contentType,
           lastModified,
           downloadUrl: `${this.baseUrl}${href.replace("/dav/", "")}`,
         });
       }
     }
+    
     return files;
   }
 
@@ -509,7 +526,18 @@ export default {
     if (path.startsWith("/api/video-source-data/") && request.method === "GET") {
       const type = path.replace("/api/video-source-data/", "");
       const sources: any = JSON.parse(await env.KV.get("video_sources") || "[]");
-      const source = sources.find((s: any) => s.type === type);
+      const source = sources.find((s: any) => s.type === type) || {
+          "name": "新源1772010611650",
+          "type": "jianguoyun",
+          "cron": "* * * * *",
+          "enabled": true,
+          "path": "/",
+          "categoryId": "",
+          "category": "动漫",
+          "tags": [
+              "修仙"
+          ]
+      }
       if (!source) {
         return new Response(JSON.stringify({ error: "视频源不存在" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },

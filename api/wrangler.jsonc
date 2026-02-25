@@ -26,7 +26,11 @@
 		"binding": "UPLOAD_BUCKET", // <~ valid JavaScript variable name
 		"bucket_name": "blog"
 		}
-	]
+	],
+	"vars": {
+		"JIANGUOYUN_USERNAME": "boycot2017@163.com",
+		"JIANGUOYUN_APP_PASSWORD": "agagm2wra6wai9mb"
+	}
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
