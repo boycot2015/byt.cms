@@ -16,7 +16,7 @@ const { TabPane } = Tabs;
 const { Option } = Select;
 
 // 替换为你的Workers地址
-const API_BASE = 'https://cms-api.your-username.workers.dev';
+const API_BASE = 'https://byt-cms-api.boycot.workers.dev';
 
 function App() {
   // ========== 文章相关状态 ==========
