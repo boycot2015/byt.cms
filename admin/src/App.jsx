@@ -72,7 +72,7 @@ function App() {
         // 编辑文章
         const id = editingArticle.id.replace('article:', '');
         await axios.put(`${API_BASE}/api/articles/${id}`, values);
-        message.success('文章更新成功');
+        message.success('文章更新成功');        
       } else {
         // 新增文章
         await axios.post(`${API_BASE}/api/articles`, values);
@@ -99,6 +99,7 @@ function App() {
   };
 
   const showArticleModal = (record = null) => {
+    console.log(record, 'record');
     setEditingArticle(record);
     articleForm.setFieldsValue(record || { title: '', content: '' });
     setArticleModalVisible(true);
@@ -262,6 +263,16 @@ function App() {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
+    },
+    {
+      title: '内容预览',
+      key: 'content',
+      render: (_, record) => (
+        <div 
+          style={{ maxHeight: 100, overflow: 'hidden' }}
+          dangerouslySetInnerHTML={{ __html: record.content || '' }}
+        />
+      ),
     },
     {
       title: '创建时间',
@@ -499,7 +510,8 @@ function App() {
           open={articleModalVisible}
           onOk={handleArticleSubmit}
           onCancel={() => setArticleModalVisible(false)}
-          destroyOnClose
+          destroyOnHidden
+          forceRender={true}
           width={800} // 加宽弹窗适配富文本
         >
           <Form form={articleForm} layout="vertical">
@@ -512,24 +524,10 @@ function App() {
             </Form.Item>
            <Form.Item
               label="文章内容"
+              name="content"
               rules={[{ required: true, message: '请输入内容' }]}
-              shouldUpdate={true} // 保留，消除更新警告
             >
-              {() => { // 从 render 参数中获取 form 实例
-                // 手动获取 content 字段值
-                const contentValue = articleForm.getFieldValue('content') || '';
-                // 手动设置 content 字段值
-                const handleContentChange = (value) => {
-                  articleForm.setFieldsValue({ content: value });
-                };
-
-                return (
-                  <RichTextEditor 
-                    value={contentValue} 
-                    onChange={handleContentChange} 
-                  />
-                );
-              }}
+              <RichTextEditor />
             </Form.Item>
           </Form>
         </Modal>
@@ -646,6 +644,7 @@ function App() {
                   >
                     <Option value="quark">夸克网盘</Option>
                     <Option value="aliyun">阿里云盘</Option>
+                    <Option value="jianguoyun">坚果云盘</Option>
                     <Option value="bilibili">B站（待扩展）</Option>
                   </Select>
                 )

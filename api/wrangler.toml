@@ -19,6 +19,8 @@ QUARK_API_KEY = "你的夸克网盘API Key"
 QUARK_API_SECRET = "你的夸克网盘API Secret"
 ALIYUN_ACCESS_TOKEN = "你的阿里云盘AccessToken"
 ALIYUN_REFRESH_TOKEN = "你的阿里云盘RefreshToken" # 可选自动刷新
+JIANGUOYUN_USERNAME = "boycot2017@163.com"
+JIANGUOYUN_APP_PASSWORD = "agagm2wra6wai9mb"
 
 # 定时任务（主调度任务，每分钟执行一次，用于分发不同源的抓取）
 triggers = [

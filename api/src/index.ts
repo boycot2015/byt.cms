@@ -13,7 +13,6 @@ async function withRetry<T>(
       if (retries >= maxRetries) {
         throw new Error(`重试${maxRetries}次后仍失败: ${(error as Error).message}`);
       }
-      // 指数退避延迟
       const delay = initialDelay * Math.pow(2, retries);
       await new Promise(resolve => setTimeout(resolve, delay));
       console.log(`重试第${retries}次，延迟${delay}ms`);
@@ -21,12 +20,185 @@ async function withRetry<T>(
   }
 }
 
+// 阿里云盘工具类
+class AliyunDriveClient {
+  private refreshToken: string;
+  private clientId: string;
+  private clientSecret: string;
+  private accessToken: string | null = null;
+  private tokenExpireTime: number = 0;
+
+  constructor(env: any) {
+    this.refreshToken = env.ALIYUN_REFRESH_TOKEN;
+    this.clientId = env.ALIYUN_CLIENT_ID || "";
+    this.clientSecret = env.ALIYUN_CLIENT_SECRET || "";
+  }
+
+  private async refreshAccessToken(): Promise<string> {
+    if (this.accessToken && Date.now() < this.tokenExpireTime) {
+      return this.accessToken;
+    }
+    const response = await fetch("https://openapi.aliyundrive.com/oauth/access_token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        client_id: this.clientId,
+        client_secret: this.clientSecret,
+        grant_type: "refresh_token",
+        refresh_token: this.refreshToken
+      })
+    });
+    if (!response.ok) throw new Error(`刷新令牌失败: ${response.status}`);
+    const data = await response.json();
+    this.accessToken = data.access_token;
+    this.tokenExpireTime = Date.now() + (data.expires_in - 300) * 1000;
+    if (data.refresh_token) this.refreshToken = data.refresh_token;
+    return this.accessToken;
+  }
+
+  private async getHeaders(): Promise<HeadersInit> {
+    const token = await this.refreshAccessToken();
+    return {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    };
+  }
+
+  private async getFileIdByPath(driveId: string, path: string, parentFileId = "root"): Promise<string> {
+    if (path === "/" || path === "") return parentFileId;
+    const pathParts = path.split("/").filter(part => part);
+    const currentFolder = pathParts[0];
+    const response = await fetch("https://api.aliyundrive.com/v2/file/list", {
+      method: "POST",
+      headers: await this.getHeaders(),
+      body: JSON.stringify({
+        drive_id: driveId,
+        parent_file_id: parentFileId,
+        limit: 100,
+        fields: "file_id,name,type"
+      })
+    });
+    if (!response.ok) throw new Error(`获取目录列表失败: ${response.status}`);
+    const data = await response.json();
+    const folder = data.items?.find((item: any) => item.type === "folder" && item.name === currentFolder);
+    if (!folder) throw new Error(`路径不存在: ${path}`);
+    const remainingPath = pathParts.slice(1).join("/");
+    return this.getFileIdByPath(driveId, remainingPath, folder.file_id);
+  }
+
+  private async getDefaultDriveId(): Promise<string> {
+    const response = await fetch("https://api.aliyundrive.com/v2/user/get", {
+      method: "POST",
+      headers: await this.getHeaders()
+    });
+    if (!response.ok) throw new Error(`获取drive_id失败: ${response.status}`);
+    const data = await response.json();
+    return data.default_drive_id;
+  }
+
+  async listVideoFiles(path: string = "/"): Promise<any[]> {
+    const driveId = await this.getDefaultDriveId();
+    const parentFileId = await this.getFileIdByPath(driveId, path);
+    let allFiles: any[] = [];
+    let marker = "";
+    do {
+      const response = await fetch("https://api.aliyundrive.com/v3/file/list", {
+        method: "POST",
+        headers: await this.getHeaders(),
+        body: JSON.stringify({
+          drive_id: driveId,
+          parent_file_id: parentFileId,
+          limit: 100,
+          marker: marker,
+          image_thumbnail_process: "image/resize,w_400/format,jpeg",
+          video_thumbnail_process: "video/snapshot,t_1000,f_jpg,ar_auto,w_400",
+          fields: "file_id,name,size,mime_type,thumbnail,video_media_info,download_url,web_content_link"
+        })
+      });
+      if (!response.ok) throw new Error(`获取文件列表失败: ${response.status}`);
+      const data = await response.json();
+      allFiles = allFiles.concat(data.items || []);
+      marker = data.next_marker || "";
+    } while (marker);
+    return allFiles.filter((file: any) => file.mime_type?.startsWith("video/"));
+  }
+}
+
+// 坚果云 WebDAV 客户端
+class JianguoYunWebDAV {
+  private username: string;
+  private password: string;
+  private baseUrl = "https://dav.jianguoyun.com/dav/";
+
+  constructor(env: any) {
+    this.username = env.JIANGUOYUN_USERNAME;
+    this.password = env.JIANGUOYUN_APP_PASSWORD;
+    if (!this.username || !this.password) {
+      throw new Error("缺少坚果云环境变量：JIANGUOYUN_USERNAME / JIANGUOYUN_APP_PASSWORD");
+    }
+  }
+
+  private getAuthHeader(): string {
+    const auth = btoa(`${this.username}:${this.password}`);
+    return `Basic ${auth}`;
+  }
+
+  private parseWebDAVResponse(xmlText: string): any[] {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+    const responses = xmlDoc.getElementsByTagName("d:response");
+    const files: any[] = [];
+    for (let i = 0; i < responses.length; i++) {
+      const resp = responses[i];
+      const href = resp.getElementsByTagName("d:href")[0]?.textContent || "";
+      const displayName = resp.getElementsByTagName("d:displayname")[0]?.textContent || "";
+      const resType = resp.getElementsByTagName("d:resourcetype")[0];
+      const isFolder = resType?.getElementsByTagName("d:collection").length > 0;
+      const size = resp.getElementsByTagName("d:getcontentlength")[0]?.textContent || "0";
+      const contentType = resp.getElementsByTagName("d:getcontenttype")[0]?.textContent || "";
+      const lastModified = resp.getElementsByTagName("d:getlastmodified")[0]?.textContent || "";
+      if (!isFolder && href) {
+        files.push({
+          path: decodeURIComponent(href),
+          name: displayName,
+          size: parseInt(size, 10),
+          contentType,
+          lastModified,
+          downloadUrl: `${this.baseUrl}${href.replace("/dav/", "")}`,
+        });
+      }
+    }
+    return files;
+  }
+
+  async listFiles(path: string = "/"): Promise<any[]> {
+    const fullPath = path.startsWith("/") ? path.slice(1) : path;
+    const url = `${this.baseUrl}${fullPath}`;
+    const response = await fetch(url, {
+      method: "PROPFIND",
+      headers: {
+        Authorization: this.getAuthHeader(),
+        Depth: "1",
+        "Content-Type": "application/xml",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`坚果云 PROPFIND 失败：${response.status} ${response.statusText}`);
+    }
+    const xmlText = await response.text();
+    return this.parseWebDAVResponse(xmlText);
+  }
+
+  async listVideoFiles(path: string = "/"): Promise<any[]> {
+    const files = await this.listFiles(path);
+    return files.filter(file => file.contentType?.startsWith("video/"));
+  }
+}
+
 // 夸克网盘API对接函数
 async function fetchQuarkVideo(sourceConfig: any, env: any) {
   const { path, categoryId } = sourceConfig;
   const apiKey = env.QUARK_API_KEY;
-  
-  // 夸克网盘API请求（参考官方文档）
   const response = await withRetry(async () => {
     return fetch(`https://drive.quark.cn/apis/v1/file/list`, {
       method: "POST",
@@ -43,14 +215,8 @@ async function fetchQuarkVideo(sourceConfig: any, env: any) {
       })
     });
   });
-
-  if (!response.ok) {
-    throw new Error(`夸克网盘API请求失败: ${response.status}`);
-  }
-
+  if (!response.ok) throw new Error(`夸克网盘API请求失败: ${response.status}`);
   const data = await response.json();
-  
-  // 解析夸克网盘视频数据（适配官方返回格式）
   return data.data.files
     .filter((file: any) => file.mime_type.startsWith("video/"))
     .map((file: any) => ({
@@ -66,64 +232,49 @@ async function fetchQuarkVideo(sourceConfig: any, env: any) {
 
 // 阿里云盘API对接函数
 async function fetchAliyunVideo(sourceConfig: any, env: any) {
-  const accessToken = env.ALIYUN_ACCESS_TOKEN;
-  const drivePath = sourceConfig.path || "/";
-
-  const files = await withRetry(async () => {
-    // 1. 获取用户 drive_id
-    const driveRes = await fetch("https://api.aliyundrive.com/v2/user/get", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const driveData = await driveRes.json();
-    const driveId = driveData.default_drive_id;
-
-    // 2. 列出文件
-    const listRes = await fetch("https://api.aliyundrive.com/v3/file/list", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        drive_id: driveId,
-        parent_file_id: "root", // 根目录，可根据path解析
-        limit: 50,
-        image_thumbnail_process: "image/resize,w_400/format,jpeg",
-        video_thumbnail_process: "video/snapshot,t_1000,f_jpg,ar_auto,w_400"
-      }),
-    });
-
-    const listData = await listRes.json();
-    return listData.items || [];
-  });
-
-  // 只保留视频文件并格式化
-  const videoList = files.filter((f: any) => f.mime_type?.startsWith("video/"));
-  
-  return videoList.map((file: any) => ({
+  if (!env.ALIYUN_REFRESH_TOKEN) {
+    throw new Error("缺少阿里云盘环境变量: ALIYUN_REFRESH_TOKEN");
+  }
+  const client = new AliyunDriveClient(env);
+  const videoFiles = await withRetry(() => client.listVideoFiles(sourceConfig.path || "/"));
+  return videoFiles.map((file: any) => ({
     title: file.name,
     url: file.download_url || file.web_content_link || "",
     cover: file.thumbnail || file.video_media_info?.cover_url || "",
     size: file.size,
     source: "阿里云盘",
     category: sourceConfig.category || "默认分类",
-    tags: sourceConfig.tags || []
+    tags: sourceConfig.tags || [],
+    fileId: file.file_id
   }));
 }
 
-// 通用视频抓取函数（适配不同源）
+// 坚果云视频源对接函数
+async function fetchJianguoYunVideo(sourceConfig: any, env: any) {
+  const davClient = new JianguoYunWebDAV(env);
+  const videos = await withRetry(() => davClient.listVideoFiles(sourceConfig.path || "/"));
+  return videos.map(file => ({
+    title: file.name,
+    url: file.downloadUrl,
+    cover: "",
+    size: file.size,
+    source: "坚果云",
+    category: sourceConfig.category || "默认分类",
+    tags: sourceConfig.tags || [],
+    path: file.path,
+  }));
+}
+
+// 通用视频抓取函数
 async function fetchVideoBySource(sourceConfig: any, env: any) {
   switch (sourceConfig.type) {
     case "quark":
       return await fetchQuarkVideo(sourceConfig, env);
     case "aliyun":
       return await fetchAliyunVideo(sourceConfig, env);
+    case "jianguoYun":
+      return await fetchJianguoYunVideo(sourceConfig, env);
     case "bilibili":
-      // 可扩展B站/其他源
       return [];
     default:
       throw new Error(`不支持的视频源类型: ${sourceConfig.type}`);
@@ -133,10 +284,8 @@ async function fetchVideoBySource(sourceConfig: any, env: any) {
 // 检查是否到了源的抓取时间
 function isTimeToFetch(sourceConfig: any): boolean {
   const now = new Date();
-  const cronExpr = sourceConfig.cron || "* * * * *"; // 默认每分钟
+  const cronExpr = sourceConfig.cron || "* * * * *";
   const [minute, hour, day, month, weekday] = cronExpr.split(" ").map(Number);
-  
-  // 简化版Cron解析（支持 * / 数字 格式）
   return (
     (minute === "*" || now.getMinutes() === minute) &&
     (hour === "*" || now.getHours() === hour) &&
@@ -147,15 +296,17 @@ function isTimeToFetch(sourceConfig: any): boolean {
 }
 
 export default {
-  // HTTP请求处理
   async fetch(
     request: Request,
     env: {
-      KV: KVNamespace,
-      UPLOAD_BUCKET: R2Bucket,
-      QUARK_API_KEY: string,
-      QUARK_API_SECRET: string,
-      ALIYUN_ACCESS_TOKEN: string
+      KV: KVNamespace;
+      UPLOAD_BUCKET: R2Bucket;
+      QUARK_API_KEY: string;
+      ALIYUN_REFRESH_TOKEN: string;
+      ALIYUN_CLIENT_ID: string;
+      ALIYUN_CLIENT_SECRET: string;
+      JIANGUOYUN_USERNAME: string;
+      JIANGUOYUN_APP_PASSWORD: string;
     },
     ctx: ExecutionContext
   ): Promise<Response> {
@@ -171,17 +322,13 @@ export default {
 
     const url = new URL(request.url);
     const path = url.pathname;
+
+    // 首页
     if (path === "/" && request.method === "GET") {
       return new Response(`
         <style>
-        * {
-          padding: 0;
-          margin: 0;
-        }
-        li,dl{
-          padding: 10px 0;
-          list-style: none;
-        }
+        * { padding: 0; margin: 0; }
+        li,dl{ padding: 10px 0; list-style: none; }
         </style>
         <div align="center">
           <h1 style="font-size: 24px;margin: 120px auto 30px;">Welcome to Cloudflare Workers CMS API</h1>
@@ -193,14 +340,16 @@ export default {
             <li>POST /api/categories - 创建分类</li>
             <li>GET /api/tags - 获取所有标签</li>
             <li>POST /api/tags - 创建标签</li>
+            <li>GET /api/videos - 获取视频</li>
+            <li>GET /api/video-fetch-sources-data/jianguoYun - 手动抓取坚果云</li>
           </ul>
         </div>
       `, {
         headers: { ...corsHeaders, "Content-Type": "text/html;charset=utf-8" },
       });
     }
-    // ========== 文章管理API（原有） ==========
-    // 1. 获取所有文章
+
+    // 文章管理
     if (path === "/api/articles" && request.method === "GET") {
       const keys = await env.KV.list({ prefix: "article:" });
       const articles = [];
@@ -213,7 +362,6 @@ export default {
       });
     }
 
-    // 2. 创建文章
     if (path === "/api/articles" && request.method === "POST") {
       const body = await request.json();
       const id = `article:${Date.now()}`;
@@ -231,7 +379,6 @@ export default {
       });
     }
 
-    // 3. 删除文章
     if (path.startsWith("/api/articles/") && request.method === "DELETE") {
       const id = path.replace("/api/articles/", "");
       await env.KV.delete(`article:${id}`);
@@ -240,7 +387,6 @@ export default {
       });
     }
 
-    // 4. 更新文章
     if (path.startsWith("/api/articles/") && request.method === "PUT") {
       const id = path.replace("/api/articles/", "");
       const body = await request.json();
@@ -263,8 +409,7 @@ export default {
       });
     }
 
-    // ========== 分类/标签管理API ==========
-    // 1. 获取所有分类
+    // 分类管理
     if (path === "/api/categories" && request.method === "GET") {
       const keys = await env.KV.list({ prefix: "category:" });
       const categories = [];
@@ -277,7 +422,6 @@ export default {
       });
     }
 
-    // 2. 创建分类
     if (path === "/api/categories" && request.method === "POST") {
       const body = await request.json();
       const id = `category:${Date.now()}`;
@@ -294,7 +438,7 @@ export default {
       });
     }
 
-    // 3. 获取所有标签
+    // 标签管理
     if (path === "/api/tags" && request.method === "GET") {
       const keys = await env.KV.list({ prefix: "tag:" });
       const tags = [];
@@ -307,7 +451,6 @@ export default {
       });
     }
 
-    // 4. 创建标签
     if (path === "/api/tags" && request.method === "POST") {
       const body = await request.json();
       const id = `tag:${Date.now()}`;
@@ -323,33 +466,23 @@ export default {
       });
     }
 
-    // ========== 视频管理API ==========
-    // 1. 获取视频（支持分类/标签筛选）
+    // 视频管理
     if (path === "/api/videos" && request.method === "GET") {
       const category = url.searchParams.get("category");
       const tag = url.searchParams.get("tag");
-      
       const keys = await env.KV.list({ prefix: "video:" });
       let videos = [];
       for (const key of keys.keys) {
         const video = JSON.parse(await env.KV.get(key.name) || "{}");
         videos.push(video);
       }
-
-      // 筛选
-      if (category) {
-        videos = videos.filter(v => v.category === category);
-      }
-      if (tag) {
-        videos = videos.filter(v => v.tags.includes(tag));
-      }
-
+      if (category) videos = videos.filter(v => v.category === category);
+      if (tag) videos = videos.filter(v => v.tags.includes(tag));
       return new Response(JSON.stringify(videos), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // 2. 删除视频
     if (path.startsWith("/api/videos/") && request.method === "DELETE") {
       const id = path.replace("/api/videos/", "");
       await env.KV.delete(`video:${id}`);
@@ -358,7 +491,6 @@ export default {
       });
     }
 
-    // 3. 保存视频源配置（含频率）
     if (path === "/api/video-sources" && request.method === "POST") {
       const body = await request.json();
       await env.KV.put("video_sources", JSON.stringify(body));
@@ -367,156 +499,126 @@ export default {
       });
     }
 
-    // 4. 获取视频源配置
     if (path === "/api/video-sources" && request.method === "GET") {
       const sources = await env.KV.get("video_sources") || "[]";
       return new Response(sources, {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-    // ========== 新增：图片上传接口（对接 R2） ==========
+
+    if (path.startsWith("/api/video-source-data/") && request.method === "GET") {
+      const type = path.replace("/api/video-source-data/", "");
+      const sources: any = JSON.parse(await env.KV.get("video_sources") || "[]");
+      const source = sources.find((s: any) => s.type === type);
+      if (!source) {
+        return new Response(JSON.stringify({ error: "视频源不存在" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 404
+        });
+      }
+      const data = await fetchVideoBySource(source, env);
+      return new Response(JSON.stringify(data), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // 图片上传
     if (path === "/api/upload/image" && request.method === "POST") {
       try {
-        // 解析 FormData 格式的上传请求
         const formData = await request.formData();
         const file = formData.get("file") as File;
-        
         if (!file) {
-          return new Response(JSON.stringify({ 
-            success: false, 
-            message: "未选择文件" 
-          }), {
+          return new Response(JSON.stringify({ success: false, message: "未选择文件" }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 400,
           });
         }
-
-        // 验证文件类型（仅允许图片）
         const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
         if (!allowedTypes.includes(file.type)) {
-          return new Response(JSON.stringify({ 
-            success: false, 
-            message: "仅支持 jpg/png/gif/webp 格式" 
-          }), {
+          return new Response(JSON.stringify({ success: false, message: "仅支持 jpg/png/gif/webp" }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 400,
           });
         }
-
-        // 验证文件大小（限制 5MB）
         const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
-          return new Response(JSON.stringify({ 
-            success: false, 
-            message: "文件大小不能超过 5MB" 
-          }), {
+          return new Response(JSON.stringify({ success: false, message: "文件大小不能超过 5MB" }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 400,
           });
         }
-
-        // 生成唯一文件名
         const fileName = `upload/${Date.now()}_${Math.random().toString(36).slice(2)}.${file.name.split('.').pop()}`;
-        
-        // 上传文件到 R2
         await env.UPLOAD_BUCKET.put(fileName, file, {
-          httpMetadata: {
-            contentType: file.type,
-          },
-          customMetadata: {
-            uploadTime: new Date().toISOString(),
-            originalName: file.name,
-          },
+          httpMetadata: { contentType: file.type },
+          customMetadata: { uploadTime: new Date().toISOString(), originalName: file.name },
         });
-
-        // 生成图片访问链接（两种方式二选一）
-        // 方式1：R2 公共访问（需开启存储桶公共访问）
-        const imageUrl = `https://file.boycot.dpdns.org/${fileName}`; // 替换为你的 R2 公共域名
-        
-        // 方式2：通过 Workers 代理访问（无需公共访问，更安全）
-        // const imageUrl = `https://file.boycot.dpdns.org/${fileName}`;
-
+        const imageUrl = `https://file.boycot.dpdns.org/${fileName}`;
         return new Response(JSON.stringify({
           success: true,
-          data: {
-            url: imageUrl, // 富文本需要的图片链接
-            name: file.name,
-            size: file.size,
-          },
+          data: { url: imageUrl, name: file.name, size: file.size }
         }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       } catch (error) {
         console.error("图片上传失败:", error);
-        return new Response(JSON.stringify({ 
-          success: false, 
-          message: "上传失败：" + (error as Error).message 
-        }), {
+        return new Response(JSON.stringify({ success: false, message: "上传失败" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 500,
         });
       }
     }
 
-    // ========== 可选：Workers 代理访问 R2 图片（方式2） ==========
+    // 图片代理
     if (path.startsWith("/api/image/") && request.method === "GET") {
       const fileName = path.replace("/api/image/", "");
-      try {
-        const object = await env.UPLOAD_BUCKET.get(fileName);
-        if (!object) {
-          return new Response("图片不存在", { status: 404 });
-        }
-        return new Response(object.body, {
-          headers: {
-            "Content-Type": object.httpMetadata.contentType || "image/jpeg",
-            "Cache-Control": "public, max-age=31536000", // 缓存1年
-          },
-        });
-      } catch (error) {
-        return new Response("获取图片失败", { status: 500 });
+      const object = await env.UPLOAD_BUCKET.get(fileName);
+      if (!object) {
+        return new Response("图片不存在", { status: 404 });
       }
+      return new Response(object.body, {
+        headers: {
+          "Content-Type": object.httpMetadata.contentType || "image/jpeg",
+          "Cache-Control": "public, max-age=31536000",
+        },
+      });
     }
-    // 未匹配路由
+
     return new Response(JSON.stringify({ error: "Not Found" }), {
       headers: corsHeaders,
       status: 404,
     });
   },
 
-  // 定时任务主调度
   async scheduled(
     event: ScheduledEvent,
-    env: { KV: KVNamespace },
+    env: {
+      KV: KVNamespace;
+      ALIYUN_REFRESH_TOKEN: string;
+      ALIYUN_CLIENT_ID: string;
+      ALIYUN_CLIENT_SECRET: string;
+      JIANGUOYUN_USERNAME: string;
+      JIANGUOYUN_APP_PASSWORD: string;
+      QUARK_API_KEY: string;
+    },
     ctx: ExecutionContext
   ): Promise<void> {
     console.log("定时调度任务执行:", new Date().toISOString());
-    
-    // 获取所有视频源配置
     const sourceConfigStr = await env.KV.get("video_sources");
     if (!sourceConfigStr) {
       console.log("无视频源配置");
       return;
     }
-
     const sources = JSON.parse(sourceConfigStr);
     for (const source of sources) {
-      // 跳过禁用的源
       if (!source.enabled) continue;
-      
-      // 检查是否到了该源的抓取时间
       if (!isTimeToFetch(source)) {
         console.log(`源[${source.name}]未到抓取时间，跳过`);
         continue;
       }
-
       try {
-        // 抓取视频（带重试）
         const videos = await withRetry(() => fetchVideoBySource(source, env));
-        
-        // 去重并存储
         for (const video of videos) {
           const existingKeys = await env.KV.list({ prefix: "video:" });
-          // 检查是否已存在相同视频
           let isDuplicate = false;
           for (const key of existingKeys.keys) {
             const v = JSON.parse(await env.KV.get(key.name) || "{}");
@@ -525,7 +627,6 @@ export default {
               break;
             }
           }
-
           if (!isDuplicate) {
             const videoId = `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
             const videoData = {
@@ -540,7 +641,6 @@ export default {
         }
       } catch (error) {
         console.error(`源[${source.name}]抓取失败:`, error);
-        // 单个源失败不影响其他源
         continue;
       }
     }
