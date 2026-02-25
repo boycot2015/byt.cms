@@ -272,7 +272,7 @@ async function fetchVideoBySource(sourceConfig: any, env: any) {
       return await fetchQuarkVideo(sourceConfig, env);
     case "aliyun":
       return await fetchAliyunVideo(sourceConfig, env);
-    case "jianguoYun":
+    case "jianguoyun":
       return await fetchJianguoYunVideo(sourceConfig, env);
     case "bilibili":
       return [];
@@ -341,7 +341,7 @@ export default {
             <li>GET /api/tags - 获取所有标签</li>
             <li>POST /api/tags - 创建标签</li>
             <li>GET /api/videos - 获取视频</li>
-            <li>GET /api/video-fetch-sources-data/jianguoYun - 手动抓取坚果云</li>
+            <li>GET /api/video-fetch-sources-data/jianguoyun - 手动抓取坚果云</li>
           </ul>
         </div>
       `, {
