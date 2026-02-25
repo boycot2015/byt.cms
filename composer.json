@@ -1,7 +1,0 @@
-{
-    "name": "leancloud/sms",
-    "description": "A simple PHP application based on LeanEngine PHP runtime.",
-    "require": {
-      "php": "7.4.x"
-    }
-}
