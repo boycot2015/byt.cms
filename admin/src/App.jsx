@@ -2,21 +2,24 @@ import { useState, useEffect } from 'react';
 import { 
   Layout, Table, Button, Modal, Form, Input, Typography, Space, 
   message, Card, Row, Col, Tabs, Switch, Select, Tag,
-  Image, Drawer, Divider
+  Image, Drawer, Divider, ConfigProvider
 } from 'antd';
 import axios from 'axios';
+// 新增：引入富文本编辑器组件
+import RichTextEditor from './components/Editor';
 import { 
   EditOutlined, DeleteOutlined, PlusOutlined, SyncOutlined, 
   ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined
 } from '@ant-design/icons';
-
+import zhCN from 'antd/locale/zh_CN';
 const { Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 const { Option } = Select;
+console.log(import.meta.env, 'import.meta.env');
 
 // 替换为你的Workers地址
-const API_BASE = 'https://cms-api.boycot.dpdns.org';
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function App() {
   // ========== 文章相关状态 ==========
@@ -37,8 +40,8 @@ function App() {
   // ========== 视频相关状态 ==========
   const [videos, setVideos] = useState([]);
   const [videoLoading, setVideoLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedTag, setSelectedTag] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedTag, setSelectedTag] = useState(null);
   const [videoPlayDrawer, setVideoPlayDrawer] = useState({
     visible: false,
     video: null
@@ -291,432 +294,456 @@ function App() {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Title level={3} style={{ margin: 0, lineHeight: '64px' }}>
-              Cloudflare KV CMS 管理平台
-            </Title>
-          </Col>
-        </Row>
-      </Header>
+    <ConfigProvider
+    locale={zhCN}
+    theme={{
+      token: {
+        colorPrimary: '#ff9900',
+      },
+    }}>
+      <Layout style={{ minHeight: '100vh', width: '100%' }}>
+        <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+          <Row justify="space-between" align="middle">
+            <Col>
+              <Title level={3} style={{ margin: 0, lineHeight: '64px' }}>
+                CMS 管理平台
+              </Title>
+            </Col>
+          </Row>
+        </Header>
 
-      <Content style={{ padding: '24px' }}>
-        <Card>
-          <Tabs defaultActiveKey="1">
-            {/* 文章管理标签页 */}
-            <TabPane tab="文章管理" key="1">
-              <Row justify="space-between" style={{ marginBottom: 16 }}>
-                <Col>
-                  <Button 
-                    type="primary" 
-                    icon={<PlusOutlined />} 
-                    onClick={() => showArticleModal()}
-                  >
-                    新增文章
-                  </Button>
-                </Col>
-              </Row>
-              <Table 
-                columns={articleColumns} 
-                dataSource={articles} 
-                rowKey="id" 
-                loading={articleLoading}
-                pagination={{ pageSize: 10 }}
-              />
-            </TabPane>
+        <Content style={{ padding: '24px', width: '100%' }}>
+          <Card style={{ width: '100%' }}>
+            <Tabs defaultActiveKey="1" style={{ width: '100%' }}>
+              {/* 视频资源管理标签页 */}
+              <TabPane tab="视频资源管理" key="1">
+                <Row gutter={16} style={{ marginBottom: 16 }}>
+                  <Col span={8}>
+                    <Space>
+                      <Button 
+                        type="primary" 
+                        icon={<SyncOutlined />} 
+                        onClick={() => fetchVideos()}
+                      >
+                        刷新视频列表
+                      </Button>
+                      <Button 
+                        icon={<FolderAddOutlined />} 
+                        onClick={() => setCategoryModalVisible(true)}
+                      >
+                        新增分类
+                      </Button>
+                      <Button 
+                        icon={<TagOutlined />} 
+                        onClick={() => setTagModalVisible(true)}
+                      >
+                        新增标签
+                      </Button>
+                    </Space>
+                  </Col>
+                  <Col span={16}>
+                    <Space>
+                      <Select
+                        placeholder="选择分类筛选"
+                        style={{ width: 200 }}
+                        value={selectedCategory}
+                        onChange={setSelectedCategory}
+                        allowClear
+                      >
+                        {categories.map(c => (
+                          <Option key={c.id} value={c.name}>{c.name}</Option>
+                        ))}
+                      </Select>
+                      <Select
+                        placeholder="选择标签筛选"
+                        style={{ width: 200 }}
+                        value={selectedTag}
+                        onChange={setSelectedTag}
+                        allowClear
+                      >
+                        {tags.map(t => (
+                          <Option key={t.id} value={t.name}>{t.name}</Option>
+                        ))}
+                      </Select>
+                      <Button 
+                        icon={<ClockCircleOutlined />}
+                        onClick={() => setSourceConfigDrawer({ visible: true })}
+                      >
+                        视频源配置
+                      </Button>
+                    </Space>
+                  </Col>
+                </Row>
 
-            {/* 视频资源管理标签页 */}
-            <TabPane tab="视频资源管理" key="2">
-              <Row gutter={16} style={{ marginBottom: 16 }}>
-                <Col span={8}>
-                  <Space>
+                {/* 视频列表（带预览） */}
+                <Table 
+                  columns={[
+                    {
+                      title: '封面',
+                      key: 'cover',
+                      width: 100,
+                      render: (_, record) => (
+                        record.cover ? (
+                          <Image 
+                            width={80} 
+                            height={60} 
+                            src={record.cover} 
+                            fallback="https://via.placeholder.com/80x60?text=无封面"
+                            preview={false}
+                            onClick={() => playVideo(record)}
+                            style={{ cursor: 'pointer' }}
+                          />
+                        ) : (
+                          <div style={{ width:80, height:60, background:'#f5f5f5', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                            <PlayCircleOutlined onClick={() => playVideo(record)} style={{ cursor: 'pointer' }} />
+                          </div>
+                        )
+                      )
+                    },
+                    {
+                      title: '标题',
+                      dataIndex: 'title',
+                      key: 'title',
+                    },
+                    {
+                      title: '分类',
+                      dataIndex: 'category',
+                      key: 'category',
+                      render: (category) => <Tag color="blue">{category}</Tag>
+                    },
+                    {
+                      title: '标签',
+                      dataIndex: 'tags',
+                      key: 'tags',
+                      render: (tags) => (
+                        <>
+                          {tags.map(tag => (
+                            <Tag key={tag}>{tag}</Tag>
+                          ))}
+                        </>
+                      )
+                    },
+                    {
+                      title: '来源',
+                      dataIndex: 'source',
+                      key: 'source',
+                    },
+                    {
+                      title: '抓取时间',
+                      dataIndex: 'fetchTime',
+                      key: 'fetchTime',
+                      render: (time) => new Date(time).toLocaleString()
+                    },
+                    {
+                      title: '操作',
+                      key: 'action',
+                      render: (_, record) => (
+                        <Space>
+                          <Button 
+                            type="text" 
+                            icon={<PlayCircleOutlined />}
+                            onClick={() => playVideo(record)}
+                          >
+                            播放
+                          </Button>
+                          <Button 
+                            danger 
+                            icon={<DeleteOutlined />}
+                            onClick={() => handleDeleteVideo(record)}
+                          >
+                            删除
+                          </Button>
+                        </Space>
+                      )
+                    }
+                  ]} 
+                  dataSource={videos} 
+                  rowKey="id" 
+                  loading={videoLoading}
+                  pagination={{ pageSize: 10 }}
+                />
+              </TabPane>
+              {/* 文章管理标签页 */}
+              <TabPane tab="文章管理" key="2">
+                <Row justify="space-between" style={{ marginBottom: 16 }}>
+                  <Col>
                     <Button 
                       type="primary" 
-                      icon={<SyncOutlined />} 
-                      onClick={() => fetchVideos()}
+                      icon={<PlusOutlined />} 
+                      onClick={() => showArticleModal()}
                     >
-                      刷新视频列表
+                      新增文章
                     </Button>
-                    <Button 
-                      icon={<FolderAddOutlined />} 
-                      onClick={() => setCategoryModalVisible(true)}
-                    >
-                      新增分类
-                    </Button>
-                    <Button 
-                      icon={<TagOutlined />} 
-                      onClick={() => setTagModalVisible(true)}
-                    >
-                      新增标签
-                    </Button>
-                  </Space>
+                  </Col>
+                </Row>
+                <Table 
+                  columns={articleColumns} 
+                  dataSource={articles} 
+                  rowKey="id" 
+                  style={{ width: '100%' }}
+                  loading={articleLoading}
+                  pagination={{ pageSize: 10 }}
+                />
+              </TabPane>
+            </Tabs>
+          </Card>
+        </Content>
+
+        <Footer style={{ textAlign: 'center' }}>
+          Cloudflare + KV + Ant Design CMS ©{new Date().getFullYear()}
+        </Footer>
+
+        {/* 文章编辑/新增弹窗 */}
+        <Modal
+          title={editingArticle ? '编辑文章' : '新增文章'}
+          open={articleModalVisible}
+          onOk={handleArticleSubmit}
+          onCancel={() => setArticleModalVisible(false)}
+          destroyOnClose
+          width={800} // 加宽弹窗适配富文本
+        >
+          <Form form={articleForm} layout="vertical">
+            <Form.Item
+              name="title"
+              label="文章标题"
+              rules={[{ required: true, message: '请输入标题' }]}
+            >
+              <Input placeholder="请输入文章标题" />
+            </Form.Item>
+           <Form.Item
+              label="文章内容"
+              rules={[{ required: true, message: '请输入内容' }]}
+              shouldUpdate={true} // 保留，消除更新警告
+            >
+              {() => { // 从 render 参数中获取 form 实例
+                // 手动获取 content 字段值
+                const contentValue = articleForm.getFieldValue('content') || '';
+                // 手动设置 content 字段值
+                const handleContentChange = (value) => {
+                  articleForm.setFieldsValue({ content: value });
+                };
+
+                return (
+                  <RichTextEditor 
+                    value={contentValue} 
+                    onChange={handleContentChange} 
+                  />
+                );
+              }}
+            </Form.Item>
+          </Form>
+        </Modal>
+
+        {/* 新增分类弹窗 */}
+        <Modal
+          title="新增视频分类"
+          open={categoryModalVisible}
+          onOk={addCategory}
+          onCancel={() => setCategoryModalVisible(false)}
+        >
+          <Input 
+            placeholder="输入分类名称（如：电影、短视频）" 
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+          />
+        </Modal>
+
+        {/* 新增标签弹窗 */}
+        <Modal
+          title="新增视频标签"
+          open={tagModalVisible}
+          onOk={addTag}
+          onCancel={() => setTagModalVisible(false)}
+        >
+          <Input 
+            placeholder="输入标签名称（如：搞笑、科技）" 
+            value={newTagName}
+            onChange={(e) => setNewTagName(e.target.value)}
+          />
+        </Modal>
+
+        {/* 视频播放抽屉 */}
+        <Drawer
+          title={videoPlayDrawer.video?.title || "视频播放"}
+          open={videoPlayDrawer.visible}
+          onClose={() => setVideoPlayDrawer({...videoPlayDrawer, visible: false})}
+          width={800}
+        >
+          {videoPlayDrawer.video ? (
+            <div style={{ padding: 20 }}>
+              <video 
+                src={videoPlayDrawer.video.url} 
+                controls 
+                width="100%"
+                style={{ maxHeight: 400 }}
+                poster={videoPlayDrawer.video.cover}
+              >
+                您的浏览器不支持HTML5视频播放
+              </video>
+              <Divider />
+              <Row gutter={16}>
+                <Col span={8}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
+                <Col span={8}><Text strong>分类：</Text>{videoPlayDrawer.video.category}</Col>
+                <Col span={8}><Text strong>来源：</Text>{videoPlayDrawer.video.source}</Col>
+                <Col span={24} style={{ marginTop: 8 }}>
+                  <Text strong>标签：</Text>
+                  {videoPlayDrawer.video.tags.map(tag => (
+                    <Tag key={tag}>{tag}</Tag>
+                  ))}
                 </Col>
-                <Col span={16}>
-                  <Space>
-                    <Select
-                      placeholder="选择分类筛选"
-                      style={{ width: 200 }}
-                      value={selectedCategory}
-                      onChange={setSelectedCategory}
-                      allowClear
-                    >
-                      {categories.map(c => (
-                        <Option key={c.id} value={c.name}>{c.name}</Option>
-                      ))}
-                    </Select>
-                    <Select
-                      placeholder="选择标签筛选"
-                      style={{ width: 200 }}
-                      value={selectedTag}
-                      onChange={setSelectedTag}
-                      allowClear
-                    >
-                      {tags.map(t => (
-                        <Option key={t.id} value={t.name}>{t.name}</Option>
-                      ))}
-                    </Select>
-                    <Button 
-                      icon={<ClockCircleOutlined />}
-                      onClick={() => setSourceConfigDrawer({ visible: true })}
-                    >
-                      视频源配置
-                    </Button>
-                  </Space>
+                <Col span={24} style={{ marginTop: 8 }}>
+                  <Text strong>视频链接：</Text>
+                  <Input 
+                    value={videoPlayDrawer.video.url} 
+                    readOnly 
+                    style={{ marginTop: 8 }}
+                  />
                 </Col>
               </Row>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: 40 }}>
+              <Text type="secondary">请选择一个视频播放</Text>
+            </div>
+          )}
+        </Drawer>
 
-              {/* 视频列表（带预览） */}
-              <Table 
-                columns={[
-                  {
-                    title: '封面',
-                    key: 'cover',
-                    width: 100,
-                    render: (_, record) => (
-                      record.cover ? (
-                        <Image 
-                          width={80} 
-                          height={60} 
-                          src={record.cover} 
-                          fallback="https://via.placeholder.com/80x60?text=无封面"
-                          preview={false}
-                          onClick={() => playVideo(record)}
-                          style={{ cursor: 'pointer' }}
-                        />
-                      ) : (
-                        <div style={{ width:80, height:60, background:'#f5f5f5', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                          <PlayCircleOutlined onClick={() => playVideo(record)} style={{ cursor: 'pointer' }} />
-                        </div>
-                      )
-                    )
-                  },
-                  {
-                    title: '标题',
-                    dataIndex: 'title',
-                    key: 'title',
-                  },
-                  {
-                    title: '分类',
-                    dataIndex: 'category',
-                    key: 'category',
-                    render: (category) => <Tag color="blue">{category}</Tag>
-                  },
-                  {
-                    title: '标签',
-                    dataIndex: 'tags',
-                    key: 'tags',
-                    render: (tags) => (
-                      <>
-                        {tags.map(tag => (
-                          <Tag key={tag}>{tag}</Tag>
-                        ))}
-                      </>
-                    )
-                  },
-                  {
-                    title: '来源',
-                    dataIndex: 'source',
-                    key: 'source',
-                  },
-                  {
-                    title: '抓取时间',
-                    dataIndex: 'fetchTime',
-                    key: 'fetchTime',
-                    render: (time) => new Date(time).toLocaleString()
-                  },
-                  {
-                    title: '操作',
-                    key: 'action',
-                    render: (_, record) => (
-                      <Space>
-                        <Button 
-                          type="text" 
-                          icon={<PlayCircleOutlined />}
-                          onClick={() => playVideo(record)}
-                        >
-                          播放
-                        </Button>
-                        <Button 
-                          danger 
-                          icon={<DeleteOutlined />}
-                          onClick={() => handleDeleteVideo(record)}
-                        >
-                          删除
-                        </Button>
-                      </Space>
-                    )
-                  }
-                ]} 
-                dataSource={videos} 
-                rowKey="id" 
-                loading={videoLoading}
-                pagination={{ pageSize: 10 }}
-              />
-            </TabPane>
-          </Tabs>
-        </Card>
-      </Content>
-
-      <Footer style={{ textAlign: 'center' }}>
-        Cloudflare + KV + Ant Design CMS ©{new Date().getFullYear()}
-      </Footer>
-
-      {/* 文章编辑/新增弹窗 */}
-      <Modal
-        title={editingArticle ? '编辑文章' : '新增文章'}
-        open={articleModalVisible}
-        onOk={handleArticleSubmit}
-        onCancel={() => setArticleModalVisible(false)}
-        destroyOnClose
-      >
-        <Form form={articleForm} layout="vertical">
-          <Form.Item
-            name="title"
-            label="文章标题"
-            rules={[{ required: true, message: '请输入标题' }]}
-          >
-            <Input placeholder="请输入文章标题" />
-          </Form.Item>
-          <Form.Item
-            name="content"
-            label="文章内容"
-            rules={[{ required: true, message: '请输入内容' }]}
-          >
-            <Input.TextArea rows={8} placeholder="请输入文章内容" />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* 新增分类弹窗 */}
-      <Modal
-        title="新增视频分类"
-        open={categoryModalVisible}
-        onOk={addCategory}
-        onCancel={() => setCategoryModalVisible(false)}
-      >
-        <Input 
-          placeholder="输入分类名称（如：电影、短视频）" 
-          value={newCategoryName}
-          onChange={(e) => setNewCategoryName(e.target.value)}
-        />
-      </Modal>
-
-      {/* 新增标签弹窗 */}
-      <Modal
-        title="新增视频标签"
-        open={tagModalVisible}
-        onOk={addTag}
-        onCancel={() => setTagModalVisible(false)}
-      >
-        <Input 
-          placeholder="输入标签名称（如：搞笑、科技）" 
-          value={newTagName}
-          onChange={(e) => setNewTagName(e.target.value)}
-        />
-      </Modal>
-
-      {/* 视频播放抽屉 */}
-      <Drawer
-        title={videoPlayDrawer.video?.title || "视频播放"}
-        open={videoPlayDrawer.visible}
-        onClose={() => setVideoPlayDrawer({...videoPlayDrawer, visible: false})}
-        width={800}
-      >
-        {videoPlayDrawer.video ? (
-          <div style={{ padding: 20 }}>
-            <video 
-              src={videoPlayDrawer.video.url} 
-              controls 
-              width="100%"
-              style={{ maxHeight: 400 }}
-              poster={videoPlayDrawer.video.cover}
-            >
-              您的浏览器不支持HTML5视频播放
-            </video>
-            <Divider />
-            <Row gutter={16}>
-              <Col span={8}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
-              <Col span={8}><Text strong>分类：</Text>{videoPlayDrawer.video.category}</Col>
-              <Col span={8}><Text strong>来源：</Text>{videoPlayDrawer.video.source}</Col>
-              <Col span={24} style={{ marginTop: 8 }}>
-                <Text strong>标签：</Text>
-                {videoPlayDrawer.video.tags.map(tag => (
-                  <Tag key={tag}>{tag}</Tag>
-                ))}
-              </Col>
-              <Col span={24} style={{ marginTop: 8 }}>
-                <Text strong>视频链接：</Text>
-                <Input 
-                  value={videoPlayDrawer.video.url} 
-                  readOnly 
-                  style={{ marginTop: 8 }}
-                />
-              </Col>
-            </Row>
-          </div>
-        ) : (
-          <div style={{ textAlign: 'center', padding: 40 }}>
-            <Text type="secondary">请选择一个视频播放</Text>
-          </div>
-        )}
-      </Drawer>
-
-      {/* 视频源配置抽屉 */}
-      <Drawer
-        title="视频源配置（夸克/阿里云盘）"
-        open={sourceConfigDrawer.visible}
-        onClose={() => setSourceConfigDrawer({ visible: false })}
-        width={800}
-        footer={[
-          <Button key="save" type="primary" onClick={saveVideoSources}>
-            保存配置
-          </Button>
-        ]}
-      >
-        <Table 
-          dataSource={videoSources}
-          rowKey={(record, index) => `source_${index}`}
-          pagination={false}
-          columns={[
-            {
-              title: '源名称',
-              render: (_, record, index) => (
-                <Input 
-                  placeholder="如：阿里云盘-电影库"
-                  value={record.name}
-                  onChange={(e) => updateVideoSource(index, 'name', e.target.value)}
-                />
-              )
-            },
-            {
-              title: '源类型',
-              render: (_, record, index) => (
-                <Select
-                  value={record.type}
-                  onChange={(value) => updateVideoSource(index, 'type', value)}
-                  style={{ width: 130 }}
-                >
-                  <Option value="quark">夸克网盘</Option>
-                  <Option value="aliyun">阿里云盘</Option>
-                  <Option value="bilibili">B站（待扩展）</Option>
-                </Select>
-              )
-            },
-            {
-              title: '抓取频率（Cron）',
-              render: (_, record, index) => (
-                <Input 
-                  placeholder="如 0 */2 * * * 每2小时"
-                  value={record.cron || "* * * * *"}
-                  onChange={(e) => updateVideoSource(index, 'cron', e.target.value)}
-                  style={{ width: 150 }}
-                />
-              )
-            },
-            {
-              title: '网盘路径',
-              render: (_, record, index) => (
-                <Input 
-                  placeholder="/ 表示根目录"
-                  value={record.path || "/"}
-                  onChange={(e) => updateVideoSource(index, 'path', e.target.value)}
-                  style={{ width: 150 }}
-                />
-              )
-            },
-            {
-              title: '分类',
-              render: (_, record, index) => (
-                <Select
-                  placeholder="选择分类"
-                  value={record.category}
-                  onChange={(value) => updateVideoSource(index, 'category', value)}
-                  style={{ width: 120 }}
-                >
-                  {categories.map(c => (
-                    <Option key={c.id} value={c.name}>{c.name}</Option>
-                  ))}
-                </Select>
-              )
-            },
-            {
-              title: '标签',
-              render: (_, record, index) => (
-                <Select
-                  mode="tags"
-                  placeholder="选择/输入标签"
-                  value={record.tags || []}
-                  onChange={(value) => updateVideoSource(index, 'tags', value)}
-                  style={{ width: 200 }}
-                >
-                  {tags.map(t => (
-                    <Option key={t.id} value={t.name}>{t.name}</Option>
-                  ))}
-                </Select>
-              )
-            },
-            {
-              title: '启用',
-              render: (_, record, index) => (
-                <Switch
-                  checked={record.enabled !== false}
-                  onChange={(checked) => updateVideoSource(index, 'enabled', checked)}
-                />
-              )
-            },
-            {
-              title: '操作',
-              render: (_, record, index) => (
-                <Button 
-                  danger 
-                  onClick={() => deleteVideoSource(index)}
-                >
-                  删除
-                </Button>
-              )
-            }
+        {/* 视频源配置抽屉 */}
+        <Drawer
+          title="视频源配置（夸克/阿里云盘）"
+          open={sourceConfigDrawer.visible}
+          onClose={() => setSourceConfigDrawer({ visible: false })}
+          width={800}
+          footer={[
+            <Button key="save" type="primary" onClick={saveVideoSources}>
+              保存配置
+            </Button>
           ]}
-        />
-        <Button 
-          type="dashed" 
-          style={{ marginTop: 16, width: '100%' }}
-          onClick={addVideoSource}
         >
-          添加视频源
-        </Button>
-        <Divider />
-        <Text type="secondary">
-          Cron表达式格式：分 时 日 月 周<br/>
-          示例：<br/>
-          * * * * * - 每分钟<br/>
-          0 */2 * * * - 每2小时<br/>
-          0 9 * * * - 每天9点<br/>
-          */30 * * * * - 每30分钟
-        </Text>
-      </Drawer>
-    </Layout>
+          <Table 
+            dataSource={videoSources}
+            rowKey={(record, index) => `source_${index}`}
+            pagination={false}
+            columns={[
+              {
+                title: '源名称',
+                minWidth: 200,
+                render: (_, record, index) => (
+                  <Input 
+                    placeholder="如：阿里云盘-电影库"
+                    value={record.name}
+                    onChange={(e) => updateVideoSource(index, 'name', e.target.value)}
+                  />
+                )
+              },
+              {
+                title: '源类型',
+                render: (_, record, index) => (
+                  <Select
+                    value={record.type}
+                    onChange={(value) => updateVideoSource(index, 'type', value)}
+                    style={{ width: 130 }}
+                  >
+                    <Option value="quark">夸克网盘</Option>
+                    <Option value="aliyun">阿里云盘</Option>
+                    <Option value="bilibili">B站（待扩展）</Option>
+                  </Select>
+                )
+              },
+              {
+                title: '抓取频率（Cron）',
+                render: (_, record, index) => (
+                  <Input 
+                    placeholder="如 0 */2 * * * 每2小时"
+                    value={record.cron || "* * * * *"}
+                    onChange={(e) => updateVideoSource(index, 'cron', e.target.value)}
+                    style={{ width: 150 }}
+                  />
+                )
+              },
+              {
+                title: '网盘路径',
+                render: (_, record, index) => (
+                  <Input 
+                    placeholder="/ 表示根目录"
+                    value={record.path || "/"}
+                    onChange={(e) => updateVideoSource(index, 'path', e.target.value)}
+                    style={{ width: 150 }}
+                  />
+                )
+              },
+              {
+                title: '分类',
+                render: (_, record, index) => (
+                  <Select
+                    placeholder="选择分类"
+                    value={record.category}
+                    onChange={(value) => updateVideoSource(index, 'category', value)}
+                    style={{ width: 120 }}
+                  >
+                    {categories.map(c => (
+                      <Option key={c.id} value={c.name}>{c.name}</Option>
+                    ))}
+                  </Select>
+                )
+              },
+              {
+                title: '标签',
+                render: (_, record, index) => (
+                  <Select
+                    mode="tags"
+                    placeholder="选择/输入标签"
+                    value={record.tags || []}
+                    onChange={(value) => updateVideoSource(index, 'tags', value)}
+                    style={{ width: 200 }}
+                  >
+                    {tags.map(t => (
+                      <Option key={t.id} value={t.name}>{t.name}</Option>
+                    ))}
+                  </Select>
+                )
+              },
+              {
+                title: '启用',
+                render: (_, record, index) => (
+                  <Switch
+                    checked={record.enabled !== false}
+                    onChange={(checked) => updateVideoSource(index, 'enabled', checked)}
+                  />
+                )
+              },
+              {
+                title: '操作',
+                render: (_, record, index) => (
+                  <Button 
+                    danger 
+                    onClick={() => deleteVideoSource(index)}
+                  >
+                    删除
+                  </Button>
+                )
+              }
+            ]}
+          />
+          <Button 
+            type="dashed" 
+            style={{ marginTop: 16, width: '100%' }}
+            onClick={addVideoSource}
+          >
+            添加视频源
+          </Button>
+          <Divider />
+          <Text type="secondary">
+            Cron表达式格式：分 时 日 月 周<br/>
+            示例：<br/>
+            * * * * * - 每分钟<br/>
+            0 */2 * * * - 每2小时<br/>
+            0 9 * * * - 每天9点<br/>
+            */30 * * * * - 每30分钟
+          </Text>
+        </Drawer>
+      </Layout>
+    </ConfigProvider>
   );
 }
 

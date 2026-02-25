@@ -7,6 +7,12 @@ kv_namespaces = [
   { binding = "KV", id = "byt-cms" }
 ]
 
+[[
+r2_buckets
+]]
+binding = "UPLOAD_BUCKET" # 必须和代码中变量名一致
+bucket_name = "blog" # 你的 R2 存储桶名称
+
 # 环境变量（夸克网盘API密钥）
 [vars]
 QUARK_API_KEY = "你的夸克网盘API Key"

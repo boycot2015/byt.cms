@@ -21,6 +21,12 @@
 		// Optional: preview_id used when running `wrangler dev` for local dev
 		"preview_id": "<ID_OF_PREVIEW_KV_NAMESPACE_FOR_LOCAL_DEVELOPMENT>"
 		}
+	],
+	"r2_buckets": [
+		{
+		"binding": "UPLOAD_BUCKET", // <~ valid JavaScript variable name
+		"bucket_name": "blog"
+		}
 	]
 	/**
 	 * Smart Placement

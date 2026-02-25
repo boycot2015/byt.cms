@@ -150,7 +150,13 @@ export default {
   // HTTP请求处理
   async fetch(
     request: Request,
-    env: { KV: KVNamespace },
+    env: {
+      KV: KVNamespace,
+      UPLOAD_BUCKET: R2Bucket,
+      QUARK_API_KEY: string,
+      QUARK_API_SECRET: string,
+      ALIYUN_ACCESS_TOKEN: string
+    },
     ctx: ExecutionContext
   ): Promise<Response> {
     const corsHeaders = {
@@ -368,7 +374,108 @@ export default {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    // ========== 新增：图片上传接口（对接 R2） ==========
+    if (path === "/api/upload/image" && request.method === "POST") {
+      try {
+        // 解析 FormData 格式的上传请求
+        const formData = await request.formData();
+        const file = formData.get("file") as File;
+        
+        if (!file) {
+          return new Response(JSON.stringify({ 
+            success: false, 
+            message: "未选择文件" 
+          }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 400,
+          });
+        }
 
+        // 验证文件类型（仅允许图片）
+        const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        if (!allowedTypes.includes(file.type)) {
+          return new Response(JSON.stringify({ 
+            success: false, 
+            message: "仅支持 jpg/png/gif/webp 格式" 
+          }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 400,
+          });
+        }
+
+        // 验证文件大小（限制 5MB）
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+          return new Response(JSON.stringify({ 
+            success: false, 
+            message: "文件大小不能超过 5MB" 
+          }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 400,
+          });
+        }
+
+        // 生成唯一文件名
+        const fileName = `upload/${Date.now()}_${Math.random().toString(36).slice(2)}.${file.name.split('.').pop()}`;
+        
+        // 上传文件到 R2
+        await env.UPLOAD_BUCKET.put(fileName, file, {
+          httpMetadata: {
+            contentType: file.type,
+          },
+          customMetadata: {
+            uploadTime: new Date().toISOString(),
+            originalName: file.name,
+          },
+        });
+
+        // 生成图片访问链接（两种方式二选一）
+        // 方式1：R2 公共访问（需开启存储桶公共访问）
+        const imageUrl = `file.boycot.dpdns.org/${fileName}`; // 替换为你的 R2 公共域名
+        
+        // 方式2：通过 Workers 代理访问（无需公共访问，更安全）
+        // const imageUrl = `https://cms-api.your-username.workers.dev/api/image/${fileName}`;
+
+        return new Response(JSON.stringify({
+          success: true,
+          data: {
+            url: imageUrl, // 富文本需要的图片链接
+            name: file.name,
+            size: file.size,
+          },
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      } catch (error) {
+        console.error("图片上传失败:", error);
+        return new Response(JSON.stringify({ 
+          success: false, 
+          message: "上传失败：" + (error as Error).message 
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 500,
+        });
+      }
+    }
+
+    // ========== 可选：Workers 代理访问 R2 图片（方式2） ==========
+    if (path.startsWith("/api/image/") && request.method === "GET") {
+      const fileName = path.replace("/api/image/", "");
+      try {
+        const object = await env.UPLOAD_BUCKET.get(fileName);
+        if (!object) {
+          return new Response("图片不存在", { status: 404 });
+        }
+        return new Response(object.body, {
+          headers: {
+            "Content-Type": object.httpMetadata.contentType || "image/jpeg",
+            "Cache-Control": "public, max-age=31536000", // 缓存1年
+          },
+        });
+      } catch (error) {
+        return new Response("获取图片失败", { status: 500 });
+      }
+    }
     // 未匹配路由
     return new Response(JSON.stringify({ error: "Not Found" }), {
       headers: corsHeaders,
