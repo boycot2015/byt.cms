@@ -316,7 +316,12 @@ async function fetchVideoBySource(sourceConfig: any, env: any) {
       return await fetchJianguoYunVideo(sourceConfig, env);
     case "wolong":
     case "liangzi":
+    case "shandian":
+    case "wujin":
     case "baiwan":
+    case "jingying":
+    case "youzhi":
+    case "yhm3u8":
       return await fetchCmsVideo(sourceConfig, env);
     case "bilibili":
       return [];
@@ -351,11 +356,16 @@ const setVideoList = async (source: any, env: any) => {
           break;
         }
       }
+      const tags = await Promise.all(video.tags.map((tag: string) => setTag({ name: tag }, env)));
+      const category = await setCategory({ name: video.category || "" }, env);
+
       if (!isDuplicate) {
         const videoId = `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
         const videoData = {
           id: videoId,
           ...video,
+          categoryId: category.id || "",
+          tagIds: tags.map((tag:any) => tag.id) || [],
           fetchTime: new Date().toISOString(),
           status: "active"
         };
@@ -368,6 +378,49 @@ const setVideoList = async (source: any, env: any) => {
   } catch (error) {
     console.error(`源[${source.name}]设置失败:`, error);
   }
+}
+const setCategory = async (body:any, env: any) => {
+  const id = `category:${Date.now()}`;
+  const existingCategory = await env.KV.get(body.id || `category:${body.name}`);
+  // console.log(existingCategory, body.id || `category:${body.name}`, 'setCategory');
+  if (existingCategory) {
+    let category = JSON.parse(existingCategory)
+    if (category)  {
+      let newCategory = {...category, ...body };
+      if (category.id) await env.KV.put(category.id, JSON.stringify(newCategory));
+      return newCategory;
+    };
+    return JSON.parse(existingCategory);
+  }
+  const category = {
+    id,
+    name: body.name,
+    desc: body.desc || "",
+    createTime: new Date().toISOString()
+  };
+  await env.KV.put(id, JSON.stringify(category));
+  return category;
+}
+const setTag = async (body:any, env: any) => {
+  const existing = await env.KV.get(body.id || `tag:${body.name}`);
+  console.log(existing, 'setTag');
+  if (existing) {
+    let tag = JSON.parse(existing)
+    if (tag){
+      let newTag = {...tag, ...body };
+      if(tag.id) await env.KV.put(tag.id, JSON.stringify(newTag));
+      return newTag;
+    };
+    return JSON.parse(existing);
+  }
+  const id = `tag:${Date.now()}`;
+  const tag = {
+    id,
+    name: body.name,
+    createTime: new Date().toISOString()
+  };
+  await env.KV.put(id, JSON.stringify(tag));
+  return tag;
 }
 export default {
   async fetch(
@@ -491,27 +544,27 @@ export default {
         const category = await env.KV.get(key.name);
         categories.push(JSON.parse(category!));
       }
-      return new Response(JSON.stringify(categories), {
+      return new Response(JSON.stringify(categories.reverse()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     if (path === "/api/categories" && request.method === "POST") {
       const body = await request.json();
-      const id = `category:${Date.now()}`;
-      const category = {
-        id,
-        name: body.name,
-        desc: body.desc || "",
-        createTime: new Date().toISOString()
-      };
-      await env.KV.put(id, JSON.stringify(category));
+      const category = await setCategory(body, env);
       return new Response(JSON.stringify(category), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 201,
       });
     }
-
+    if (path.startsWith("/api/categories/") && request.method === "DELETE") {
+      const id = path.replace("/api/categories/", "");
+      await env.KV.delete(`category:${id}`);
+      return new Response(JSON.stringify({success: true}), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
     // 标签管理
     if (path === "/api/tags" && request.method === "GET") {
       const keys = await env.KV.list({ prefix: "tag:" });
@@ -520,26 +573,26 @@ export default {
         const tag = await env.KV.get(key.name);
         tags.push(JSON.parse(tag!));
       }
-      return new Response(JSON.stringify(tags), {
+      return new Response(JSON.stringify(tags.reverse()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
     if (path === "/api/tags" && request.method === "POST") {
       const body = await request.json();
-      const id = `tag:${Date.now()}`;
-      const tag = {
-        id,
-        name: body.name,
-        createTime: new Date().toISOString()
-      };
-      await env.KV.put(id, JSON.stringify(tag));
+      const tag = await setTag(body, env);
       return new Response(JSON.stringify(tag), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 201,
       });
     }
-
+    if (path.startsWith("/api/tags/") && request.method === "DELETE") {
+      const id = path.replace("/api/tags/", "");
+      await env.KV.delete(`tag:${id}`);
+      return new Response(JSON.stringify({success: true}), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 201,
+      });
+    }
     // 视频管理
     if (path === "/api/videos" && request.method === "GET") {
       const category = url.searchParams.get("category");
@@ -550,9 +603,9 @@ export default {
         const video = JSON.parse(await env.KV.get(key.name) || "{}");
         videos.push(video);
       }
-      if (category) videos = videos.filter(v => v.category === category);
-      if (tag) videos = videos.filter(v => v.tags.includes(tag));
-      return new Response(JSON.stringify(videos), {
+      if (category) videos = videos.filter(v => v.categoryId === category);
+      if (tag) videos = videos.filter(v => v.tagIds.includes(tag));
+      return new Response(JSON.stringify(videos.reverse()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
