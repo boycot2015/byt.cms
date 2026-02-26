@@ -22,7 +22,7 @@ ALIYUN_REFRESH_TOKEN = "你的阿里云盘RefreshToken" # 可选自动刷新
 JIANGUOYUN_USERNAME = "boycot2017@163.com"
 JIANGUOYUN_APP_PASSWORD = "agagm2wra6wai9mb"
 
-# 定时任务（主调度任务，每分钟执行一次，用于分发不同源的抓取）
+# 定时任务（主调度任务，每5分钟执行一次，用于分发不同源的抓取）
 triggers = [
   { crons = ["* * * * *"] }
 ]

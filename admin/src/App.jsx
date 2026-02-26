@@ -4,19 +4,20 @@ import {
   message, Card, Row, Col, Tabs, Switch, Select, Tag,
   Image, Drawer, Divider, ConfigProvider
 } from 'antd';
+import sourceConfig from './sourceConfig';
 import axios from 'axios';
 // 新增：引入富文本编辑器组件
 import RichTextEditor from './components/Editor';
 import { 
   EditOutlined, DeleteOutlined, PlusOutlined, SyncOutlined, 
-  ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined
+  ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
+  DownloadOutlined // 新增：引入下载/拉取图标
 } from '@ant-design/icons';
 import zhCN from 'antd/locale/zh_CN';
 const { Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
-const { Option } = Select;
-console.log(import.meta.env, 'import.meta.env');
+// console.log(import.meta.env, 'import.meta.env');
 
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
@@ -50,6 +51,8 @@ function App() {
     visible: false
   });
   const [videoSources, setVideoSources] = useState([]);
+  // 新增：手动拉取视频的加载状态
+  const [fetchingSource, setFetchingSource] = useState(-1); // -1表示没有拉取，index表示正在拉取第几个源
 
   // ========== 文章管理方法 ==========
   const fetchArticles = async () => {
@@ -199,6 +202,51 @@ function App() {
       message.error('保存配置失败');
       console.error(err);
     }
+  };
+
+  // 新增：根据源类型手动拉取视频数据
+  const fetchVideoBySource = async (source, index) => {
+    if (!source || !source.type) {
+      message.warning('请先配置有效的视频源类型');
+      return;
+    }
+    
+    setFetchingSource(index);
+    try {
+      // 发送拉取视频请求，携带源类型等参数
+      const res = await axios.get(`${API_BASE}/api/video-source-data/${source.type}`);
+      
+      if (res.data.success) {
+        message.success(`成功拉取 ${res.data.count || 0} 个视频`);
+        // 拉取成功后刷新视频列表
+        fetchVideos();
+      } else {
+        message.error(`拉取失败：${res.data.message || '未知错误'}`);
+      }
+    } catch (err) {
+      message.error(`拉取视频失败：${err.message || '网络错误'}`);
+      console.error('手动拉取视频失败：', err);
+    } finally {
+      setFetchingSource(-1);
+    }
+  };
+
+  // 新增：批量拉取所有启用的视频源
+  const fetchAllEnabledSources = async () => {
+    const enabledSources = videoSources.filter(s => s.enabled !== false);
+    if (enabledSources.length === 0) {
+      message.warning('没有启用的视频源');
+      return;
+    }
+    
+    message.info(`开始批量拉取 ${enabledSources.length} 个视频源的数据`);
+    
+    // 逐个拉取视频源
+    for (let i = 0; i < enabledSources.length; i++) {
+      await fetchVideoBySource(enabledSources[i], -1);
+    }
+    
+    message.success('批量拉取完成');
   };
 
   const handleDeleteVideo = async (record) => {
@@ -360,10 +408,11 @@ function App() {
                         value={selectedCategory}
                         onChange={setSelectedCategory}
                         allowClear
+                        options={categories.map(c => ({
+                          label: c.name,
+                          value: c.id
+                        }))}
                       >
-                        {categories.map(c => (
-                          <Option key={c.id} value={c.name}>{c.name}</Option>
-                        ))}
                       </Select>
                       <Select
                         placeholder="选择标签筛选"
@@ -371,10 +420,11 @@ function App() {
                         value={selectedTag}
                         onChange={setSelectedTag}
                         allowClear
+                        options={tags.map(t => ({
+                          label: t.name,
+                          value: t.id
+                        }))}
                       >
-                        {tags.map(t => (
-                          <Option key={t.id} value={t.name}>{t.name}</Option>
-                        ))}
                       </Select>
                       <Button 
                         icon={<ClockCircleOutlined />}
@@ -570,7 +620,7 @@ function App() {
           {videoPlayDrawer.video ? (
             <div style={{ padding: 20 }}>
               <video 
-                src={videoPlayDrawer.video.url} 
+                src={(sourceConfig[videoPlayDrawer.video.source].playUrl || '') + videoPlayDrawer.video.url} 
                 controls 
                 width="100%"
                 style={{ maxHeight: 400 }}
@@ -611,8 +661,17 @@ function App() {
           title="视频源配置（夸克/阿里云盘）"
           open={sourceConfigDrawer.visible}
           onClose={() => setSourceConfigDrawer({ visible: false })}
-          width={800}
+          size={800}
           footer={[
+            // 新增：批量拉取按钮
+            <Button 
+              key="fetchAll" 
+              icon={<DownloadOutlined />} 
+              onClick={fetchAllEnabledSources}
+              style={{ marginRight: 8 }}
+            >
+              批量拉取所有启用源
+            </Button>,
             <Button key="save" type="primary" onClick={saveVideoSources}>
               保存配置
             </Button>
@@ -641,11 +700,11 @@ function App() {
                     value={record.type}
                     onChange={(value) => updateVideoSource(index, 'type', value)}
                     style={{ width: 130 }}
+                    options={Object.keys(sourceConfig).map(key => ({
+                      label: sourceConfig[key].name,
+                      value: key
+                    }))}
                   >
-                    <Option value="quark">夸克网盘</Option>
-                    <Option value="aliyun">阿里云盘</Option>
-                    <Option value="jianguoyun">坚果云盘</Option>
-                    <Option value="bilibili">B站（待扩展）</Option>
                   </Select>
                 )
               },
@@ -661,11 +720,11 @@ function App() {
                 )
               },
               {
-                title: '网盘路径',
+                title: '获取路径',
                 render: (_, record, index) => (
                   <Input 
                     placeholder="/ 表示根目录"
-                    value={record.path || "/"}
+                    value={record.path || ""}
                     onChange={(e) => updateVideoSource(index, 'path', e.target.value)}
                     style={{ width: 150 }}
                   />
@@ -679,10 +738,11 @@ function App() {
                     value={record.category}
                     onChange={(value) => updateVideoSource(index, 'category', value)}
                     style={{ width: 120 }}
+                    options={categories.map(c => ({
+                      label: c.name,
+                      value: c.id
+                    }))}
                   >
-                    {categories.map(c => (
-                      <Option key={c.id} value={c.name}>{c.name}</Option>
-                    ))}
                   </Select>
                 )
               },
@@ -695,10 +755,11 @@ function App() {
                     value={record.tags || []}
                     onChange={(value) => updateVideoSource(index, 'tags', value)}
                     style={{ width: 200 }}
+                    options={tags.map(t => ({
+                      label: t.name,
+                      value: t.id
+                    }))}
                   >
-                    {tags.map(t => (
-                      <Option key={t.id} value={t.name}>{t.name}</Option>
-                    ))}
                   </Select>
                 )
               },
@@ -714,12 +775,26 @@ function App() {
               {
                 title: '操作',
                 render: (_, record, index) => (
-                  <Button 
-                    danger 
-                    onClick={() => deleteVideoSource(index)}
-                  >
-                    删除
-                  </Button>
+                  <Space>
+                    {/* 新增：手动拉取按钮 */}
+                    <Button 
+                      type="primary" 
+                      size="small"
+                      icon={<DownloadOutlined />}
+                      loading={fetchingSource === index}
+                      onClick={() => fetchVideoBySource(record, index)}
+                      disabled={!record.type}
+                    >
+                      手动拉取
+                    </Button>
+                    <Button 
+                      danger 
+                      size="small"
+                      onClick={() => deleteVideoSource(index)}
+                    >
+                      删除
+                    </Button>
+                  </Space>
                 )
               }
             ]}

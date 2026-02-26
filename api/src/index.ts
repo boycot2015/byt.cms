@@ -281,7 +281,30 @@ async function fetchJianguoYunVideo(sourceConfig: any, env: any) {
     path: file.path,
   }));
 }
-
+async function fetchCmsVideo(sourceConfig: any, env: any) {
+  const videos:any = await withRetry(() => fetch(sourceConfig.path || "/").then(res => res.json()));
+  // console.log(videos, 'cms----videos');
+  return videos?.list?.map((file: any) => ({
+    title: file.vod_name || file.title || "",
+    subTtitle: file.vod_remarks || "",
+    url: file.vod_play_url?.split('#')?.[0]?.split('$')?.[1] || file.url || "",
+    urls: file.vod_play_url?.split('#').map((item: string) => ({
+      label: item.split('$')?.[0] || "",
+      url: item.split('$')?.[1] || "",
+    })) || [],
+    actors: file.vod_actor?.split('/').map((actor: string) => actor.trim()).filter((actor: string) => actor && actor !== '暂无') || [],
+    director: file.vod_director || "",
+    writer: file.vod_writer || "",
+    cover: file.vod_pic || "",
+    size: file.vod_total || 0,
+    source: file.vod_play_from || sourceConfig.type || "默认源",
+    category: file.type_name || "默认分类",
+    tags:  [file.vod_area, file.vod_lang].filter((tag: string) => tag),
+    fetchTime: file.vod_time || "",
+    path: file.path || "",
+  }));
+  
+}
 // 通用视频抓取函数
 async function fetchVideoBySource(sourceConfig: any, env: any) {
   switch (sourceConfig.type) {
@@ -291,6 +314,10 @@ async function fetchVideoBySource(sourceConfig: any, env: any) {
       return await fetchAliyunVideo(sourceConfig, env);
     case "jianguoyun":
       return await fetchJianguoYunVideo(sourceConfig, env);
+    case "wolong":
+    case "liangzi":
+    case "baiwan":
+      return await fetchCmsVideo(sourceConfig, env);
     case "bilibili":
       return [];
     default:
@@ -311,7 +338,36 @@ function isTimeToFetch(sourceConfig: any): boolean {
     (weekday === "*" || now.getDay() === weekday)
   );
 }
-
+const setVideoList = async (source: any, env: any) => {
+  try {
+    const videos = await withRetry(() => fetchVideoBySource(source, env));
+    for (const video of videos) {
+      const existingKeys = await env.KV.list({ prefix: "video:" });
+      let isDuplicate = false;
+      for (const key of existingKeys.keys) {
+        const v = JSON.parse(await env.KV.get(key.name) || "{}");
+        if (v.url === video.url) {
+          isDuplicate = true;
+          break;
+        }
+      }
+      if (!isDuplicate) {
+        const videoId = `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const videoData = {
+          id: videoId,
+          ...video,
+          fetchTime: new Date().toISOString(),
+          status: "active"
+        };
+        await env.KV.put(videoId, JSON.stringify(videoData));
+        console.log(`成功存储视频: ${video.title}`);
+      }
+    }
+    return videos;
+  } catch (error) {
+    console.error(`源[${source.name}]设置失败:`, error);
+  }
+}
 export default {
   async fetch(
     request: Request,
@@ -528,10 +584,10 @@ export default {
       const sources: any = JSON.parse(await env.KV.get("video_sources") || "[]");
       const source = sources.find((s: any) => s.type === type) || {
           "name": "新源1772010611650",
-          "type": "jianguoyun",
+          "type": "wolong",
           "cron": "* * * * *",
           "enabled": true,
-          "path": "/",
+          "path": "https://collect.wolongzy.cc/api.php/provide/vod/?ac=detail",
           "categoryId": "",
           "category": "动漫",
           "tags": [
@@ -544,7 +600,7 @@ export default {
           status: 404
         });
       }
-      const data = await fetchVideoBySource(source, env);
+      const data = await setVideoList(source, env);
       return new Response(JSON.stringify(data), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -616,7 +672,6 @@ export default {
       status: 404,
     });
   },
-
   async scheduled(
     event: ScheduledEvent,
     env: {
@@ -644,29 +699,7 @@ export default {
         continue;
       }
       try {
-        const videos = await withRetry(() => fetchVideoBySource(source, env));
-        for (const video of videos) {
-          const existingKeys = await env.KV.list({ prefix: "video:" });
-          let isDuplicate = false;
-          for (const key of existingKeys.keys) {
-            const v = JSON.parse(await env.KV.get(key.name) || "{}");
-            if (v.url === video.url) {
-              isDuplicate = true;
-              break;
-            }
-          }
-          if (!isDuplicate) {
-            const videoId = `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
-            const videoData = {
-              id: videoId,
-              ...video,
-              fetchTime: new Date().toISOString(),
-              status: "active"
-            };
-            await env.KV.put(videoId, JSON.stringify(videoData));
-            console.log(`成功存储视频: ${video.title}`);
-          }
-        }
+        await setVideoList(source, env);
       } catch (error) {
         console.error(`源[${source.name}]抓取失败:`, error);
         continue;
