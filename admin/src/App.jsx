@@ -408,7 +408,7 @@ function App() {
                         value={selectedCategory}
                         onChange={setSelectedCategory}
                         allowClear
-                        options={categories.map(c => ({
+                        options={categories?.map(c => ({
                           label: c.name,
                           value: c.id
                         }))}
@@ -420,7 +420,7 @@ function App() {
                         value={selectedTag}
                         onChange={setSelectedTag}
                         allowClear
-                        options={tags.map(t => ({
+                        options={tags?.map(t => ({
                           label: t.name,
                           value: t.id
                         }))}
@@ -635,14 +635,14 @@ function App() {
                 <Col span={8}><Text strong>来源：</Text>{videoPlayDrawer.video.source}</Col>
                 <Col span={24} style={{ marginTop: 8 }}>
                   <Text strong>标签：</Text>
-                  {videoPlayDrawer.video.tags.map(tag => (
+                  {videoPlayDrawer.video?.tags?.map(tag => (
                     <Tag key={tag}>{tag}</Tag>
                   ))}
                 </Col>
                 <Col span={24} style={{ marginTop: 8 }}>
                   <Text strong>视频链接：</Text>
                   <Input 
-                    value={videoPlayDrawer.video.url} 
+                    value={videoPlayDrawer.video?.url || ''} 
                     readOnly 
                     style={{ marginTop: 8 }}
                   />
@@ -700,7 +700,7 @@ function App() {
                     value={record.type}
                     onChange={(value) => updateVideoSource(index, 'type', value)}
                     style={{ width: 130 }}
-                    options={Object.keys(sourceConfig).map(key => ({
+                    options={Object.keys(sourceConfig)?.map(key => ({
                       label: sourceConfig[key].name,
                       value: key
                     }))}
@@ -738,7 +738,7 @@ function App() {
                     value={record.category}
                     onChange={(value) => updateVideoSource(index, 'category', value)}
                     style={{ width: 120 }}
-                    options={categories.map(c => ({
+                    options={categories?.map(c => ({
                       label: c.name,
                       value: c.id
                     }))}
@@ -755,7 +755,7 @@ function App() {
                     value={record.tags || []}
                     onChange={(value) => updateVideoSource(index, 'tags', value)}
                     style={{ width: 200 }}
-                    options={tags.map(t => ({
+                    options={tags?.map(t => ({
                       label: t.name,
                       value: t.id
                     }))}
