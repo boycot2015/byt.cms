@@ -478,7 +478,7 @@ function App() {
                       key: 'tags',
                       render: (tags) => (
                         <>
-                          {tags.map(tag => (
+                          {tags?.map(tag => (
                             <Tag key={tag}>{tag}</Tag>
                           ))}
                         </>
