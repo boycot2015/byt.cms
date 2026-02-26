@@ -286,7 +286,7 @@ async function fetchCmsVideo(sourceConfig: any, env: any) {
   // console.log(videos, 'cms----videos');
   return videos?.list?.map((file: any) => ({
     title: file.vod_name || file.title || "",
-    subTtitle: file.vod_remarks || "",
+    subTitle: file.vod_remarks || "",
     url: file.vod_play_url?.split('#')?.[0]?.split('$')?.[1] || file.url || "",
     urls: file.vod_play_url?.split('#').map((item: string) => ({
       label: item.split('$')?.[0] || "",
@@ -297,7 +297,7 @@ async function fetchCmsVideo(sourceConfig: any, env: any) {
     writer: file.vod_writer || "",
     cover: file.vod_pic || "",
     size: file.vod_total || 0,
-    source: file.vod_play_from || sourceConfig.type || "默认源",
+    source: file.vod_play_from.split('$$$')?.[0] || sourceConfig.type || "默认源",
     category: file.type_name || "默认分类",
     tags:  [file.vod_area, file.vod_lang].filter((tag: string) => tag),
     fetchTime: file.vod_time || "",
@@ -361,6 +361,7 @@ const setVideoList = async (source: any, env: any) => {
         };
         await env.KV.put(videoId, JSON.stringify(videoData));
         console.log(`成功存储视频: ${video.title}`);
+        return videos;
       }
     }
     return videos;
@@ -601,7 +602,12 @@ export default {
         });
       }
       const data = await setVideoList(source, env);
-      return new Response(JSON.stringify(data), {
+      return new Response(JSON.stringify({
+        success: true,
+        code: 200,
+        count: data.length,
+        data
+      }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

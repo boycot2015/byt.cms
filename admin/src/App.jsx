@@ -215,6 +215,7 @@ function App() {
     try {
       // 发送拉取视频请求，携带源类型等参数
       const res = await axios.get(`${API_BASE}/api/video-source-data/${source.type}`);
+      console.log(res, '拉取视频源数据响应');
       
       if (res.data.success) {
         message.success(`成功拉取 ${res.data.count || 0} 个视频`);
@@ -355,6 +356,7 @@ function App() {
   return (
     <ConfigProvider
     locale={zhCN}
+    componentSize="medium"
     theme={{
       token: {
         colorPrimary: '#ff9900',
@@ -371,8 +373,8 @@ function App() {
           </Row>
         </Header>
 
-        <Content style={{ padding: '24px', width: '100%' }}>
-          <Card style={{ width: '100%' }}>
+        <Content style={{ padding: '24px 24px 0', width: '100%' }}>
+          <Card style={{ width: '100%' }} styles={{ body: { padding: '0 10px' } }}>
             <Tabs defaultActiveKey="1" style={{ width: '100%' }}>
               {/* 视频资源管理标签页 */}
               <TabPane tab="视频资源管理" key="1">
@@ -437,7 +439,8 @@ function App() {
                 </Row>
 
                 {/* 视频列表（带预览） */}
-                <Table 
+                <Table
+                  scroll={{ x: 1000,y:'calc(100vh - 400px)' }}
                   columns={[
                     {
                       title: '封面',
@@ -447,7 +450,7 @@ function App() {
                         record.cover ? (
                           <Image 
                             width={80} 
-                            height={60} 
+                            height={120} 
                             src={record.cover} 
                             fallback="https://via.placeholder.com/80x60?text=无封面"
                             preview={false}
@@ -465,6 +468,10 @@ function App() {
                       title: '标题',
                       dataIndex: 'title',
                       key: 'title',
+                      render: (title,record) => <div>
+                        {title}
+                        <p>{record.subTitle}</p>
+                        </div>
                     },
                     {
                       title: '分类',
@@ -661,7 +668,7 @@ function App() {
           title="视频源配置（夸克/阿里云盘）"
           open={sourceConfigDrawer.visible}
           onClose={() => setSourceConfigDrawer({ visible: false })}
-          size={800}
+          size={'90%'}
           footer={[
             // 新增：批量拉取按钮
             <Button 
