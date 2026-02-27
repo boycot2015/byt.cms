@@ -34,7 +34,7 @@ class AliyunDriveClient {
     this.clientSecret = env.ALIYUN_CLIENT_SECRET || "";
   }
 
-  private async refreshAccessToken(): Promise<string> {
+  private async refreshAccessToken(): Promise<string|null> {
     if (this.accessToken && Date.now() < this.tokenExpireTime) {
       return this.accessToken;
     }
@@ -49,7 +49,7 @@ class AliyunDriveClient {
       })
     });
     if (!response.ok) throw new Error(`刷新令牌失败: ${response.status}`);
-    const data = await response.json();
+    const data:any = await response.json();
     this.accessToken = data.access_token;
     this.tokenExpireTime = Date.now() + (data.expires_in - 300) * 1000;
     if (data.refresh_token) this.refreshToken = data.refresh_token;
@@ -79,7 +79,7 @@ class AliyunDriveClient {
       })
     });
     if (!response.ok) throw new Error(`获取目录列表失败: ${response.status}`);
-    const data = await response.json();
+    const data:any = await response.json();
     const folder = data.items?.find((item: any) => item.type === "folder" && item.name === currentFolder);
     if (!folder) throw new Error(`路径不存在: ${path}`);
     const remainingPath = pathParts.slice(1).join("/");
@@ -92,7 +92,7 @@ class AliyunDriveClient {
       headers: await this.getHeaders()
     });
     if (!response.ok) throw new Error(`获取drive_id失败: ${response.status}`);
-    const data = await response.json();
+    const data:any = await response.json();
     return data.default_drive_id;
   }
 
@@ -116,7 +116,7 @@ class AliyunDriveClient {
         })
       });
       if (!response.ok) throw new Error(`获取文件列表失败: ${response.status}`);
-      const data = await response.json();
+      const data:any = await response.json();
       allFiles = allFiles.concat(data.items || []);
       marker = data.next_marker || "";
     } while (marker);
@@ -233,7 +233,7 @@ async function fetchQuarkVideo(sourceConfig: any, env: any) {
     });
   });
   if (!response.ok) throw new Error(`夸克网盘API请求失败: ${response.status}`);
-  const data = await response.json();
+  const data:any = await response.json();
   return data.data.files
     .filter((file: any) => file.mime_type.startsWith("video/"))
     .map((file: any) => ({
@@ -282,9 +282,9 @@ async function fetchJianguoYunVideo(sourceConfig: any, env: any) {
   }));
 }
 async function fetchCmsVideo(sourceConfig: any, env: any) {
-  const videos:any = await withRetry(() => fetch(sourceConfig.path || "/").then(res => res.json()));
-  // console.log(videos, 'cms----videos');
-  return videos?.list?.map((file: any) => ({
+  const video:any = await withRetry(() => fetch(sourceConfig.path || "/").then(res => res.json()));
+  const videoDetial:any = await withRetry(() => fetch(sourceConfig.path.replace('?ac=list', '?ac=detail') || "/").then(res => res.json()));
+  let list = videoDetial?.list?.map((file: any) => ({
     title: file.vod_name || file.title || "",
     subTitle: file.vod_remarks || "",
     url: file.vod_play_url?.split('#')?.[0]?.split('$')?.[1] || file.url || "",
@@ -303,6 +303,16 @@ async function fetchCmsVideo(sourceConfig: any, env: any) {
     fetchTime: file.vod_time || "",
     path: file.path || "",
   }));
+  return {
+    list,
+    page: video?.page || 0,
+    limit: video?.limit || 0,
+    total: video?.total || 0,
+    categories: video?.class?.map((item: any) => ({
+      id: item.type_id,
+      name: item.type_name,
+    })) || []
+  }
   
 }
 // 通用视频抓取函数
@@ -317,8 +327,10 @@ async function fetchVideoBySource(sourceConfig: any, env: any) {
     case "wolong":
     case "liangzi":
     case "shandian":
+    case "wjm3u8":
     case "wujin":
     case "baiwan":
+    case "1080zyk":
     case "jingying":
     case "youzhi":
     case "yhm3u8":
@@ -345,52 +357,64 @@ function isTimeToFetch(sourceConfig: any): boolean {
 }
 const setVideoList = async (source: any, env: any) => {
   try {
-    const videos = await withRetry(() => fetchVideoBySource(source, env));
+    const data = await withRetry(() => fetchVideoBySource(source, env));
+    let videos = data.list || data || [];
+    // console.log(videos, 'cms----videos');
     for (const video of videos) {
       const existingKeys = await env.KV.list({ prefix: "video:" });
       let isDuplicate = false;
+      let existing = null;
       for (const key of existingKeys.keys) {
         const v = JSON.parse(await env.KV.get(key.name) || "{}");
         if (v.url === video.url) {
           isDuplicate = true;
+          existing = v
           break;
         }
       }
       const tags = await Promise.all(video.tags.map((tag: string) => setTag({ name: tag }, env)));
       const category = await setCategory({ name: video.category || "" }, env);
 
-      if (!isDuplicate) {
-        const videoId = `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
-        const videoData = {
-          id: videoId,
-          ...video,
-          categoryId: category.id || "",
-          tagIds: tags.map((tag:any) => tag.id) || [],
-          fetchTime: new Date().toISOString(),
-          status: "active"
-        };
-        await env.KV.put(videoId, JSON.stringify(videoData));
-        console.log(`成功存储视频: ${video.title}`);
-        return videos;
-      }
+      const videoId = `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const videoData = {
+        id: isDuplicate ? existing.id || videoId : videoId,
+        ...video,
+        categoryId: category.id || "",
+        createTime: isDuplicate ? existing.createTime || new Date().toISOString() : new Date().toISOString(),
+        tagIds: tags.map((tag:any) => tag.id) || [],
+        fetchTime: new Date().toISOString(),
+        status: "active"
+      };
+      await env.KV.put(videoData.id, JSON.stringify(videoData));
+      console.log(`成功存储视频: ${video.title}`);
+      return data;
     }
-    return videos;
+    return data;
   } catch (error) {
     console.error(`源[${source.name}]设置失败:`, error);
   }
 }
 const setCategory = async (body:any, env: any) => {
   const id = `category:${Date.now()}`;
-  const existingCategory = await env.KV.get(body.id || `category:${body.name}`);
-  // console.log(existingCategory, body.id || `category:${body.name}`, 'setCategory');
-  if (existingCategory) {
-    let category = JSON.parse(existingCategory)
-    if (category)  {
-      let newCategory = {...category, ...body };
-      if (category.id) await env.KV.put(category.id, JSON.stringify(newCategory));
+  let existingCategory = null;
+  // console.log(existingexistingCategory, body.id || `category:${body.name}`, 'setCategory');
+  const existingKeys = await env.KV.list({ prefix: "category:" });
+  let isDuplicate = false;
+  for (const key of existingKeys.keys) {
+    const v = JSON.parse(await env.KV.get(key.name) || "{}");
+    if (v.name === body.name) {
+      isDuplicate = true;
+      existingCategory = v
+      break;
+    }
+  }
+  if (isDuplicate) {
+    if (existingCategory)  {
+      let newCategory = {...existingCategory, ...body };
+      if (existingCategory.id) await env.KV.put(existingCategory.id, JSON.stringify(newCategory));
       return newCategory;
     };
-    return JSON.parse(existingCategory);
+    return existingCategory;
   }
   const category = {
     id,
@@ -402,13 +426,21 @@ const setCategory = async (body:any, env: any) => {
   return category;
 }
 const setTag = async (body:any, env: any) => {
-  const existing = await env.KV.get(body.id || `tag:${body.name}`);
-  console.log(existing, 'setTag');
-  if (existing) {
-    let tag = JSON.parse(existing)
-    if (tag){
-      let newTag = {...tag, ...body };
-      if(tag.id) await env.KV.put(tag.id, JSON.stringify(newTag));
+  let existing = null;
+  const existingKeys = await env.KV.list({ prefix: "tag:" });
+  let isDuplicate = false;
+  for (const key of existingKeys.keys) {
+    const v = JSON.parse(await env.KV.get(key.name) || "{}");
+    if (v.name === body.name) {
+      isDuplicate = true;
+      existing = v
+      break;
+    }
+  }
+  if (isDuplicate) {
+    if (existing){
+      let newTag = {...existing, ...body };
+      if(existing.id) await env.KV.put(existing.id, JSON.stringify(newTag));
       return newTag;
     };
     return JSON.parse(existing);
@@ -490,7 +522,7 @@ export default {
     }
 
     if (path === "/api/articles" && request.method === "POST") {
-      const body = await request.json();
+      const body:any = await request.json();
       const id = `article:${Date.now()}`;
       const article = {
         id,
@@ -516,7 +548,7 @@ export default {
 
     if (path.startsWith("/api/articles/") && request.method === "PUT") {
       const id = path.replace("/api/articles/", "");
-      const body = await request.json();
+      const body:any = await request.json();
       const oldArticle = await env.KV.get(`article:${id}`);
       if (!oldArticle) {
         return new Response(JSON.stringify({ error: "文章不存在" }), {
@@ -597,6 +629,7 @@ export default {
     if (path === "/api/videos" && request.method === "GET") {
       const category = url.searchParams.get("category");
       const tag = url.searchParams.get("tag");
+      const source = url.searchParams.get("source");
       const keys = await env.KV.list({ prefix: "video:" });
       let videos = [];
       for (const key of keys.keys) {
@@ -604,6 +637,7 @@ export default {
         videos.push(video);
       }
       if (category) videos = videos.filter(v => v.categoryId === category);
+      if (source) videos = videos.filter(v => v.source === source);
       if (tag) videos = videos.filter(v => v.tagIds.includes(tag));
       return new Response(JSON.stringify(videos.reverse()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -637,7 +671,6 @@ export default {
       const type = path.replace("/api/video-source-data/", "");
       const sources: any = JSON.parse(await env.KV.get("video_sources") || "[]");
       const source = sources.find((s: any) => s.type === type) || {
-          "name": "新源1772010611650",
           "type": "wolong",
           "cron": "* * * * *",
           "enabled": true,
@@ -658,7 +691,8 @@ export default {
       return new Response(JSON.stringify({
         success: true,
         code: 200,
-        count: data.length,
+        count: data?.total || 0,
+        page: data?.page || 1,
         data
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -720,7 +754,7 @@ export default {
       }
       return new Response(object.body, {
         headers: {
-          "Content-Type": object.httpMetadata.contentType || "image/jpeg",
+          "Content-Type": object.httpMetadata?.contentType || "image/jpeg",
           "Cache-Control": "public, max-age=31536000",
         },
       });

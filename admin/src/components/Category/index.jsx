@@ -14,7 +14,7 @@ const { Title, Text, Paragraph } = Typography;
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-function Category(props, ref) {
+const Category = forwardRef((props, ref) => {
 
     // ========== 分类/标签状态 ==========
     const [categories, setCategories] = useState([]);
@@ -111,16 +111,17 @@ function Category(props, ref) {
         props.setCategoryModalVisible(category);
     };
 
-    const handleDeleteCategory = async (category, isEdit = false) => {
+    const handleDeleteCategory = async (category, isSelected = false) => {
         try {
         const id = category.id.replace('category:', '');
         await axios.delete(`${API_BASE}/api/categories/${id}`);
         setCategories(categories.filter(c => c.id !== category.id));
-        if (!isEdit) {
+        if (!isSelected) {
             message.success('分类删除成功');
         }
+        fetchCategories();
         } catch (err) {
-        message.error('删除失败');
+        !isSelected && message.error('删除失败');
         console.error(err);
         }
     };
@@ -166,7 +167,8 @@ function Category(props, ref) {
                     新增分类
                 </Button>
                 <Button 
-                    danger 
+                    danger
+                    type="primary"
                     icon={<DeleteOutlined />} 
                     onClick={batchDeleteCategories}
                     style={{ marginLeft: 8 }}
@@ -179,6 +181,7 @@ function Category(props, ref) {
                 <Input
                     placeholder="搜索分类名称"
                     value={categorySearch}
+                    allowClear
                     onChange={(e) => setCategorySearch(e.target.value)}
                     prefix={<SearchOutlined />}
                 />
@@ -193,17 +196,17 @@ function Category(props, ref) {
                 scroll={{ y: 'calc(100vh - 400px)' }}
                 pagination={{ pageSize: 10 }}
                 rowSelection={{
-                type: 'checkbox',
-                selectedRowKeys: selectedCategories.map(c => c.id),
-                onChange: (selectedKeys) => {
-                    setSelectedCategories(
-                    categories.filter(c => selectedKeys.includes(c.id))
-                    );
-                }
+                    type: 'checkbox',
+                    selectedRowKeys: selectedCategories.map(c => c.id),
+                    onChange: (selectedKeys) => {
+                        setSelectedCategories(
+                        categories.filter(c => selectedKeys.includes(c.id))
+                        );
+                    }
                 }}
             />
         </Fragment>
     );
-}
+})
 
-export default forwardRef((props, ref) => Category(props, ref));
+export default Category;

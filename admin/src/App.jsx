@@ -7,6 +7,7 @@ import {
 import axios from 'axios';
 import Video from './components/Video';
 import Category from './components/Category';
+import Article from './components/Article';
 import TagComponent from './components/Tag';
 // 新增：引入富文本编辑器组件
 import RichTextEditor from './components/Editor';
@@ -48,21 +49,6 @@ function App() {
   const [tagModalVisible, setTagModalVisible] = useState(false);
   const [editingTag, setEditingTag] = useState(null);
   const [tagForm] = Form.useForm();
-  
-  // 分类/标签搜索状态
-  const [categorySearch, setCategorySearch] = useState('');
-  const [tagSearch, setTagSearch] = useState('');
-  
-  // 批量操作状态
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedTags, setSelectedTags] = useState([]);
-
-  // ========== 视频相关状态 ==========
-  const [videos, setVideos] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedTag, setSelectedTag] = useState(null);
-
-
 
   const showArticleModal = (record = null) => {
     setEditingArticle(record);
@@ -159,26 +145,10 @@ function App() {
     }
   };
 
-  const handleDeleteTag = async (tag, isEdit = false) => {
-    try {
-      const id = tag.id.replace('tag:', '');
-      setTags(tags.filter(t => t.id !== tag.id));
-      await axios.delete(`${API_BASE}/api/tags/${id}`);
-      if (!isEdit) {
-        message.success('标签删除成功');
-      }
-    } catch (err) {
-      message.error('删除失败');
-      console.error(err);
-    }
-  };
-
   // ========== 初始化 ==========
   useEffect(() => {
     fetchArticles();
-    fetchCategories();
-    fetchTags();
-  }, [selectedCategory, selectedTag]);
+  }, []);
 
   // ========== 文章列配置 ==========
   const articleColumns = [
@@ -275,7 +245,7 @@ function App() {
         colorPrimary: '#ff9900',
       },
     }}>
-      <Layout style={{ minHeight: '100vh', width: '100%' }}>
+      <Layout style={{ height: '100vh', width: '100%', overflowY: 'hidden' }}>
         <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
           <Row justify="space-between" align="middle">
             <Col>
@@ -286,46 +256,44 @@ function App() {
           </Row>
         </Header>
 
-        <Content style={{ padding: '24px 24px 0', width: '100%' }}>
+        <Content style={{ padding: '24px 24px 0', width: '100%', minWidth: '1366px', overflow: 'hidden', overflowX: 'auto' }}>
           <Card style={{ width: '100%' }} styles={{ body: { padding: '0 10px' } }}>
-            <Tabs defaultActiveKey="1" style={{ width: '100%' }}>
+            <Tabs defaultActiveKey="1" style={{ width: '100%' }} items={[{
+              label: '视频资源管理',
+              key: '1',
+              children: <Video setCategoryModalVisible={setCategoryModalVisible} setTagModalVisible={setTagModalVisible} />
+            },{
+              label: '文章管理',
+              key: '4',
+              children:  <Article />
+            },{
+              label: '分类管理',
+              key: '2',
+              children:  <Category ref={categoryRef} setCategoryModalVisible={showCategoryModal} />
+            },{
+              label: '标签管理',
+              key: '3',
+              children:  <TagComponent ref={tagRef} setTagModalVisible={showTagModal} />
+            }]}>
               {/* 视频资源管理标签页 */}
-              <TabPane tab="视频资源管理" key="1">
+              {/* <TabPane tab="视频资源管理" key="1">
                 <Video setCategoryModalVisible={setCategoryModalVisible} setTagModalVisible={setTagModalVisible} />
-              </TabPane>
+              </TabPane> */}
               
               {/* 分类管理标签页（新增） */}
-              <TabPane tab="分类管理" key="3">
+              {/* <TabPane tab="分类管理" key="3">
                 <Category ref={categoryRef} setCategoryModalVisible={showCategoryModal} />
-              </TabPane>
+              </TabPane> */}
               
               {/* 标签管理标签页（新增） */}
-              <TabPane tab="标签管理" key="4">
+              {/* <TabPane tab="标签管理" key="4">
                 <TagComponent ref={tagRef} setTagModalVisible={showTagModal} />
-              </TabPane>
+              </TabPane> */}
               
               {/* 文章管理标签页 */}
-              <TabPane tab="文章管理" key="2">
-                <Row justify="space-between" style={{ marginBottom: 16 }}>
-                  <Col>
-                    <Button 
-                      type="primary" 
-                      icon={<PlusOutlined />} 
-                      onClick={() => showArticleModal()}
-                    >
-                      新增文章
-                    </Button>
-                  </Col>
-                </Row>
-                <Table 
-                  columns={articleColumns} 
-                  dataSource={articles} 
-                  rowKey="id" 
-                  style={{ width: '100%' }}
-                  loading={articleLoading}
-                  pagination={{ pageSize: 10 }}
-                />
-              </TabPane>
+              {/* <TabPane tab="文章管理" key="2">
+                <Article />
+              </TabPane> */}
             </Tabs>
           </Card>
         </Content>
@@ -381,34 +349,6 @@ function App() {
               <Input 
                 placeholder="如：搞笑、科技、悬疑" 
               />
-            </Form.Item>
-          </Form>
-        </Modal>
-
-        {/* 文章编辑/新增弹窗 */}
-        <Modal
-          title={editingArticle ? '编辑文章' : '新增文章'}
-          open={articleModalVisible}
-          onOk={handleArticleSubmit}
-          onCancel={() => setArticleModalVisible(false)}
-          destroyOnHidden
-          forceRender={true}
-          width={800} // 加宽弹窗适配富文本
-        >
-          <Form form={articleForm} layout="vertical">
-            <Form.Item
-              name="title"
-              label="文章标题"
-              rules={[{ required: true, message: '请输入标题' }]}
-            >
-              <Input placeholder="请输入文章标题" />
-            </Form.Item>
-           <Form.Item
-              label="文章内容"
-              name="content"
-              rules={[{ required: true, message: '请输入内容' }]}
-            >
-              <RichTextEditor />
             </Form.Item>
           </Form>
         </Modal>

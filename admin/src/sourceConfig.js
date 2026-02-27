@@ -1,3 +1,10 @@
+
+/** path: "https://xsd.sdzyapi.com/api.php/provide/vod/?ac=list",
+ * params: 
+ *  - ac: 操作类型  detail: 获取详情 list: 获取列表
+ *  - wd: 搜索关键词
+ *  - t: 分类ID
+ */
 export default {
     aliyun: {
         name: "阿里云盘",
@@ -34,10 +41,10 @@ export default {
         type: "wolong",
         cron: "* * * * *",
         enabled: true,
-        path: "https://collect.wolongzy.cc/api.php/provide/vod/?ac=detail",
+        path: "https://collect.wolongzy.cc/api.php/provide/vod/?ac=list",
         playUrl: "https://jx.wolongzywcdn.com:65/m3u8.php?url=",
         categoryId: "",
-        category: "动漫",
+        category: "",
         tags: ["修仙"],
     },
     wjm3u8: {
@@ -45,10 +52,10 @@ export default {
         type: "wjm3u8",
         cron: "* * * * *",
         enabled: true,
-        path: "https://api.wujinapi.me/api.php/provide/vod/?ac=detail",
+        path: "https://api.wujinapi.me/api.php/provide/vod/?ac=list",
         playUrl: "https://jx.wuvodbf.com/dplayer/?url=",
         categoryId: "",
-        category: "动漫",
+        category: "",
         tags: ["修仙"],
     },
     shandian: {
@@ -56,10 +63,10 @@ export default {
         type: "shandian",
         cron: "* * * * *",
         enabled: true,
-        path: "https://xsd.sdzyapi.com/api.php/provide/vod/?ac=detail",
+        path: "https://xsd.sdzyapi.com/api.php/provide/vod/?ac=list",
         playUrl: "https://www.shankubf.com/m3u8/?url=",
         categoryId: "",
-        category: "动漫",
+        category: "",
         tags: ["修仙"],
     },
     liangzi: {
@@ -67,10 +74,10 @@ export default {
         type: "liangzi",
         cron: "* * * * *",
         enabled: true,
-        path: "https://cj.lziapi.com/api.php/provide/vod/?ac=detail",
+        path: "https://cj.lziapi.com/api.php/provide/vod/?ac=list",
         playUrl: "https://lziplayer.com/?url=",
         categoryId: "",
-        category: "动漫",
+        category: "",
         tags: ["修仙"],
     },
     jingying: {
@@ -81,18 +88,18 @@ export default {
         path: "https://jyzyapi.com/provide/vod/from/jinyingyun/at/json",
         playUrl: "https://hd.iapijy.com/play?url=",
         categoryId: "",
-        category: "动漫",
+        category: "",
         tags: ["修仙"],
     },
-    youzhi: {
+    '1080zyk': {
         name: "优质资源",
-        type: "youzhi",
+        type: "1080zyk",
         cron: "* * * * *",
         enabled: true,
-        path: "https://api.yzzy-api.com/inc/apijson.php?ac=detail",
+        path: "https://api.yzzy-api.com/inc/apijson.php?ac=list",
         playUrl: "https://vip.zykbf.com/?url=",
         categoryId: "",
-        category: "动漫",
+        category: "",
         tags: ["修仙"],
     },
     yhm3u8: {
@@ -100,10 +107,10 @@ export default {
         type: "yhm3u8",
         cron: "* * * * *",
         enabled: true,
-        path: "https://m3u8.apiyhzy.com/api.php/provide/vod/?ac=detail",
+        path: "https://m3u8.apiyhzy.com/api.php/provide/vod/?ac=list",
         playUrl: "https://jx.yhzybf.com/player/jx.php?url=",
         categoryId: "",
-        category: "动漫",
+        category: "",
         tags: ["修仙"],
     },
 };

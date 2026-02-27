@@ -14,7 +14,7 @@ const { Title, Text, Paragraph } = Typography;
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-function TagComponent(props, ref) {
+const TagComponent = forwardRef((props, ref) => {
     const [selectedTags, setSelectedTags] = useState([]);
     const [tags, setTags] = useState([]);
     const [tagLoading, setTagLoading] = useState(false);
@@ -25,10 +25,9 @@ function TagComponent(props, ref) {
     // ========== 标签列配置 ==========
     const tagColumns = [
         {
-        title: '标签名称',
-        dataIndex: 'name',
-        key: 'name',
-        render: (name) => <Tag color="blue">{name}</Tag>
+            title: '标签名称',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
         title: '创建时间',
@@ -69,16 +68,16 @@ function TagComponent(props, ref) {
         },
     ];
     // ========== 分类管理方法 ==========
-    const handleDeleteTag = async (tag, isEdit = false) => {
+    const handleDeleteTag = async (tag, isSelected = false) => {
         try {
         const id = tag.id.replace('tag:', '');
         setTags(tags.filter(t => t.id !== tag.id));
         await axios.delete(`${API_BASE}/api/tags/${id}`);
-        if (!isEdit) {
+        if (!isSelected) {
             message.success('标签删除成功');
         }
         } catch (err) {
-        message.error('删除失败');
+        !isSelected && message.error('删除失败');
         console.error(err);
         }
     };
@@ -157,12 +156,13 @@ function TagComponent(props, ref) {
                 </Button>
                 </Col>
                 <Col flex="0 0 300px">
-                <Input
-                    placeholder="搜索标签名称"
-                    value={tagSearch}
-                    onChange={(e) => setTagSearch(e.target.value)}
-                    prefix={<SearchOutlined />}
-                />
+                    <Input
+                        placeholder="搜索标签名称"
+                        value={tagSearch}
+                        allowClear
+                        onChange={(e) => setTagSearch(e.target.value)}
+                        prefix={<SearchOutlined />}
+                    />
                 </Col>
             </Row>
             
@@ -185,6 +185,6 @@ function TagComponent(props, ref) {
             />
         </Fragment>
     );
-}
+})
 
-export default forwardRef((props, ref) => TagComponent(props, ref));
+export default TagComponent;
