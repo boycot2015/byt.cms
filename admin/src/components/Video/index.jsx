@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, Fragment, useRef } from 'react';
 import { useAsyncEffect } from 'ahooks';
 import { 
   Table, Button, Modal, Form, Input, Typography, Space, 
@@ -6,6 +6,7 @@ import {
   Image, Drawer, Divider, Popconfirm
 } from 'antd';
 import sourceConfig from '../../sourceConfig';
+import Player from '../Player';
 import axios from 'axios';
 import { 
   EditOutlined, DeleteOutlined, PlusOutlined, 
@@ -18,7 +19,7 @@ const { Text } = Typography;
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 function Video(props) {
-
+    const playerRef = useRef(null);
     // ========== 分类/标签状态 ==========
     const [categories, setCategories] = useState([]);
     const [tags, setTags] = useState([]);
@@ -534,7 +535,13 @@ function Video(props) {
                         await document.exitPictureInPicture();
                     } else if (!val && !document.pictureInPictureElement) {
                         // 进入画中画
-                        await document.querySelector('#video').requestPictureInPicture();
+                        await playerRef.current.root?.children?.[0].requestPictureInPicture();
+                        // await playerRef.current?.emit('MINI_STATE_CHANGE', {
+                        //     pip: true,
+                        // });
+                        // console.log(playerRef.current);
+                        
+                        // await playerRef.current?.switchPIP()
                     }
                 } catch (error) {
                     // 捕获异常（比如视频未加载、用户拒绝等）
@@ -544,24 +551,8 @@ function Video(props) {
             size={800}
             >
             {videoPlayDrawer.video ? (
-                <div style={{ position: 'relative', padding: 20,height: 400 }}>
-                    {/* (sourceConfig[videoPlayDrawer.video?.source||'']?.playUrl || '') +  */}
-                {/* <iframe width="100%" id="videoFrame" height="100%" data-src={videoPlayDrawer.video.url} frameborder="0" allowFullScreen="true" border="0" sandbox="allow-popups allow-scripts allow-same-origin"></iframe> */}
-                <video 
-                    src={videoPlayDrawer.video.url} 
-                    controls
-                    autoPlay
-                    width="100%"
-                    id="video"
-                    style={{
-                    width:'100%',
-                    height:'100%',
-                    cursor: 'pointer',
-                }}
-                    poster={videoPlayDrawer.video.cover||''}
-                >
-                    您的浏览器不支持HTML5视频播放
-                </video>
+                <div style={{ position: 'relative', padding: 20,height: 340, width: '100%' }}>
+                <Player id="video" ref={playerRef} key={videoPlayDrawer.video.url} url={videoPlayDrawer.video.url} poster={videoPlayDrawer.video.cover||''} />
                 <Divider />
                 <Row gutter={16}>
                     <Col span={8}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
