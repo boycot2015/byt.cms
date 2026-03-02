@@ -633,13 +633,13 @@ export default {
       const keys = await env.KV.list({ prefix: "video:" });
       let videos = [];
       for (const key of keys.keys) {
-        const video = JSON.parse(await env.KV.get(key.name) || "{}");
-        videos.push(video);
+        const video = JSON.parse(await env.KV.get(key.name) || "null");
+        video && videos.push(video);
       }
       if (category) videos = videos.filter(v => v.categoryId === category);
       if (source) videos = videos.filter(v => v.source === source);
       if (tag) videos = videos.filter(v => v.tagIds.includes(tag));
-      return new Response(JSON.stringify(videos.reverse()), {
+      return new Response(JSON.stringify(videos.filter(el => el).reverse()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

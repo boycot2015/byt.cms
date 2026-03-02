@@ -27,12 +27,6 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 function App() {
   const categoryRef = React.useRef(null);
   const tagRef = React.useRef(null);
-  // ========== 文章相关状态 ==========
-  const [articles, setArticles] = useState([]);
-  const [articleLoading, setArticleLoading] = useState(false);
-  const [articleModalVisible, setArticleModalVisible] = useState(false);
-  const [editingArticle, setEditingArticle] = useState(null);
-  const [articleForm] = Form.useForm();
 
   // ========== 分类/标签状态 ==========
   const [categories, setCategories] = useState([]);
@@ -50,11 +44,6 @@ function App() {
   const [editingTag, setEditingTag] = useState(null);
   const [tagForm] = Form.useForm();
 
-  const showArticleModal = (record = null) => {
-    setEditingArticle(record);
-    articleForm.setFieldsValue(record || { title: '', content: '' });
-    setArticleModalVisible(true);
-  };
 
   // ========== 分类管理方法 ==========
   const fetchCategories = async (method) => {
@@ -144,98 +133,6 @@ function App() {
       console.error(err);
     }
   };
-
-  // ========== 初始化 ==========
-  useEffect(() => {
-    fetchArticles();
-  }, []);
-
-  // ========== 文章列配置 ==========
-  const articleColumns = [
-    {
-      title: '标题',
-      dataIndex: 'title',
-      key: 'title',
-    },
-    {
-      title: '内容预览',
-      key: 'content',
-      render: (_, record) => (
-        <div 
-          style={{ maxHeight: 100, overflow: 'hidden' }}
-          dangerouslySetInnerHTML={{ __html: record.content || '' }}
-        />
-      ),
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (time) => new Date(time).toLocaleString(),
-    },
-    {
-      title: '操作',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <Button 
-            type="primary" 
-            icon={<EditOutlined />} 
-            onClick={() => showArticleModal(record)}
-          >
-            编辑
-          </Button>
-          <Popconfirm
-            title="确定删除这篇文章吗？"
-            onConfirm={() => handleDeleteArticle(record)}
-            okText="确定"
-            cancelText="取消"
-          >
-            <Button 
-              danger 
-              icon={<DeleteOutlined />} 
-            >
-              删除
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
-  // ========== 文章管理方法 ==========
-  const fetchArticles = async () => {
-    setArticleLoading(true);
-    try {
-      const res = await axios.get(`${API_BASE}/api/articles`);
-      setArticles(res.data);
-    } catch (err) {
-      message.error('获取文章失败');
-      console.error(err);
-    } finally {
-      setArticleLoading(false);
-    }
-  };
-  const handleArticleSubmit = async () => {
-    try {
-      const values = await articleForm.validateFields();
-      if (editingArticle) {
-        // 编辑文章
-        const id = editingArticle.id.replace('article:', '');
-        await axios.put(`${API_BASE}/api/articles/${id}`, values);
-        message.success('文章更新成功');        
-      } else {
-        // 新增文章
-        await axios.post(`${API_BASE}/api/articles`, values);
-        message.success('文章创建成功');
-      }
-      setArticleModalVisible(false);
-      fetchArticles();
-    } catch (err) {
-      message.error('操作失败');
-      console.error(err);
-    }
-  };
-
   return (
     <ConfigProvider
     locale={zhCN}

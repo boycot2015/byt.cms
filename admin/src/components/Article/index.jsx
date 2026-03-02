@@ -30,17 +30,49 @@ function App() {
     articleForm.setFieldsValue(record || { title: '', content: '' });
     setArticleModalVisible(true);
   };
-  // 筛选分类列表
+  // ========== 分类/标签状态 ==========
+  const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [selectedTag, setSelectedTag] = useState(null);
+  const [categoryLoading, setCategoryLoading] = useState(false);
+  const [tagLoading, setTagLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const fetchCategories = async (method) => {
+    setCategoryLoading(true);
+    try {
+      const res = await axios.get(`${API_BASE}/api/categories`);
+      setCategories(res.data);
+    } catch (err) {
+      message.error('获取分类失败');
+      console.error(err);
+    } finally {
+      setCategoryLoading(false);
+    }
+  };
   const getFilteredArticles = () => {
       if (!articleSearch) return articles;
       return articles.filter(a => 
       a.title.toLowerCase().includes(articleSearch.toLowerCase())
       );
   };
+  const fetchTags = async () => {
+    setTagLoading(true);
+    try {
+    const res = await axios.get(`${API_BASE}/api/tags`);
+    setTags(res.data);
+    } catch (err) {
+    message.error('获取标签失败');
+    console.error(err);
+    } finally {
+    setTagLoading(false);
+    }
+};
   // ========== 初始化 ==========
   useEffect(() => {
     fetchArticles();
-  }, [articleSearch]);
+    fetchCategories();
+    fetchTags();
+  }, [articleSearch, selectedCategory, selectedTag]);
 
   // ========== 文章列配置 ==========
   const articleColumns = [
@@ -131,7 +163,7 @@ function App() {
   return (
     <Fragment>
       <Row justify="space-between" style={{ marginBottom: 16 }}>
-        <Col>
+        <Col span={8}>
           <Button 
             type="primary" 
             icon={<PlusOutlined />} 
@@ -140,15 +172,65 @@ function App() {
             新增文章
           </Button>
         </Col>
-        <Col flex="0 0 300px">
-          <Input
-              placeholder="搜索分类名称"
-              value={articleSearch}
+        <Col span={16}>
+          <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
+            <Select
+              placeholder="选择分类"
+              style={{ width: 120 }}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
               allowClear
-              onChange={(e) => setArticleSearch(e.target.value)}
-              prefix={<SearchOutlined />}
-          />
-          </Col>
+              showSearch={{
+                  optionFilterProp: 'label'
+              }}
+              options={categories?.map(c => ({
+                  label: c.name,
+                  value: c.id
+              }))}
+              />
+              <Select
+                placeholder="选择标签"
+                style={{ width: 120 }}
+                value={selectedTag}
+                showSearch={{
+                    optionFilterProp: 'label'
+                }}
+                onChange={setSelectedTag}
+                allowClear
+                options={tags?.map(t => ({ 
+                    label: t.name,
+                    value: t.id
+                }))}
+                />
+            <Input
+                placeholder="搜索标题"
+                value={articleSearch}
+                allowClear
+                onChange={(e) => setArticleSearch(e.target.value)}
+                style={{ width: 200 }}
+                prefix={<SearchOutlined />}
+            />
+            <Button 
+              type="primary" 
+              icon={<SearchOutlined />} 
+              onClick={() => fetchVideos()}
+              >
+              搜索
+              </Button>
+              <Button
+              danger
+              type="primary" 
+              onClick={() => {
+                  setSelectedCategory(null)
+                  setSelectedTag(null)
+                  setArticleSearch('')
+                  fetchArticles()
+              }}
+              >
+              重置
+              </Button>
+          </div>
+        </Col>
       </Row>
       <Table 
         columns={articleColumns} 

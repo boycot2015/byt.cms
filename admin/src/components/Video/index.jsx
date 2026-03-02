@@ -339,7 +339,7 @@ function Video(props) {
                 <Col span={16}>
                     <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
                         <Input
-                            placeholder="搜索标签名称"
+                            placeholder="搜索名称"
                             value={videoSearch}
                             allowClear
                             onChange={(e) => setVideoSearch(e.target.value)}
@@ -524,8 +524,22 @@ function Video(props) {
             title={(videoPlayDrawer.video?.title + ' - ' + (videoPlayDrawer.video?.current?.label || '')) || "视频播放"}
             open={videoPlayDrawer.visible}
             onClose={() => {
-                document.getElementById('poster').style.display = 'block';
                 setVideoPlayDrawer({...videoPlayDrawer, visible: false})
+            }}
+            afterOpenChange={async (val) => {
+                try {
+                    // 检查视频是否已经在画中画模式
+                    if (val && document.pictureInPictureElement) {
+                        // 退出画中画
+                        await document.exitPictureInPicture();
+                    } else if (!val && !document.pictureInPictureElement) {
+                        // 进入画中画
+                        await document.querySelector('#video').requestPictureInPicture();
+                    }
+                } catch (error) {
+                    // 捕获异常（比如视频未加载、用户拒绝等）
+                    console.error('画中画操作失败:', error);
+                }
             }}
             size={800}
             >
@@ -535,9 +549,10 @@ function Video(props) {
                 {/* <iframe width="100%" id="videoFrame" height="100%" data-src={videoPlayDrawer.video.url} frameborder="0" allowFullScreen="true" border="0" sandbox="allow-popups allow-scripts allow-same-origin"></iframe> */}
                 <video 
                     src={videoPlayDrawer.video.url} 
-                    controls 
+                    controls
+                    autoPlay
                     width="100%"
-                    id="poster"
+                    id="video"
                     style={{
                     width:'100%',
                     height:'100%',
