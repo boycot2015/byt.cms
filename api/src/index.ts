@@ -327,6 +327,7 @@ async function fetchVideoBySource(sourceConfig: any, env: any) {
     case "wolong":
     case "liangzi":
     case "shandian":
+    case "sdm3u8":
     case "wjm3u8":
     case "wujin":
     case "baiwan":
@@ -516,17 +517,33 @@ export default {
         const article = await env.KV.get(key.name);
         articles.push(JSON.parse(article!));
       }
-      return new Response(JSON.stringify(articles), {
+      let articlesWithDetails = await Promise.all(articles.map(async el => {
+        if (el.categoryId) {
+          const category = await env.KV.get(el.categoryId);
+          el.category = JSON.parse(category || "{}");
+        }
+        if (el.tagIds) {
+          const tags = await Promise.all(el.tagIds.map(async (tagId: string) => {
+            const tag = await env.KV.get(tagId);
+            return JSON.parse(tag || "{}");
+          }));
+          el.tags = tags;
+        }
+        return el;
+      }))
+      return new Response(JSON.stringify(articlesWithDetails), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    if (path === "/api/articles" && request.method === "POST") {
+    if (path === "/api/articles" && request.method === "PUT") {
       const body:any = await request.json();
       const id = `article:${Date.now()}`;
       const article = {
         id,
         title: body.title,
+        categoryId: body.categoryId,
+        tagIds: body.tagIds,
         content: body.content,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -546,7 +563,7 @@ export default {
       });
     }
 
-    if (path.startsWith("/api/articles/") && request.method === "PUT") {
+    if (path.startsWith("/api/articles/") && request.method === "POST") {
       const id = path.replace("/api/articles/", "");
       const body:any = await request.json();
       const oldArticle = await env.KV.get(`article:${id}`);
@@ -558,6 +575,8 @@ export default {
       }
       const newArticle = {
         ...JSON.parse(oldArticle),
+        categoryId: body.categoryId,
+        tagIds: body.tagIds,
         title: body.title,
         content: body.content,
         updatedAt: new Date().toISOString(),

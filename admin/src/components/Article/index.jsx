@@ -27,7 +27,7 @@ function App() {
   const [articleSearch, setArticleSearch] = useState('');
   const showArticleModal = (record = null) => {
     setEditingArticle(record);
-    articleForm.setFieldsValue(record || { title: '', content: '' });
+    articleForm.setFieldsValue(record || { title: '', categoryId: '', tagIds: [], content: '' });
     setArticleModalVisible(true);
   };
   // ========== 分类/标签状态 ==========
@@ -80,6 +80,26 @@ function App() {
       title: '标题',
       dataIndex: 'title',
       key: 'title',
+    },
+    {
+      title: '分类',
+      key: 'category',
+      render: (_, record) => (
+        <div 
+          style={{ maxHeight: 100, overflow: 'hidden' }}
+          dangerouslySetInnerHTML={{ __html: record.category?.name || '' }}
+        />
+      ),
+    },
+      {
+      title: '标签',
+      key: 'tags',
+      render: (_, record) => (
+        <div 
+          style={{ maxHeight: 100, overflow: 'hidden' }}
+          dangerouslySetInnerHTML={{ __html: record.tags?.map(tag => tag.name).join(', ') || '' }}
+        />
+      ),
     },
     {
       title: '内容预览',
@@ -145,11 +165,11 @@ function App() {
       if (editingArticle) {
         // 编辑文章
         const id = editingArticle.id.replace('article:', '');
-        await axios.put(`${API_BASE}/api/articles/${id}`, values);
+        await axios.post(`${API_BASE}/api/articles/${id}`, values);
         message.success('文章更新成功');        
       } else {
         // 新增文章
-        await axios.post(`${API_BASE}/api/articles`, values);
+        await axios.put(`${API_BASE}/api/articles`, values);
         message.success('文章创建成功');
       }
       setArticleModalVisible(false);
@@ -250,7 +270,7 @@ function App() {
         forceRender={true}
         width={800} // 加宽弹窗适配富文本
       >
-        <Form form={articleForm} layout="vertical">
+        <Form form={articleForm} labelCol={{span: 3}} wrapperCol={{span: 21}}>
           <Form.Item
             name="title"
             label="文章标题"
@@ -259,8 +279,52 @@ function App() {
             <Input placeholder="请输入文章标题" />
           </Form.Item>
           <Form.Item
+            name="categoryId"
+            label="关联分类"
+            rules={[{ required: true, message: '请选择分类' }]}
+          >
+            <Select
+              placeholder="选择分类"
+              style={{ width: '100%' }}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+              allowClear
+              showSearch={{
+                  optionFilterProp: 'label'
+              }}
+              options={categories?.map(c => ({
+                  label: c.name,
+                  value: c.id
+              }))}
+              />
+          </Form.Item>
+          <Form.Item
+            name="tagIds"
+            label="关联标签"
+            rules={[{ required: false, message: '请选择标签' }]}
+          >
+            <Select
+              placeholder="选择标签"
+              style={{ width: '100%' }}
+              value={selectedTag}
+              maxTagCount={6}
+              mode="multiple"
+              showSearch={{
+                  optionFilterProp: 'label'
+              }}
+              onChange={setSelectedTag}
+              allowClear
+              options={tags?.map(t => ({
+                  label: t.name,
+                  value: t.id
+              }))}
+              />
+          </Form.Item>
+          <Form.Item
             label="文章内容"
             name="content"
+            labelCol={{span: 24}} 
+            wrapperCol={{span: 24}}
             rules={[{ required: true, message: '请输入内容' }]}
           >
             <RichTextEditor />

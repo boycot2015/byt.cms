@@ -58,9 +58,9 @@ export default {
         category: "",
         tags: ["修仙"],
     },
-    shandian: {
+    sdm3u8: {
         name: "闪电资源",
-        type: "shandian",
+        type: "sdm3u8",
         cron: "* * * * *",
         enabled: true,
         path: "https://xsd.sdzyapi.com/api.php/provide/vod/?ac=list",

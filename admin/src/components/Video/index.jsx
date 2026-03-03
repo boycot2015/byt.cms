@@ -41,6 +41,9 @@ function Video(props) {
     const [videoLoading, setVideoLoading] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedTag, setSelectedTag] = useState(null);
+    const [pageSize, setPageSize] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalVideos, setTotalVideos] = useState(0);
     const [selectedSource, setSelectedSource] = useState(null);
     const [videoPlayDrawer, setVideoPlayDrawer] = useState({
         visible: false,
@@ -104,22 +107,22 @@ function Video(props) {
     const fetchVideos = async () => {
         setVideoLoading(true);
         try {
-        let url = `${API_BASE}/api/videos`;
-        const params = [];
-        if (selectedCategory) params.push(`category=${selectedCategory}`);
-        if (selectedTag) params.push(`tag=${selectedTag}`);
-        if (selectedSource) params.push(`source=${selectedSource}`);
-        if (params.length) url += `?${params.join('&')}`;
-        
-        const res = await axios.get(url);
-        setVideos(res.data);
+            let url = `${API_BASE}/api/videos`;
+            const params = [];
+            if (selectedCategory) params.push(`category=${selectedCategory}`);
+            if (selectedTag) params.push(`tag=${selectedTag}`);
+            if (selectedSource) params.push(`source=${selectedSource}`);
+            if (params.length) url += `?${params.join('&')}`;
+            const res = await axios.get(url);
+            setVideos(res.data);
+            setTotalVideos(res.data.length)
         } catch (err) {
-        message.error('获取视频失败');
-        console.error(err);
+            message.error('获取视频失败');
+            console.error(err);
         } finally {
-        setTimeout(() => {
-            setVideoLoading(false);
-        }, 500);
+            setTimeout(() => {
+                setVideoLoading(false);
+            }, 500);
         }
     };
 
@@ -174,6 +177,7 @@ function Video(props) {
             fetchVideos();
             // 刷新分类和标签
             fetchCategories();
+            setCurrentPage(1);
             fetchTags();
         } else {
             message.error(`拉取失败：${res.data.message || '未知错误'}`);
@@ -405,6 +409,8 @@ function Video(props) {
                             setSelectedSource(null)
                             setVideoSearch('')
                             fetchVideos()
+                            setPageSize(10)
+                            setCurrentPage(1)
                         }}
                         >
                         重置
@@ -518,7 +524,15 @@ function Video(props) {
                         );
                     }
                 }}
-                pagination={{ pageSize: 10 }}
+                pagination={{
+                    pageSize: pageSize,
+                    current: currentPage,
+                    total: totalVideos,
+                    showTotal: () => `共 ${totalVideos} 条`,
+                    onChange (page, pageSize) {
+                    setPageSize(pageSize)
+                    setCurrentPage(page)
+                } }}
             />
             {/* 视频播放抽屉 */}
             <Drawer
@@ -551,36 +565,36 @@ function Video(props) {
             size={800}
             >
             {videoPlayDrawer.video ? (
-                <div style={{ position: 'relative', padding: 20,height: 340, width: '100%' }}>
-                <Player id="video" ref={playerRef} key={videoPlayDrawer.video.url} url={videoPlayDrawer.video.url} poster={videoPlayDrawer.video.cover||''} />
-                <Divider />
-                <Row gutter={16}>
-                    <Col span={8}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
-                    <Col span={8}><Text strong>分类：</Text>{videoPlayDrawer.video.category}</Col>
-                    <Col span={8}><Text strong>来源：</Text>{videoPlayDrawer.video.source}</Col>
-                    <Col span={24} style={{ marginTop: 8 }}>
-                    <Text strong>标签：</Text>
-                    {videoPlayDrawer.video?.tags?.map(tag => (
-                        <Tag key={tag}>{tag}</Tag>
-                    ))}
-                    </Col>
-                    <Col span={24} style={{ marginTop: 8 }}>
-                        <Text strong>播放列表：</Text>
-                        <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap', marginTop: 5}}>
-                            {videoPlayDrawer.video?.urls.map(url => (
-                                <Button type='primary' size='small' key={url.url} onClick={() => setVideoPlayDrawer({...videoPlayDrawer, video: {...videoPlayDrawer.video, current: url, url: url.url }})}>{url.label}</Button>
-                            ))}
-                        </div>
-                    </Col>
-                    <Col span={24} style={{ marginTop: 8 }}>
-                        <Text strong>视频链接：</Text>
-                        <Input 
-                            value={videoPlayDrawer.video?.url || ''} 
-                            readOnly 
-                            style={{ marginTop: 8, width: 600 }}
-                        />
-                    </Col>
-                </Row>
+                <div>
+                    <Player id="video" ref={playerRef} key={videoPlayDrawer.video.url} url={videoPlayDrawer.video.url} poster={videoPlayDrawer.video.cover||''} />
+                    <Divider />
+                    <Row gutter={16}>
+                        <Col span={8}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
+                        <Col span={8}><Text strong>分类：</Text>{videoPlayDrawer.video.category}</Col>
+                        <Col span={8}><Text strong>来源：</Text>{videoPlayDrawer.video.source}</Col>
+                        <Col span={24} style={{ marginTop: 8 }}>
+                        <Text strong>标签：</Text>
+                        {videoPlayDrawer.video?.tags?.map(tag => (
+                            <Tag key={tag}>{tag}</Tag>
+                        ))}
+                        </Col>
+                        <Col span={24} style={{ marginTop: 8 }}>
+                            <Text strong>播放列表：</Text>
+                            <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap', marginTop: 5}}>
+                                {videoPlayDrawer.video?.urls.map(url => (
+                                    <Button type='primary' size='small' key={url.url} onClick={() => setVideoPlayDrawer({...videoPlayDrawer, video: {...videoPlayDrawer.video, current: url, url: url.url }})}>{url.label}</Button>
+                                ))}
+                            </div>
+                        </Col>
+                        <Col span={24} style={{ marginTop: 8 }}>
+                            <Text strong>视频链接：</Text>
+                            <Input 
+                                value={videoPlayDrawer.video?.url || ''} 
+                                readOnly 
+                                style={{ marginTop: 8, width: 600 }}
+                            />
+                        </Col>
+                    </Row>
                 </div>
             ) : (
                 <div style={{ textAlign: 'center', padding: 40 }}>

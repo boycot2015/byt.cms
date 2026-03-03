@@ -83,7 +83,7 @@ const RichTextEditor = ({ value, onChange, disabled = false }) => {
         onCreated={(editor) => (editorRef.current = editor)}
         onChange={handleEditorChange}
         mode="default"
-        style={{ height: 300, overflow: 'auto' }}
+        style={{ height: 260, overflow: 'auto' }}
       />
     </div>
   );
