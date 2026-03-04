@@ -360,13 +360,14 @@ const setVideoList = async (source: any, env: any) => {
   try {
     const data = await withRetry(() => fetchVideoBySource(source, env));
     let videos = data.list || data || [];
-    // console.log(videos, 'cms----videos');
+    // console.log(videos.map((el:any) => el.title + el.url), 'cms----videos');
     for (const video of videos) {
       const existingKeys = await env.KV.list({ prefix: "video:" });
       let isDuplicate = false;
       let existing = null;
       for (const key of existingKeys.keys) {
         const v = JSON.parse(await env.KV.get(key.name) || "{}");
+        // console.log(v, videos, 'video');
         if (v.url === video.url) {
           isDuplicate = true;
           existing = v
@@ -386,9 +387,10 @@ const setVideoList = async (source: any, env: any) => {
         updateTime: isDuplicate ? existing.fetchTime || existing.updateTime || new Date().toISOString() : new Date().toISOString(),
         status: "active"
       };
-      await env.KV.put(videoData.id, JSON.stringify(videoData));
-      console.log(`成功存储视频: ${video.title}`);
-      return data;
+      if (!source.action || source.action === "put") {
+        await env.KV.put(videoData.id, JSON.stringify(videoData));
+        console.log(`成功存储视频: ${video.title}`);
+      }
     }
     return data;
   } catch (error) {
@@ -689,6 +691,8 @@ export default {
 
     if (path.startsWith("/api/video-source-data/") && request.method === "GET") {
       const type = path.replace("/api/video-source-data/", "");
+      const action = url.searchParams.get("action"); // get, put 默认put
+      const cid = url.searchParams.get("cid"); // 分类ID，默认空
       const sources: any = JSON.parse(await env.KV.get("video_sources") || "[]");
       const source = sources.find((s: any) => s.type === type) || {
           "type": "wolong",
@@ -707,7 +711,11 @@ export default {
           status: 404
         });
       }
-      const data = await setVideoList(source, env);
+      if (source.path.includes("t=")) source.path = source.path.replace(/t=([^&]*)/g, `t=${cid || ""}`);
+      else source.path+=`&t=${cid || ""}`;
+      console.log(source.path, 'source.path');
+      
+      const data = await setVideoList({...source, action}, env);
       return new Response(JSON.stringify({
         success: true,
         code: 200,

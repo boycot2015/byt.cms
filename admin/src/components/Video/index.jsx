@@ -64,7 +64,7 @@ function Video(props) {
         setCategoryLoading(true);
         try {
         const res = await axios.get(`${API_BASE}/api/categories`);
-        setCategories(res.data);
+        setCategories(res.data || []);
         } catch (err) {
         message.error('获取分类失败');
         console.error(err);
@@ -115,8 +115,8 @@ function Video(props) {
             if (selectedSource) params.push(`source=${selectedSource}`);
             if (params.length) url += `?${params.join('&')}`;
             const res = await axios.get(url);
-            setVideos(res.data);
-            setTotalVideos(res.data.length)
+            setVideos(res.data || []);
+            setTotalVideos(res.data?.length || 0);
         } catch (err) {
             message.error('获取视频失败');
             console.error(err);
@@ -170,7 +170,7 @@ function Video(props) {
         setFetchingSource(index);
         try {
         // 发送拉取视频请求，携带源类型等参数
-        const res = await axios.get(`${API_BASE}/api/video-source-data/${source.type}`);
+        const res = await axios.get(`${API_BASE}/api/video-source-data/${source.type}?action=${queryOnly ? 'get' : 'put'}&cid=${source.path.match(/t=([^&]+)/)?.[1] || ''}`);
         
         if (res.data.success) {
             if (queryOnly) {
@@ -212,16 +212,16 @@ function Video(props) {
         message.success('批量拉取完成');
     };
 
-    const handleDeleteVideo = async (record, isSelected = false) => {
+    const handleDeleteVideo = async (record, isMultiple = false) => {
         try {
         const id = record.id.replace('video:', '');
         await axios.delete(`${API_BASE}/api/videos/${id}`);
-        if (!isSelected) {
+        if (!isMultiple) {
             message.success('视频删除成功');
         }
-        fetchVideos();
+        !isMultiple && fetchVideos();
         } catch (err) {
-        !isSelected && message.error('删除失败');
+            !isMultiple && message.error('删除失败');
         }
     };
     // 批量删除视频
@@ -230,7 +230,7 @@ function Video(props) {
         message.warning('请选择要删除的视频');
         return;
         }
-        
+        setVideoLoading(true)
         try {
         // 批量删除
         for (const video of selectedVideos) {
@@ -658,7 +658,7 @@ function Video(props) {
                     <Table 
                         dataSource={videoSources}
                         loading={videoSourceLoading}
-                        rowKey={(record, index) => `source_${index}`}
+                        rowKey={(record) => `source_${record.name}`}
                         pagination={false}
                         columns={[
                         {
