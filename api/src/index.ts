@@ -320,8 +320,8 @@ async function fetchVideoBySource(sourceConfig: any, env: any) {
   switch (sourceConfig.type) {
     case "quark":
       return await fetchQuarkVideo(sourceConfig, env);
-    case "aliyun":
-      return await fetchAliyunVideo(sourceConfig, env);
+    // case "aliyun":
+    //   return await fetchAliyunVideo(sourceConfig, env);
     case "jianguoyun":
       return await fetchJianguoYunVideo(sourceConfig, env);
     case "wolong":
@@ -383,7 +383,7 @@ const setVideoList = async (source: any, env: any) => {
         categoryId: category.id || "",
         createTime: isDuplicate ? existing.createTime || new Date().toISOString() : new Date().toISOString(),
         tagIds: tags.map((tag:any) => tag.id) || [],
-        fetchTime: new Date().toISOString(),
+        updateTime: isDuplicate ? existing.fetchTime || existing.updateTime || new Date().toISOString() : new Date().toISOString(),
         status: "active"
       };
       await env.KV.put(videoData.id, JSON.stringify(videoData));
@@ -521,13 +521,14 @@ export default {
         if (el.categoryId) {
           const category = await env.KV.get(el.categoryId);
           el.category = JSON.parse(category || "{}");
+          el.categoryId = el.category.id;
         }
         if (el.tagIds) {
           const tags = await Promise.all(el.tagIds.map(async (tagId: string) => {
             const tag = await env.KV.get(tagId);
             return JSON.parse(tag || "{}");
           }));
-          el.tags = tags;
+          el.tags = tags.filter(tag => tag && tag.id);
         }
         return el;
       }))

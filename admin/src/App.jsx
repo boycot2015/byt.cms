@@ -141,6 +141,9 @@ function App() {
       token: {
         colorPrimary: '#ff9900',
       },
+      Button: {
+        colorPrimary: '#ff9900',
+      }
     }}>
       <Layout style={{ height: '100vh', width: '100%', overflowY: 'hidden' }}>
         <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>

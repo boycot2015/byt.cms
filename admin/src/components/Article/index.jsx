@@ -27,7 +27,7 @@ function App() {
   const [articleSearch, setArticleSearch] = useState('');
   const showArticleModal = (record = null) => {
     setEditingArticle(record);
-    articleForm.setFieldsValue(record || { title: '', categoryId: '', tagIds: [], content: '' });
+    articleForm.setFieldsValue(record || { title: '', categoryId: null, tagIds: [], content: '' });
     setArticleModalVisible(true);
   };
   // ========== 分类/标签状态 ==========
@@ -121,9 +121,10 @@ function App() {
       title: '操作',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
+        <Space style={{marginLeft: -25}}>
           <Button 
-            type="primary" 
+            type="link"
+            size="small"
             icon={<EditOutlined />} 
             onClick={() => showArticleModal(record)}
           >
@@ -136,7 +137,9 @@ function App() {
             cancelText="取消"
           >
             <Button 
-              danger 
+              type="text" 
+              danger
+              size="small"
               icon={<DeleteOutlined />} 
             >
               删除
@@ -175,11 +178,21 @@ function App() {
       setArticleModalVisible(false);
       fetchArticles();
     } catch (err) {
-      message.error('操作失败');
+      message.error(err.message);
       console.error(err);
     }
   };
-
+  const handleDeleteArticle = async (record) => {
+    try {
+      const id = record.id.replace('article:', '');
+      await axios.delete(`${API_BASE}/api/articles/${id}`);
+      message.success('文章删除成功');
+      fetchArticles();
+    } catch (err) {
+      message.error('删除失败');
+      console.error(err);
+    }
+  };
   return (
     <Fragment>
       <Row justify="space-between" style={{ marginBottom: 16 }}>
@@ -286,7 +299,6 @@ function App() {
             <Select
               placeholder="选择分类"
               style={{ width: '100%' }}
-              value={selectedCategory}
               onChange={setSelectedCategory}
               allowClear
               showSearch={{
@@ -327,7 +339,7 @@ function App() {
             wrapperCol={{span: 24}}
             rules={[{ required: true, message: '请输入内容' }]}
           >
-            <RichTextEditor />
+            <RichTextEditor height={220} />
           </Form.Item>
         </Form>
       </Modal>

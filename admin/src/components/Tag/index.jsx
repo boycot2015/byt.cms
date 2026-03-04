@@ -41,9 +41,10 @@ const TagComponent = forwardRef((props, ref) => {
         width: 200,
         fixed: 'right',
         render: (_, record) => (
-            <Space size="small">
+            <Space style={{marginLeft: -25}}>
             <Button 
-                type="text" 
+                type="link"
+                size='small'
                 icon={<EditOutlined />}
                 onClick={() => showTagModal(record)}
             >
@@ -56,8 +57,9 @@ const TagComponent = forwardRef((props, ref) => {
                 cancelText="取消"
             >
                 <Button 
-                type="text" 
-                danger 
+                type="text"
+                danger
+                size='small'
                 icon={<DeleteOutlined />}
                 >
                 删除

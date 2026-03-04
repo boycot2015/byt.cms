@@ -59,10 +59,12 @@ const Category = forwardRef((props, ref) => {
         title: '操作',
         key: 'action',
         fixed: 'right',
+        width: 200,
         render: (_, record) => (
-        <Space size="small">
+        <Space style={{marginLeft: -25}}>
             <Button 
-            type="text" 
+            type="link"
+            size="small"
             icon={<EditOutlined />}
             onClick={() => showCategoryModal(record)}
             >
@@ -75,7 +77,8 @@ const Category = forwardRef((props, ref) => {
             cancelText="取消"
             >
             <Button 
-                type="text" 
+                type="text"
+                size="small" 
                 danger 
                 icon={<DeleteOutlined />}
             >

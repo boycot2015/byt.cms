@@ -53,6 +53,7 @@ function Video(props) {
         visible: false
     });
     const [videoSources, setVideoSources] = useState([]);
+    const [videoSourceLoading, setVideoSourceLoading] = useState(false);
     // 新增：手动拉取视频的加载状态
     const [fetchingSource, setFetchingSource] = useState(-1); // -1表示没有拉取，index表示正在拉取第几个源
     // 批量操作状态
@@ -128,19 +129,22 @@ function Video(props) {
 
     const fetchVideoSources = async () => {
         try {
-        const res = await axios.get(`${API_BASE}/api/video-sources`);
-        let results = await Promise.all(res.data.map(async (item, index) => {
-            item.categories = categories
-            let data = await fetchVideoBySource(sourceConfig[item.type], index, true);
-            if (data && data.categories && data.categories.length) {
-                item.categories = data.categories
-            }
-            return item;
-        }));
-        console.log(results, 'results');
-        setVideoSources(results || []);
+            setVideoSourceLoading(true);
+            const res = await axios.get(`${API_BASE}/api/video-sources`);
+            let results = await Promise.all(res.data.map(async (item, index) => {
+                item.categories = categories
+                let data = await fetchVideoBySource(sourceConfig[item.type], index, true);
+                if (data && data.categories && data.categories.length) {
+                    item.categories = data.categories
+                }
+                return item;
+            }));
+            // console.log(results, 'results');
+            setVideoSources(results || []);
+            setVideoSourceLoading(false);
         } catch (err) {
             message.error('获取视频源配置失败');
+            setVideoSourceLoading(false);
             console.error(err);
         }
     };
@@ -273,10 +277,10 @@ function Video(props) {
         ...videoSources,
         {
             name: `新源${Date.now()}`,
-            type: 'aliyun',
+            type: '',
             cron: '* * * * *',
             enabled: true,
-            path: '/',
+            path: '',
             categoryId: '',
             category: '',
             categories,
@@ -311,7 +315,8 @@ function Video(props) {
             <Row gutter={16} style={{ marginBottom: 16 }}>
                 <Col span={8}>
                     <Space >
-                        <Button 
+                        <Button
+                        type="primary"
                         icon={<ClockCircleOutlined />}
                         onClick={() => setSourceConfigDrawer({ visible: true })}
                         >
@@ -421,7 +426,7 @@ function Video(props) {
 
             {/* 视频列表（带预览） */}
             <Table
-                scroll={{ x: 1000, y:'calc(100vh - 400px)' }}
+                scroll={{ x: 'auto', y:'calc(100vh - 400px)' }}
                 columns={[
                     {
                         title: '封面',
@@ -450,8 +455,8 @@ function Video(props) {
                         dataIndex: 'title',
                         key: 'title',
                         render: (title,record) => <div>
-                        {title}
-                        <p>{record.subTitle}</p>
+                            {title}
+                            <p>{record.subTitle}</p>
                         </div>
                     },
                     {
@@ -477,19 +482,27 @@ function Video(props) {
                         key: 'source',
                     },
                     {
-                        title: '抓取时间',
-                        dataIndex: 'fetchTime',
-                        key: 'fetchTime',
+                        title: '更新时间',
+                        dataIndex: 'updateTime',
+                        key: 'updateTime',
+                        render: (time, row) => new Date(time || row.fetchTime || row.updateTime || new Date().toISOString()).toLocaleString()
+                    },
+                    {
+                        title: '创建时间',
+                        dataIndex: 'createTime',
+                        key: 'createTime',
                         render: (time) => new Date(time).toLocaleString()
                     },
                     {
                         title: '操作',
                         key: 'action',
+                        align: 'left',
                         fixed: 'right',
                         render: (_, record) => (
-                        <Space>
+                        <Space style={{marginLeft: -25}}>
                             <Button 
-                            type="text" 
+                            type="link"
+                            size="small"
                             icon={<PlayCircleOutlined />}
                             onClick={() => playVideo(record)}
                             >
@@ -502,7 +515,9 @@ function Video(props) {
                             cancelText="取消"
                             >
                             <Button 
-                                danger 
+                                type="text" 
+                                danger
+                                size="small"
                                 icon={<DeleteOutlined />}
                             >
                                 删除
@@ -549,11 +564,11 @@ function Video(props) {
                         await document.exitPictureInPicture();
                     } else if (!val && !document.pictureInPictureElement) {
                         // 进入画中画
-                        await playerRef.current.root?.children?.[0].requestPictureInPicture();
+                        // console.log(playerRef.current);
+                        await playerRef.current?.root?.children?.[1].requestPictureInPicture();
                         // await playerRef.current?.emit('MINI_STATE_CHANGE', {
                         //     pip: true,
                         // });
-                        // console.log(playerRef.current);
                         
                         // await playerRef.current?.switchPIP()
                     }
@@ -605,185 +620,195 @@ function Video(props) {
 
             {/* 视频源配置抽屉 */}
             <Drawer
-            title="视频源配置（夸克/阿里云盘）"
+            title="视频源配置（苹果CMS资源）"
             placement="bottom"
             open={sourceConfigDrawer.visible}
             onClose={() => setSourceConfigDrawer({ visible: false })}
             size={'80%'}
             styles={{
+                body: {
+                    padding: '20px 0'
+                },
                 close: {
-                position: 'absolute',
-                top: 16,
-                right: 16
+                    position: 'absolute',
+                    top: 16,
+                    right: 16
                 },
                 footer: {
-                textAlign: 'right'
+                    textAlign: 'right'
                 }
             }}
             footer={[
                 // 新增：批量拉取按钮
                 <Button 
-                key="fetchAll" 
+                key="fetchAll"
+                disabled={videoSourceLoading}
                 icon={<DownloadOutlined />} 
                 onClick={fetchAllEnabledSources}
                 style={{ marginRight: 8 }}
                 >
                 批量拉取所有启用源
                 </Button>,
-                <Button key="save" type="primary" onClick={saveVideoSources}>
+                <Button key="save" disabled={videoSourceLoading} type="primary" onClick={saveVideoSources}>
                 保存配置
                 </Button>
             ]}
             >
-            <Table 
-                dataSource={videoSources}
-                rowKey={(record, index) => `source_${index}`}
-                pagination={false}
-                columns={[
-                {
-                    title: '源名称',
-                    minWidth: 200,
-                    render: (_, record, index) => (
-                    <Input 
-                        placeholder="如：阿里云盘-电影库"
-                        value={record.name}
-                        onChange={(e) => updateVideoSource(index, 'name', e.target.value)}
+                <div style={{ padding: '0 20px' }}>
+                    <Table 
+                        dataSource={videoSources}
+                        loading={videoSourceLoading}
+                        rowKey={(record, index) => `source_${index}`}
+                        pagination={false}
+                        columns={[
+                        {
+                            title: '源名称',
+                            minWidth: 200,
+                            render: (_, record, index) => (
+                            <Input 
+                                placeholder="如：苹果CMS-电影库"
+                                value={record.name}
+                                onChange={(e) => updateVideoSource(index, 'name', e.target.value)}
+                            />
+                            )
+                        },
+                        {
+                            title: '源类型',
+                            render: (_, record, index) => (
+                            <Select
+                                value={record.type}
+                                disabled={!!record.id}
+                                onChange={(value) => updateVideoSource(index, 'type', value)}
+                                style={{ width: 130 }}
+                                showSearch={{
+                                    optionFilterProp: 'label'
+                                }}
+                                options={Object.keys(sourceConfig)?.map(key => ({
+                                label: sourceConfig[key].name,
+                                value: key
+                                }))}
+                            />
+                            )
+                        },
+                        {
+                            title: '抓取频率（Cron）',
+                            render: (_, record, index) => (
+                            <Input 
+                                placeholder="如 0 */2 * * * 每2小时"
+                                value={record.cron || "* * * * *"}
+                                onChange={(e) => updateVideoSource(index, 'cron', e.target.value)}
+                                style={{ width: 150 }}
+                            />
+                            )
+                        },
+                        {
+                            title: '获取路径',
+                            render: (_, record, index) => (
+                            <Input
+                                placeholder="/ 表示根目录，可以是API接口路径，也可以是其他路径"
+                                value={record.path || ""}
+                                onChange={(e) => updateVideoSource(index, 'path', e.target.value)}
+                                style={{ width: 260 }}
+                            />
+                            )
+                        },
+                        {
+                            title: '获取分类',
+                            render: (_, record, index) => (
+                            <Select
+                                placeholder="选择获取分类"
+                                value={record.category||null}
+                                onChange={(value) => updateVideoSource(index, 'category', value)}
+                                style={{ width: 120 }}
+                                allowClear
+                                showSearch={{
+                                    optionFilterProp: 'label'
+                                }}
+                                options={record.categories?.map(c => ({
+                                label: c.name,
+                                value: c.id
+                                }))}
+                            />
+                            )
+                        },
+                        // {
+                        //     title: '标签',
+                        //     render: (_, record, index) => (
+                        //     <Select
+                        //         mode="tags"
+                        //         placeholder="选择/输入标签"
+                        //         value={record.tags || []}
+                        //         onChange={(value) => updateVideoSource(index, 'tags', value)}
+                        //         style={{ width: 200 }}
+                        //         options={tags?.map(t => ({
+                        //         label: t.name,
+                        //         value: t.name
+                        //         }))}
+                        //     />
+                        //     )
+                        // },
+                        {
+                            title: '启用',
+                            render: (_, record, index) => (
+                            <Switch
+                                checked={record.enabled !== false}
+                                onChange={(checked) => updateVideoSource(index, 'enabled', checked)}
+                            />
+                            )
+                        },
+                        {
+                            title: '操作',
+                            fixed: 'right',
+                            render: (_, record, index) => (
+                            <Space>
+                                {/* 新增：手动拉取按钮 */}
+                                <Button 
+                                type="primary" 
+                                size="small"
+                                icon={<DownloadOutlined />}
+                                loading={fetchingSource === index}
+                                onClick={() => fetchVideoBySource(record, index)}
+                                disabled={!record.type}
+                                >
+                                手动拉取
+                                </Button>
+                                <Popconfirm
+                                title="确定删除这个视频源吗？"
+                                onConfirm={() => deleteVideoSource(index)}
+                                okText="确定"
+                                cancelText="取消"
+                                >
+                                <Button 
+                                    danger 
+                                    size="small"
+                                >
+                                    删除
+                                </Button>
+                                </Popconfirm>
+                            </Space>
+                            )
+                        }
+                        ]}
                     />
-                    )
-                },
-                {
-                    title: '源类型',
-                    render: (_, record, index) => (
-                    <Select
-                        value={record.type}
-                        onChange={(value) => updateVideoSource(index, 'type', value)}
-                        style={{ width: 130 }}
-                        showSearch={{
-                            optionFilterProp: 'label'
-                        }}
-                        options={Object.keys(sourceConfig)?.map(key => ({
-                        label: sourceConfig[key].name,
-                        value: key
-                        }))}
-                    />
-                    )
-                },
-                {
-                    title: '抓取频率（Cron）',
-                    render: (_, record, index) => (
-                    <Input 
-                        placeholder="如 0 */2 * * * 每2小时"
-                        value={record.cron || "* * * * *"}
-                        onChange={(e) => updateVideoSource(index, 'cron', e.target.value)}
-                        style={{ width: 150 }}
-                    />
-                    )
-                },
-                {
-                    title: '获取路径',
-                    render: (_, record, index) => (
-                    <Input
-                        placeholder="/ 表示根目录"
-                        value={record.path || ""}
-                        onChange={(e) => updateVideoSource(index, 'path', e.target.value)}
-                        style={{ width: 260 }}
-                    />
-                    )
-                },
-                {
-                    title: '获取分类',
-                    render: (_, record, index) => (
-                    <Select
-                        placeholder="选择获取分类"
-                        value={record.category||null}
-                        onChange={(value) => updateVideoSource(index, 'category', value)}
-                        style={{ width: 120 }}
-                        allowClear
-                        showSearch={{
-                            optionFilterProp: 'label'
-                        }}
-                        options={record.categories?.map(c => ({
-                        label: c.name,
-                        value: c.id
-                        }))}
-                    />
-                    )
-                },
-                // {
-                //     title: '标签',
-                //     render: (_, record, index) => (
-                //     <Select
-                //         mode="tags"
-                //         placeholder="选择/输入标签"
-                //         value={record.tags || []}
-                //         onChange={(value) => updateVideoSource(index, 'tags', value)}
-                //         style={{ width: 200 }}
-                //         options={tags?.map(t => ({
-                //         label: t.name,
-                //         value: t.name
-                //         }))}
-                //     />
-                //     )
-                // },
-                {
-                    title: '启用',
-                    render: (_, record, index) => (
-                    <Switch
-                        checked={record.enabled !== false}
-                        onChange={(checked) => updateVideoSource(index, 'enabled', checked)}
-                    />
-                    )
-                },
-                {
-                    title: '操作',
-                    fixed: 'right',
-                    render: (_, record, index) => (
-                    <Space>
-                        {/* 新增：手动拉取按钮 */}
-                        <Button 
-                        type="primary" 
-                        size="small"
-                        icon={<DownloadOutlined />}
-                        loading={fetchingSource === index}
-                        onClick={() => fetchVideoBySource(record, index)}
-                        disabled={!record.type}
-                        >
-                        手动拉取
-                        </Button>
-                        <Popconfirm
-                        title="确定删除这个视频源吗？"
-                        onConfirm={() => deleteVideoSource(index)}
-                        okText="确定"
-                        cancelText="取消"
-                        >
-                        <Button 
-                            danger 
-                            size="small"
-                        >
-                            删除
-                        </Button>
-                        </Popconfirm>
-                    </Space>
-                    )
-                }
-                ]}
-            />
-            <Button 
-                type="dashed" 
-                style={{ marginTop: 16, width: '100%' }}
-                onClick={addVideoSource}
-            >
-                添加视频源
-            </Button>
-            <Divider />
-            <Text type="secondary">
-                Cron表达式格式：分 时 日 月 周<br/>
-                示例：<br/>
-                * * * * * - 每分钟<br/>
-                0 */2 * * * - 每2小时<br/>
-                0 9 * * * - 每天9点<br/>
-                */30 * * * * - 每30分钟
-            </Text>
+                    <Button 
+                        type="dashed"
+                        disabled={videoSourceLoading}
+                        icon={<PlusOutlined />}
+                        style={{ marginTop: 16, width: '100%' }}
+                        onClick={addVideoSource}
+                    >
+                        添加视频源
+                    </Button>
+                    <Divider />
+                    <Text type="secondary">
+                        Cron表达式格式：分 时 日 月 周<br/>
+                        示例：<br/>
+                        * * * * * - 每分钟<br/>
+                        0 */2 * * * - 每2小时<br/>
+                        0 9 * * * - 每天9点<br/>
+                        */30 * * * * - 每30分钟
+                    </Text>
+                </div>
             </Drawer>
         </Fragment>
     );

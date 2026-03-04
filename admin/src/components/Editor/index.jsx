@@ -3,7 +3,7 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-react';
 import '@wangeditor/editor/dist/css/style.css'; // 引入编辑器样式
 
 // 封装富文本编辑器组件
-const RichTextEditor = ({ value, onChange, disabled = false }) => {
+const RichTextEditor = ({ value, onChange, disabled = false, width, height }) => {
   // 编辑器实例 ref
   const editorRef = useRef(null);
   // 编辑器配置
@@ -83,7 +83,7 @@ const RichTextEditor = ({ value, onChange, disabled = false }) => {
         onCreated={(editor) => (editorRef.current = editor)}
         onChange={handleEditorChange}
         mode="default"
-        style={{ height: 260, overflow: 'auto' }}
+        style={{ height: height || 300, width: width || '100%', overflow: 'auto' }}
       />
     </div>
   );

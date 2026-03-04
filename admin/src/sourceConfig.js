@@ -6,26 +6,26 @@
  *  - t: 分类ID
  */
 export default {
-    aliyun: {
-        name: "阿里云盘",
-        type: "aliyun",
-        cron: "* * * * *",
-        enabled: true,
-        path: "/",
-        categoryId: "",
-        category: "动漫",
-        tags: ["修仙"],
-    },
-    quark: {
-        name: "夸克网盘",
-        type: "quark",
-        cron: "* * * * *",
-        enabled: true,
-        path: "/",
-        categoryId: "",
-        category: "动漫",
-        tags: ["修仙"],
-    },
+    // aliyun: {
+    //     name: "阿里云盘",
+    //     type: "aliyun",
+    //     cron: "* * * * *",
+    //     enabled: true,
+    //     path: "/",
+    //     categoryId: "",
+    //     category: "动漫",
+    //     tags: ["修仙"],
+    // },
+    // quark: {
+    //     name: "夸克网盘",
+    //     type: "quark",
+    //     cron: "* * * * *",
+    //     enabled: true,
+    //     path: "/",
+    //     categoryId: "",
+    //     category: "动漫",
+    //     tags: ["修仙"],
+    // },
     jianguoyun: {
         name: "坚果云盘",
         type: "jianguoyun",
