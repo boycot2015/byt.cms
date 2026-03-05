@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { 
   Layout, Table, Button, Modal, Form, Input, Typography, Space, 
-  message, Card, Row, Col, Tabs, Switch, Select,
+  App, Card, Row, Col, Tabs, Switch, Select,
   Image, Drawer, Divider, ConfigProvider, Popconfirm
 } from 'antd';
 import axios from 'axios';
@@ -16,7 +16,8 @@ import {
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-function App() {
+function Article() {
+  const { message } = App.useApp();
   // ========== 文章相关状态 ==========
   const [articles, setArticles] = useState([]);
   const [articleLoading, setArticleLoading] = useState(false);
@@ -347,4 +348,4 @@ function App() {
   );
 }
 
-export default App;
+export default Article;

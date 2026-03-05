@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment, useRef } from 'react';
 import { useAsyncEffect } from 'ahooks';
 import { 
   Table, Button, Modal, Form, Input, Typography, Space, 
-  message, Row, Col, Switch, Select, Tag,
+  App, Row, Col, Switch, Select, Tag,
   Image, Drawer, Divider, Popconfirm
 } from 'antd';
 import sourceConfig from '../../sourceConfig';
@@ -20,6 +20,7 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 
 function Video(props) {
     const playerRef = useRef(null);
+    const { message } = App.useApp();
     // ========== 分类/标签状态 ==========
     const [categories, setCategories] = useState([]);
     const [tags, setTags] = useState([]);
@@ -218,8 +219,8 @@ function Video(props) {
         await axios.delete(`${API_BASE}/api/videos/${id}`);
         if (!isMultiple) {
             message.success('视频删除成功');
+            fetchVideos();
         }
-        !isMultiple && fetchVideos();
         } catch (err) {
             !isMultiple && message.error('删除失败');
         }
@@ -227,22 +228,22 @@ function Video(props) {
     // 批量删除视频
     const batchDeleteVideos = async () => {
         if (selectedVideos.length === 0) {
-        message.warning('请选择要删除的视频');
-        return;
+            message.warning('请选择要删除的视频');
+            return;
         }
         setVideoLoading(true)
         try {
-        // 批量删除
-        for (const video of selectedVideos) {
-            await handleDeleteVideo(video, true);
-        }
-        
-        message.success(`成功删除 ${selectedVideos.length} 个视频`);
-        setSelectedVideos([]);
-        fetchVideos();
+            // 批量删除
+            for (const video of selectedVideos) {
+                await handleDeleteVideo(video, true);
+            }
+            
+            message.success(`成功删除 ${selectedVideos.length} 个视频`);
+            setSelectedVideos([]);
+            fetchVideos();
         } catch (err) {
-        message.error('批量删除失败');
-        console.error(err);
+            message.error('批量删除失败');
+            console.error(err);
         }
     };
     const playVideo = (video) => {

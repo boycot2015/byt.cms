@@ -417,7 +417,6 @@ const setCategory = async (body:any, env: any) => {
       if (existingCategory.id) await env.KV.put(existingCategory.id, JSON.stringify(newCategory));
       return newCategory;
     };
-    return existingCategory;
   }
   const category = {
     id,
@@ -616,7 +615,7 @@ export default {
       await env.KV.delete(`category:${id}`);
       return new Response(JSON.stringify({success: true}), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
+        status: 201,
       });
     }
     // 标签管理

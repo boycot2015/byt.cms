@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment, forwardRef } from 'react';
 import { 
   Layout, Table, Button, Modal, Form, Input, Typography, Space, 
-  message, Card, Row, Col, Tabs, Switch, Tag,
+  App, Card, Row, Col, Tabs, Switch, Tag,
   Image, Drawer, Divider, ConfigProvider, Popconfirm
 } from 'antd';
 import axios from 'axios';
@@ -15,6 +15,7 @@ const { Title, Text, Paragraph } = Typography;
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 const TagComponent = forwardRef((props, ref) => {
+    const { message } = App.useApp();
     const [selectedTags, setSelectedTags] = useState([]);
     const [tags, setTags] = useState([]);
     const [tagLoading, setTagLoading] = useState(false);
@@ -70,17 +71,18 @@ const TagComponent = forwardRef((props, ref) => {
         },
     ];
     // ========== 分类管理方法 ==========
-    const handleDeleteTag = async (tag, isSelected = false) => {
+    const handleDeleteTag = async (tag, isMultiple = false) => {
         try {
-        const id = tag.id.replace('tag:', '');
-        setTags(tags.filter(t => t.id !== tag.id));
-        await axios.delete(`${API_BASE}/api/tags/${id}`);
-        if (!isSelected) {
-            message.success('标签删除成功');
-        }
+            const id = tag.id.replace('tag:', '');
+            setTags(tags.filter(t => t.id !== tag.id));
+            await axios.delete(`${API_BASE}/api/tags/${id}`);
+            if (!isMultiple) {
+                message.success('标签删除成功');
+                fetchTags();
+            }
         } catch (err) {
-        !isSelected && message.error('删除失败');
-        console.error(err);
+            !isMultiple && message.error('删除失败');
+            console.error(err);
         }
     };
     // 筛选标签列表

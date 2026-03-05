@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment, forwardRef } from 'react';
 import { 
   Layout, Table, Button, Modal, Form, Input, Typography, Space, 
-  message, Card, Row, Col, Tabs, Switch, Select, Tag,
+  App, Card, Row, Col, Tabs, Switch, Select, Tag,
   Image, Drawer, Divider, ConfigProvider, Popconfirm
 } from 'antd';
 import axios from 'axios';
@@ -15,7 +15,7 @@ const { Title, Text, Paragraph } = Typography;
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 const Category = forwardRef((props, ref) => {
-
+    const { message } = App.useApp();
     // ========== 分类/标签状态 ==========
     const [categories, setCategories] = useState([]);
     const [categoryLoading, setCategoryLoading] = useState(false);
@@ -114,40 +114,40 @@ const Category = forwardRef((props, ref) => {
         props.setCategoryModalVisible(category);
     };
 
-    const handleDeleteCategory = async (category, isSelected = false) => {
+    const handleDeleteCategory = async (category, isMultiple = false) => {
         try {
-        const id = category.id.replace('category:', '');
-        await axios.delete(`${API_BASE}/api/categories/${id}`);
-        setCategories(categories.filter(c => c.id !== category.id));
-        if (!isSelected) {
-            message.success('分类删除成功');
-        }
-        fetchCategories();
+            const id = category.id.replace('category:', '');
+            await axios.delete(`${API_BASE}/api/categories/${id}`);
+            setCategories(categories.filter(c => c.id !== category.id));
+            if (!isMultiple) {
+                message.success('分类删除成功');
+                fetchCategories();
+            }
         } catch (err) {
-        !isSelected && message.error('删除失败');
-        console.error(err);
+            !isMultiple && message.error('删除失败');
+            console.error(err);
         }
     };
 
     // 批量删除分类
     const batchDeleteCategories = async () => {
         if (selectedCategories.length === 0) {
-        message.warning('请选择要删除的分类');
-        return;
+            message.warning('请选择要删除的分类');
+            return;
         }
         
         try {
-        // 批量删除
-        for (const category of selectedCategories) {
-            await handleDeleteCategory(category, true);
-        }
-        
-        message.success(`成功删除 ${selectedCategories.length} 个分类`);
-        setSelectedCategories([]);
-        fetchCategories();
+            // 批量删除
+            for (const category of selectedCategories) {
+                await handleDeleteCategory(category, true);
+            }
+            
+            message.success(`成功删除 ${selectedCategories.length} 个分类`);
+            setSelectedCategories([]);
+            fetchCategories();
         } catch (err) {
-        message.error('批量删除失败');
-        console.error(err);
+            message.error('批量删除失败');
+            console.error(err);
         }
     };
 

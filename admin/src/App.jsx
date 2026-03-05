@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Layout, Table, Button, Modal, Form, Input, Typography, Space, 
-  message, Card, Row, Col, Tabs, Switch, Select,
-  Image, Drawer, Divider, ConfigProvider, Popconfirm
+  Card, Row, Col, Tabs, Switch, Select,
+  Image, Drawer, Divider, ConfigProvider, App
 } from 'antd';
 import axios from 'axios';
 import Video from './components/Video';
@@ -24,10 +24,10 @@ const { TabPane } = Tabs;
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-function App() {
+function Index() {
   const categoryRef = React.useRef(null);
   const tagRef = React.useRef(null);
-
+  const { message } = App.useApp();
   // ========== 分类/标签状态 ==========
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
@@ -143,116 +143,118 @@ function App() {
         colorLink: '#ff9900',
       }
     }}>
-      <Layout style={{ height: '100vh', width: '100%', overflowY: 'hidden' }}>
-        <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-          <Row justify="space-between" align="middle">
-            <Col>
-              <Title level={3} style={{ margin: 0, lineHeight: '64px' }}>
-                CMS 管理平台
-              </Title>
-            </Col>
-          </Row>
-        </Header>
+      <App>
+        <Layout style={{ height: '100vh', width: '100%', overflowY: 'hidden' }}>
+          <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+            <Row justify="space-between" align="middle">
+              <Col>
+                <Title level={3} style={{ margin: 0, lineHeight: '64px' }}>
+                  CMS 管理平台
+                </Title>
+              </Col>
+            </Row>
+          </Header>
 
-        <Content style={{ padding: '24px 24px 0', width: '100%', minWidth: '1366px', overflow: 'hidden', overflowX: 'auto' }}>
-          <Card style={{ width: '100%' }} styles={{ body: { padding: '0 10px' } }}>
-            <Tabs defaultActiveKey="1" style={{ width: '100%' }} items={[{
-              label: '视频资源管理',
-              key: '1',
-              children: <Video setCategoryModalVisible={setCategoryModalVisible} setTagModalVisible={setTagModalVisible} />
-            },{
-              label: '文章管理',
-              key: '4',
-              children:  <Article />
-            },{
-              label: '分类管理',
-              key: '2',
-              children:  <Category ref={categoryRef} setCategoryModalVisible={showCategoryModal} />
-            },{
-              label: '标签管理',
-              key: '3',
-              children:  <TagComponent ref={tagRef} setTagModalVisible={showTagModal} />
-            }]}>
-              {/* 视频资源管理标签页 */}
-              {/* <TabPane tab="视频资源管理" key="1">
-                <Video setCategoryModalVisible={setCategoryModalVisible} setTagModalVisible={setTagModalVisible} />
-              </TabPane> */}
-              
-              {/* 分类管理标签页（新增） */}
-              {/* <TabPane tab="分类管理" key="3">
-                <Category ref={categoryRef} setCategoryModalVisible={showCategoryModal} />
-              </TabPane> */}
-              
-              {/* 标签管理标签页（新增） */}
-              {/* <TabPane tab="标签管理" key="4">
-                <TagComponent ref={tagRef} setTagModalVisible={showTagModal} />
-              </TabPane> */}
-              
-              {/* 文章管理标签页 */}
-              {/* <TabPane tab="文章管理" key="2">
-                <Article />
-              </TabPane> */}
-            </Tabs>
-          </Card>
-        </Content>
+          <Content style={{ padding: '24px 24px 0', width: '100%', minWidth: '1366px', overflow: 'hidden', overflowX: 'auto' }}>
+            <Card style={{ width: '100%' }} styles={{ body: { padding: '0 10px' } }}>
+              <Tabs defaultActiveKey="1" style={{ width: '100%' }} items={[{
+                label: '视频资源管理',
+                key: '1',
+                children: <Video setCategoryModalVisible={setCategoryModalVisible} setTagModalVisible={setTagModalVisible} />
+              },{
+                label: '文章管理',
+                key: '4',
+                children:  <Article />
+              },{
+                label: '分类管理',
+                key: '2',
+                children:  <Category ref={categoryRef} setCategoryModalVisible={showCategoryModal} />
+              },{
+                label: '标签管理',
+                key: '3',
+                children:  <TagComponent ref={tagRef} setTagModalVisible={showTagModal} />
+              }]}>
+                {/* 视频资源管理标签页 */}
+                {/* <TabPane tab="视频资源管理" key="1">
+                  <Video setCategoryModalVisible={setCategoryModalVisible} setTagModalVisible={setTagModalVisible} />
+                </TabPane> */}
+                
+                {/* 分类管理标签页（新增） */}
+                {/* <TabPane tab="分类管理" key="3">
+                  <Category ref={categoryRef} setCategoryModalVisible={showCategoryModal} />
+                </TabPane> */}
+                
+                {/* 标签管理标签页（新增） */}
+                {/* <TabPane tab="标签管理" key="4">
+                  <TagComponent ref={tagRef} setTagModalVisible={showTagModal} />
+                </TabPane> */}
+                
+                {/* 文章管理标签页 */}
+                {/* <TabPane tab="文章管理" key="2">
+                  <Article />
+                </TabPane> */}
+              </Tabs>
+            </Card>
+          </Content>
 
-        <Footer style={{ textAlign: 'center' }}>
-          Cloudflare + KV + Ant Design CMS ©{new Date().getFullYear()}
-        </Footer>
+          <Footer style={{ textAlign: 'center' }}>
+            Cloudflare + KV + Ant Design CMS ©{new Date().getFullYear()}
+          </Footer>
 
-        {/* 分类编辑/新增弹窗（优化） */}
-        <Modal
-          title={editingCategory ? '编辑分类' : '新增分类'}
-          open={categoryModalVisible}
-          onOk={handleCategorySubmit}
-          onCancel={() => setCategoryModalVisible(false)}
-          destroyOnHidden
-        >
-          <Form form={categoryForm} layout="vertical">
-            <Form.Item
-              name="name"
-              label="分类名称"
-              rules={[{ required: true, message: '请输入分类名称' }]}
-            >
-              <Input 
-                placeholder="如：电影、短视频、动漫" 
-              />
-            </Form.Item>
-            <Form.Item
-              name="desc"
-              label="分类描述（可选）"
-            >
-              <Input.TextArea 
-                placeholder="输入分类的详细描述" 
-                rows={3}
-              />
-            </Form.Item>
-          </Form>
-        </Modal>
+          {/* 分类编辑/新增弹窗（优化） */}
+          <Modal
+            title={editingCategory ? '编辑分类' : '新增分类'}
+            open={categoryModalVisible}
+            onOk={handleCategorySubmit}
+            onCancel={() => setCategoryModalVisible(false)}
+            destroyOnHidden
+          >
+            <Form form={categoryForm} layout="vertical">
+              <Form.Item
+                name="name"
+                label="分类名称"
+                rules={[{ required: true, message: '请输入分类名称' }]}
+              >
+                <Input 
+                  placeholder="如：电影、短视频、动漫" 
+                />
+              </Form.Item>
+              <Form.Item
+                name="desc"
+                label="分类描述（可选）"
+              >
+                <Input.TextArea 
+                  placeholder="输入分类的详细描述" 
+                  rows={3}
+                />
+              </Form.Item>
+            </Form>
+          </Modal>
 
-        {/* 标签编辑/新增弹窗（优化） */}
-        <Modal
-          title={editingTag ? '编辑标签' : '新增标签'}
-          open={tagModalVisible}
-          onOk={handleTagSubmit}
-          onCancel={() => setTagModalVisible(false)}
-          destroyOnHidden
-        >
-          <Form form={tagForm} layout="vertical">
-            <Form.Item
-              name="name"
-              label="标签名称"
-              rules={[{ required: true, message: '请输入标签名称' }]}
-            >
-              <Input 
-                placeholder="如：搞笑、科技、悬疑" 
-              />
-            </Form.Item>
-          </Form>
-        </Modal>
-      </Layout>
+          {/* 标签编辑/新增弹窗（优化） */}
+          <Modal
+            title={editingTag ? '编辑标签' : '新增标签'}
+            open={tagModalVisible}
+            onOk={handleTagSubmit}
+            onCancel={() => setTagModalVisible(false)}
+            destroyOnHidden
+          >
+            <Form form={tagForm} layout="vertical">
+              <Form.Item
+                name="name"
+                label="标签名称"
+                rules={[{ required: true, message: '请输入标签名称' }]}
+              >
+                <Input 
+                  placeholder="如：搞笑、科技、悬疑" 
+                />
+              </Form.Item>
+            </Form>
+          </Modal>
+        </Layout>
+      </App>
     </ConfigProvider>
   );
 }
 
-export default App;
+export default Index;
