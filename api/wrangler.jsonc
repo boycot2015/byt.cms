@@ -13,12 +13,20 @@
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
-	"kv_namespaces": [
+	// "kv_namespaces": [
+	// 	{
+	// 	"binding": "KV",
+	// 	"id": "6faf8019c46c4cccbf3fbd217408f5fb",
+	// 	// Optional: preview_id used when running `wrangler dev` for local dev
+	// 	"preview_id": "<ID_OF_PREVIEW_KV_NAMESPACE_FOR_LOCAL_DEVELOPMENT>"
+	// 	}
+	// ],
+	"d1_databases": [
 		{
-		"binding": "KV",
-		"id": "7990ff0f4f37459e970455c4908db31c",
-		// Optional: preview_id used when running `wrangler dev` for local dev
-		"preview_id": "<ID_OF_PREVIEW_KV_NAMESPACE_FOR_LOCAL_DEVELOPMENT>"
+			"binding": "DB",
+			"database_name": "byt-cms",
+			"database_id": "6a6541a3-d4e7-4604-8c76-c6cf31f43cdc",
+			"preview_database_id": "<ID_OF_PREVIEW_D1_DATABASE_FOR_LOCAL_DEVELOPMENT>"
 		}
 	],
 	"r2_buckets": [

@@ -1,5 +1,3 @@
-
-import { sources as sourcesLocal } from "./data/sources";
 // 工具函数：指数退避重试
 async function withRetry<T>(
   fn: () => Promise<T>,
@@ -283,7 +281,6 @@ async function fetchJianguoYunVideo(sourceConfig: any, env: any) {
     path: file.path,
   }));
 }
-
 async function fetchCmsVideo(sourceConfig: any, env: any) {
   const video:any = await withRetry(() => fetch(sourceConfig.path || "/").then(res => res.json()));
   const videoDetial:any = await withRetry(() => fetch(sourceConfig.path.replace('?ac=list', '?ac=detail') || "/").then(res => res.json()));
@@ -315,16 +312,16 @@ async function fetchCmsVideo(sourceConfig: any, env: any) {
       id: item.type_id,
       name: item.type_name,
     })) || []
-  };
+  }
+  
 }
-
 // 通用视频抓取函数
 async function fetchVideoBySource(sourceConfig: any, env: any) {
   switch (sourceConfig.type) {
     case "quark":
       return await fetchQuarkVideo(sourceConfig, env);
-    case "aliyun":
-      return await fetchAliyunVideo(sourceConfig, env);
+    // case "aliyun":
+    //   return await fetchAliyunVideo(sourceConfig, env);
     case "jianguoyun":
       return await fetchJianguoYunVideo(sourceConfig, env);
     case "wolong":
@@ -359,178 +356,111 @@ function isTimeToFetch(sourceConfig: any): boolean {
     (weekday === "*" || now.getDay() === weekday)
   );
 }
+const setVideoList = async (source: any, env: any) => {
+  try {
+    const data = await withRetry(() => fetchVideoBySource(source, env));
+    let videos = data.list || data || [];
+    // console.log(videos.map((el:any) => el.title + el.url), 'cms----videos');
+    for (const video of videos) {
+      const existingKeys = await env.KV.list({ prefix: "video:" });
+      let isDuplicate = false;
+      let existing = null;
+      for (const key of existingKeys.keys) {
+        const v = JSON.parse(await env.KV.get(key.name) || "{}");
+        // console.log(v, videos, 'video');
+        if (v.url === video.url) {
+          isDuplicate = true;
+          existing = v
+          break;
+        }
+      }
+      const tags = await Promise.all(video.tags.map((tag: string) => setTag({ name: tag }, env)));
+      const category = await setCategory({ name: video.category || "" }, env);
 
-// D1 数据库操作函数 - 分类
-const setCategory = async (body: any, env: any) => {
-  // 检查分类是否已存在
-  const existing = await env.DB.prepare(
-    "SELECT * FROM categories WHERE name = ?"
-  ).bind(body.name).first();
-  
-  if (existing) {
-    // 更新现有分类
-    const updatedCategory = { ...existing, ...body };
-    await env.DB.prepare(
-      "UPDATE categories SET name = ?, desc = ? WHERE id = ?"
-    ).bind(updatedCategory.name, updatedCategory.desc || "", updatedCategory.id).run();
-    return updatedCategory;
+      const videoId = `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const videoData = {
+        id: isDuplicate ? existing.id || videoId : videoId,
+        ...video,
+        categoryId: category.id || "",
+        createTime: isDuplicate ? existing.createTime || new Date().toISOString() : new Date().toISOString(),
+        tagIds: tags.map((tag:any) => tag.id) || [],
+        updateTime: isDuplicate ? existing.fetchTime || existing.updateTime || new Date().toISOString() : new Date().toISOString(),
+        status: "active"
+      };
+      if (!source.action || source.action === "put") {
+        await env.KV.put(videoData.id, JSON.stringify(videoData));
+        console.log(`成功存储视频: ${video.title}`);
+      }
+    }
+    return data;
+  } catch (error) {
+    console.error(`源[${source.name}]设置失败:`, error);
   }
-  
-  // 创建新分类
+}
+const setCategory = async (body:any, env: any) => {
   const id = `category:${Date.now()}`;
+  let existingCategory = null;
+  // console.log(existingexistingCategory, body.id || `category:${body.name}`, 'setCategory');
+  const existingKeys = await env.KV.list({ prefix: "category:" });
+  let isDuplicate = false;
+  for (const key of existingKeys.keys) {
+    const v = JSON.parse(await env.KV.get(key.name) || "{}");
+    if (v.name === body.name) {
+      isDuplicate = true;
+      existingCategory = v
+      break;
+    }
+  }
+  if (isDuplicate) {
+    if (existingCategory)  {
+      let newCategory = {...existingCategory, ...body };
+      if (existingCategory.id) await env.KV.put(existingCategory.id, JSON.stringify(newCategory));
+      return newCategory;
+    };
+  }
   const category = {
     id,
     name: body.name,
     desc: body.desc || "",
     createTime: new Date().toISOString()
   };
-  
-  await env.DB.prepare(
-    "INSERT INTO categories (id, name, desc, createTime) VALUES (?, ?, ?, ?)"
-  ).bind(category.id, category.name, category.desc, category.createTime).run();
-  
+  await env.KV.put(id, JSON.stringify(category));
   return category;
-};
-
-// D1 数据库操作函数 - 标签
-const setTag = async (body: any, env: any) => {
-  // 检查标签是否已存在
-  const existing = await env.DB.prepare(
-    "SELECT * FROM tags WHERE name = ?"
-  ).bind(body.name).first();
-  
-  if (existing) {
-    // 更新现有标签
-    const updatedTag = { ...existing, ...body };
-    await env.DB.prepare(
-      "UPDATE tags SET name = ? WHERE id = ?"
-    ).bind(updatedTag.name, updatedTag.id).run();
-    return updatedTag;
+}
+const setTag = async (body:any, env: any) => {
+  let existing = null;
+  const existingKeys = await env.KV.list({ prefix: "tag:" });
+  let isDuplicate = false;
+  for (const key of existingKeys.keys) {
+    const v = JSON.parse(await env.KV.get(key.name) || "{}");
+    if (v.name === body.name) {
+      isDuplicate = true;
+      existing = v
+      break;
+    }
   }
-  
-  // 创建新标签
+  if (isDuplicate) {
+    if (existing){
+      let newTag = {...existing, ...body };
+      if(existing.id) await env.KV.put(existing.id, JSON.stringify(newTag));
+      return newTag;
+    };
+    return JSON.parse(existing);
+  }
   const id = `tag:${Date.now()}`;
   const tag = {
     id,
     name: body.name,
     createTime: new Date().toISOString()
   };
-  
-  await env.DB.prepare(
-    "INSERT INTO tags (id, name, createTime) VALUES (?, ?, ?)"
-  ).bind(tag.id, tag.name, tag.createTime).run();
-  
+  await env.KV.put(id, JSON.stringify(tag));
   return tag;
-};
-
-// 视频存储函数（D1版本）
-const setVideoList = async (source: any, env: any) => {
-  try {
-    const data = await withRetry(() => fetchVideoBySource(source, env));
-    let videos = data.list || data || [];
-    
-    for (const video of videos) {
-      // 检查视频是否已存在（通过URL唯一判断）
-      const existingVideo = await env.DB.prepare(
-        "SELECT * FROM videos WHERE url = ?"
-      ).bind(video.url).first();
-      
-      // 处理分类
-      const category = await setCategory({ name: video.category || "" }, env);
-      
-      // 处理标签
-      const tagIds: string[] = [];
-      if (video.tags && Array.isArray(video.tags)) {
-        for (const tagName of video.tags) {
-          const tag = await setTag({ name: tagName }, env);
-          tagIds.push(tag.id);
-        }
-      }
-      
-      // 准备视频数据
-      const videoId = existingVideo?.id || `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
-      const videoData = {
-        id: videoId,
-        title: video.title || "",
-        subTitle: video.subTitle || "",
-        url: video.url || "",
-        urls: JSON.stringify(video.urls || []),
-        cover: video.cover || "",
-        size: video.size || 0,
-        source: video.source || "",
-        category: video.category || "",
-        categoryId: category.id || "",
-        fetchTime: video.fetchTime || "",
-        path: video.path || "",
-        actors: JSON.stringify(video.actors || []),
-        director: video.director || "",
-        writer: video.writer || "",
-        createTime: existingVideo?.createTime || new Date().toISOString(),
-        updateTime: new Date().toISOString(),
-        status: "active"
-      };
-      
-      // 存储视频
-      if (!source.action || source.action === "put") {
-        if (existingVideo) {
-          // 更新现有视频
-          await env.DB.prepare(`
-            UPDATE videos 
-            SET title = ?, subTitle = ?, url = ?, urls = ?, cover = ?, size = ?, 
-                source = ?, category = ?, categoryId = ?, fetchTime = ?, path = ?,
-                actors = ?, director = ?, writer = ?, updateTime = ?, status = ?
-            WHERE id = ?
-          `).bind(
-            videoData.title, videoData.subTitle, videoData.url, videoData.urls,
-            videoData.cover, videoData.size, videoData.source, videoData.category,
-            videoData.categoryId, videoData.fetchTime, videoData.path,
-            videoData.actors, videoData.director, videoData.writer,
-            videoData.updateTime, videoData.status, videoData.id
-          ).run();
-          
-          // 删除原有标签关联
-          await env.DB.prepare(
-            "DELETE FROM video_tags WHERE videoId = ?"
-          ).bind(videoId).run();
-        } else {
-          // 插入新视频
-          await env.DB.prepare(`
-            INSERT INTO videos (
-              id, title, subTitle, url, urls, cover, size, source, category,
-              categoryId, fetchTime, path, actors, director, writer,
-              createTime, updateTime, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `).bind(
-            videoData.id, videoData.title, videoData.subTitle, videoData.url,
-            videoData.urls, videoData.cover, videoData.size, videoData.source,
-            videoData.category, videoData.categoryId, videoData.fetchTime,
-            videoData.path, videoData.actors, videoData.director, videoData.writer,
-            videoData.createTime, videoData.updateTime, videoData.status
-          ).run();
-        }
-        
-        // 添加新的标签关联
-        for (const tagId of tagIds) {
-          await env.DB.prepare(
-            "INSERT OR IGNORE INTO video_tags (videoId, tagId) VALUES (?, ?)"
-          ).bind(videoId, tagId).run();
-        }
-        
-        console.log(`成功${existingVideo ? '更新' : '存储'}视频: ${video.title}`);
-      }
-    }
-    return data;
-  } catch (error) {
-    console.error(`源[${source.name}]设置失败:`, error);
-    throw error;
-  }
-};
-
+}
 export default {
   async fetch(
     request: Request,
     env: {
-      DB: D1Database; // 替换 KV 为 D1
+      KV: KVNamespace;
       UPLOAD_BUCKET: R2Bucket;
       QUARK_API_KEY: string;
       ALIYUN_REFRESH_TOKEN: string;
@@ -564,7 +494,7 @@ export default {
         <div align="center">
           <h1 style="font-size: 24px;margin: 120px auto 30px;">Welcome to Cloudflare Workers CMS API</h1>
           <div>
-            <span>当前版本：v1.0.0 (D1 数据库版)</span>
+            <span>当前版本：v1.0.0</span>
             <a href="https://github.com/boycot2015/byt.cms" target="_blank">项目地址</a>
           <ul>
             <li>GET /api/categories - 获取所有分类</li>
@@ -582,70 +512,45 @@ export default {
 
     // 文章管理
     if (path === "/api/articles" && request.method === "GET") {
-      const articles = await env.DB.prepare("SELECT * FROM articles").all();
-      let articlesWithDetails = await Promise.all(articles.results.map(async (article: any) => {
-        // 获取分类信息
-        if (article.categoryId) {
-          const category = await env.DB.prepare(
-            "SELECT * FROM categories WHERE id = ?"
-          ).bind(article.categoryId).first();
-          article.category = category || {};
+      const keys = await env.KV.list({ prefix: "article:" });
+      const articles = [];
+      for (const key of keys.keys) {
+        const article = await env.KV.get(key.name);
+        articles.push(JSON.parse(article!));
+      }
+      let articlesWithDetails = await Promise.all(articles.map(async el => {
+        if (el.categoryId) {
+          const category = await env.KV.get(el.categoryId);
+          el.category = JSON.parse(category || "{}");
+          el.categoryId = el.category.id;
         }
-        
-        // 获取标签信息
-        if (article.id) {
-          const tagRelations = await env.DB.prepare(
-            "SELECT tagId FROM article_tags WHERE articleId = ?"
-          ).bind(article.id).all();
-          
-          const tags = await Promise.all(tagRelations.results.map(async (rel: any) => {
-            const tag = await env.DB.prepare(
-              "SELECT * FROM tags WHERE id = ?"
-            ).bind(rel.tagId).first();
-            return tag || {};
+        if (el.tagIds) {
+          const tags = await Promise.all(el.tagIds.map(async (tagId: string) => {
+            const tag = await env.KV.get(tagId);
+            return JSON.parse(tag || "{}");
           }));
-          
-          article.tags = tags.filter(tag => tag && tag.id);
+          el.tags = tags.filter(tag => tag && tag.id);
         }
-        
-        return article;
-      }));
-      
+        return el;
+      }))
       return new Response(JSON.stringify(articlesWithDetails), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     if (path === "/api/articles" && request.method === "PUT") {
-      const body: any = await request.json();
+      const body:any = await request.json();
       const id = `article:${Date.now()}`;
       const article = {
         id,
-        title: body.title || "",
-        categoryId: body.categoryId || "",
-        content: body.content || "",
+        title: body.title,
+        categoryId: body.categoryId,
+        tagIds: body.tagIds,
+        content: body.content,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
-      // 插入文章
-      await env.DB.prepare(`
-        INSERT INTO articles (id, title, categoryId, content, createdAt, updatedAt)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `).bind(
-        article.id, article.title, article.categoryId, article.content,
-        article.createdAt, article.updatedAt
-      ).run();
-      
-      // 处理标签关联
-      if (body.tagIds && Array.isArray(body.tagIds)) {
-        for (const tagId of body.tagIds) {
-          await env.DB.prepare(
-            "INSERT OR IGNORE INTO article_tags (articleId, tagId) VALUES (?, ?)"
-          ).bind(article.id, tagId).run();
-        }
-      }
-      
+      await env.KV.put(id, JSON.stringify(article));
       return new Response(JSON.stringify(article), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 201,
@@ -654,18 +559,7 @@ export default {
 
     if (path.startsWith("/api/articles/") && request.method === "DELETE") {
       const id = path.replace("/api/articles/", "");
-      const articleId = `article:${id}`;
-      
-      // 删除文章标签关联
-      await env.DB.prepare(
-        "DELETE FROM article_tags WHERE articleId = ?"
-      ).bind(articleId).run();
-      
-      // 删除文章
-      await env.DB.prepare(
-        "DELETE FROM articles WHERE id = ?"
-      ).bind(articleId).run();
-      
+      await env.KV.delete(`article:${id}`);
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -673,54 +567,23 @@ export default {
 
     if (path.startsWith("/api/articles/") && request.method === "POST") {
       const id = path.replace("/api/articles/", "");
-      const articleId = `article:${id}`;
-      const body: any = await request.json();
-      
-      // 检查文章是否存在
-      const oldArticle = await env.DB.prepare(
-        "SELECT * FROM articles WHERE id = ?"
-      ).bind(articleId).first();
-      
+      const body:any = await request.json();
+      const oldArticle = await env.KV.get(`article:${id}`);
       if (!oldArticle) {
         return new Response(JSON.stringify({ error: "文章不存在" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 404,
         });
       }
-      
-      // 更新文章
       const newArticle = {
-        ...oldArticle,
-        title: body.title || oldArticle.title,
-        categoryId: body.categoryId || oldArticle.categoryId,
-        content: body.content || oldArticle.content,
+        ...JSON.parse(oldArticle),
+        categoryId: body.categoryId,
+        tagIds: body.tagIds,
+        title: body.title,
+        content: body.content,
         updatedAt: new Date().toISOString(),
       };
-      
-      await env.DB.prepare(`
-        UPDATE articles 
-        SET title = ?, categoryId = ?, content = ?, updatedAt = ?
-        WHERE id = ?
-      `).bind(
-        newArticle.title, newArticle.categoryId, newArticle.content,
-        newArticle.updatedAt, articleId
-      ).run();
-      
-      // 更新标签关联
-      if (body.tagIds && Array.isArray(body.tagIds)) {
-        // 删除原有标签
-        await env.DB.prepare(
-          "DELETE FROM article_tags WHERE articleId = ?"
-        ).bind(articleId).run();
-        
-        // 添加新标签
-        for (const tagId of body.tagIds) {
-          await env.DB.prepare(
-            "INSERT OR IGNORE INTO article_tags (articleId, tagId) VALUES (?, ?)"
-          ).bind(articleId, tagId).run();
-        }
-      }
-      
+      await env.KV.put(`article:${id}`, JSON.stringify(newArticle));
       return new Response(JSON.stringify(newArticle), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -728,11 +591,13 @@ export default {
 
     // 分类管理
     if (path === "/api/categories" && request.method === "GET") {
-      const categories = await env.DB.prepare(
-        "SELECT * FROM categories ORDER BY createTime DESC"
-      ).all();
-      
-      return new Response(JSON.stringify(categories.results), {
+      const keys = await env.KV.list({ prefix: "category:" });
+      const categories = [];
+      for (const key of keys.keys) {
+        const category = await env.KV.get(key.name);
+        categories.push(JSON.parse(category!));
+      }
+      return new Response(JSON.stringify(categories.reverse()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -740,222 +605,116 @@ export default {
     if (path === "/api/categories" && request.method === "POST") {
       const body = await request.json();
       const category = await setCategory(body, env);
-      
       return new Response(JSON.stringify(category), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 201,
       });
     }
-
     if (path.startsWith("/api/categories/") && request.method === "DELETE") {
       const id = path.replace("/api/categories/", "");
-      const categoryId = `category:${id}`;
-      
-      // 删除分类
-      await env.DB.prepare(
-        "DELETE FROM categories WHERE id = ?"
-      ).bind(categoryId).run();
-      
-      return new Response(JSON.stringify({ success: true }), {
+      await env.KV.delete(`category:${id}`);
+      return new Response(JSON.stringify({success: true}), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
+        status: 201,
       });
     }
-
     // 标签管理
     if (path === "/api/tags" && request.method === "GET") {
-      const tags = await env.DB.prepare(
-        "SELECT * FROM tags ORDER BY createTime DESC"
-      ).all();
-      
-      return new Response(JSON.stringify(tags.results), {
+      const keys = await env.KV.list({ prefix: "tag:" });
+      const tags = [];
+      for (const key of keys.keys) {
+        const tag = await env.KV.get(key.name);
+        tags.push(JSON.parse(tag!));
+      }
+      return new Response(JSON.stringify(tags.reverse()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
     if (path === "/api/tags" && request.method === "POST") {
       const body = await request.json();
       const tag = await setTag(body, env);
-      
       return new Response(JSON.stringify(tag), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 201,
       });
     }
-
     if (path.startsWith("/api/tags/") && request.method === "DELETE") {
       const id = path.replace("/api/tags/", "");
-      const tagId = `tag:${id}`;
-      
-      // 删除标签
-      await env.DB.prepare(
-        "DELETE FROM tags WHERE id = ?"
-      ).bind(tagId).run();
-      
-      return new Response(JSON.stringify({ success: true }), {
+      await env.KV.delete(`tag:${id}`);
+      return new Response(JSON.stringify({success: true}), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
+        status: 201,
       });
     }
-
     // 视频管理
     if (path === "/api/videos" && request.method === "GET") {
       const category = url.searchParams.get("category");
       const tag = url.searchParams.get("tag");
       const source = url.searchParams.get("source");
-      
-      // 构建查询条件
-      let query = "SELECT * FROM videos WHERE 1=1";
-      const params: any[] = [];
-      
-      if (category) {
-        query += " AND categoryId = ?";
-        params.push(category);
+      const keys = await env.KV.list({ prefix: "video:" });
+      let videos = [];
+      for (const key of keys.keys) {
+        const video = JSON.parse(await env.KV.get(key.name) || "null");
+        video && videos.push(video);
       }
-      
-      if (source) {
-        query += " AND source = ?";
-        params.push(source);
-      }
-      
-      // 基础视频查询
-      let videos:any = await env.DB.prepare(query + " ORDER BY updateTime DESC").bind(...params).all();
-      videos = videos.results;
-      
-      // 如果有标签筛选，需要关联查询
-      if (tag) {
-        const videoIds = await env.DB.prepare(`
-          SELECT DISTINCT videoId FROM video_tags WHERE tagId = ?
-        `).bind(tag).all();
-        
-        const videoIdList = videoIds.results.map((v: any) => v.videoId);
-        videos = videos.filter((v: any) => videoIdList.includes(v.id));
-      }
-      
-      // 补充标签信息
-      const videosWithTags = await Promise.all(videos.map(async (video: any) => {
-        // 解析JSON字段
-        video.urls = JSON.parse(video.urls || "[]");
-        video.actors = JSON.parse(video.actors || "[]");
-        
-        // 获取标签
-        const tagRelations = await env.DB.prepare(`
-          SELECT t.* FROM video_tags vt
-          JOIN tags t ON vt.tagId = t.id
-          WHERE vt.videoId = ?
-        `).bind(video.id).all();
-        
-        video.tags = tagRelations.results;
-        return video;
-      }));
-      
-      return new Response(JSON.stringify(videosWithTags), {
+      if (category) videos = videos.filter(v => v.categoryId === category);
+      if (source) videos = videos.filter(v => v.source === source);
+      if (tag) videos = videos.filter(v => v.tagIds.includes(tag));
+      return new Response(JSON.stringify(videos.filter(el => el).reverse()), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     if (path.startsWith("/api/videos/") && request.method === "DELETE") {
       const id = path.replace("/api/videos/", "");
-      const videoId = `video:${id}`;
-      
-      // 删除视频标签关联
-      await env.DB.prepare(
-        "DELETE FROM video_tags WHERE videoId = ?"
-      ).bind(videoId).run();
-      
-      // 删除视频
-      await env.DB.prepare(
-        "DELETE FROM videos WHERE id = ?"
-      ).bind(videoId).run();
-      
+      await env.KV.delete(`video:${id}`);
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // 视频源配置管理
     if (path === "/api/video-sources" && request.method === "POST") {
       const body = await request.json();
-      
-      // 清空现有配置（或根据需求改为增量更新）
-      await env.DB.prepare("DELETE FROM video_sources").run();
-      
-      // 插入新配置
-      if (Array.isArray(body)) {
-        for (const source of body) {
-          const id = source.id || `source:${Date.now()}_${Math.random().toString(36).slice(2)}`;
-          await env.DB.prepare(`
-            INSERT INTO video_sources (
-              id, name, type, cron, enabled, path, categoryId, category, tags, action
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `).bind(
-            id,
-            source.name || "",
-            source.type || "",
-            source.cron || "* * * * *",
-            source.enabled !== false,
-            source.path || "",
-            source.categoryId || "",
-            source.category || "",
-            JSON.stringify(source.tags || []),
-            source.action || "put"
-          ).run();
-        }
-      }
-      
+      await env.KV.put("video_sources", JSON.stringify(body));
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     if (path === "/api/video-sources" && request.method === "GET") {
-      const sources = await env.DB.prepare("SELECT * FROM video_sources").all();
-      
-      // 解析JSON字段
-      const parsedSources = sources.results.map((source: any) => {
-        source.tags = JSON.parse(source.tags || "[]");
-        source.category = parseInt(source.category);
-        return source;
-      });
-      return new Response(JSON.stringify(parsedSources), {
+      const sources = await env.KV.get("video_sources") || "[]";
+      return new Response(sources, {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // 手动抓取视频源数据
     if (path.startsWith("/api/video-source-data/") && request.method === "GET") {
       const type = path.replace("/api/video-source-data/", "");
-      const action = url.searchParams.get("action");
-      const cid = url.searchParams.get("cid");
-      
-      // 获取视频源配置
-      const sources:any = await env.DB.prepare(
-        "SELECT * FROM video_sources WHERE type = ?"
-      ).bind(type).all();
-      
-      const source = sources.results.find((s: any) => s.type === type) || {
-        ...sourcesLocal[type],
-        "action": "put"
-      };      
+      const action = url.searchParams.get("action"); // get, put 默认put
+      const cid = url.searchParams.get("cid"); // 分类ID，默认空
+      const sources: any = JSON.parse(await env.KV.get("video_sources") || "[]");
+      const source = sources.find((s: any) => s.type === type) || {
+          "type": "wolong",
+          "cron": "* * * * *",
+          "enabled": true,
+          "path": "https://collect.wolongzy.cc/api.php/provide/vod/?ac=detail",
+          "categoryId": "",
+          "category": "动漫",
+          "tags": [
+              "修仙"
+          ]
+      }
       if (!source) {
         return new Response(JSON.stringify({ error: "视频源不存在" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 404
         });
       }
+      if (source.path.includes("t=")) source.path = source.path.replace(/t=([^&]*)/g, `t=${cid || ""}`);
+      else source.path+=`&t=${cid || ""}`;
+      console.log(source.path, 'source.path');
       
-      // 处理路径参数
-      if (source.path.includes("t=")) {
-        source.path = source.path.replace(/t=([^&]*)/g, `t=${cid || ""}`);
-      } else {
-        source.path += `&t=${cid || ""}`;
-      }
-      
-      // console.log(source.path, 'source.path');
-      
-      // 抓取并存储视频数据
-      const data = await setVideoList({ ...source, action }, env);
-      
+      const data = await setVideoList({...source, action}, env);
       return new Response(JSON.stringify({
         success: true,
         code: 200,
@@ -972,14 +731,12 @@ export default {
       try {
         const formData = await request.formData();
         const file = formData.get("file") as File;
-        
         if (!file) {
           return new Response(JSON.stringify({ success: false, message: "未选择文件" }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 400,
           });
         }
-        
         const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
         if (!allowedTypes.includes(file.type)) {
           return new Response(JSON.stringify({ success: false, message: "仅支持 jpg/png/gif/webp" }), {
@@ -987,7 +744,6 @@ export default {
             status: 400,
           });
         }
-        
         const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
           return new Response(JSON.stringify({ success: false, message: "文件大小不能超过 5MB" }), {
@@ -995,15 +751,12 @@ export default {
             status: 400,
           });
         }
-        
         const fileName = `upload/${Date.now()}_${Math.random().toString(36).slice(2)}.${file.name.split('.').pop()}`;
         await env.UPLOAD_BUCKET.put(fileName, file, {
           httpMetadata: { contentType: file.type },
           customMetadata: { uploadTime: new Date().toISOString(), originalName: file.name },
         });
-        
         const imageUrl = `https://file.boycot.dpdns.org/${fileName}`;
-        
         return new Response(JSON.stringify({
           success: true,
           data: { url: imageUrl, name: file.name, size: file.size }
@@ -1023,11 +776,9 @@ export default {
     if (path.startsWith("/api/image/") && request.method === "GET") {
       const fileName = path.replace("/api/image/", "");
       const object = await env.UPLOAD_BUCKET.get(fileName);
-      
       if (!object) {
         return new Response("图片不存在", { status: 404 });
       }
-      
       return new Response(object.body, {
         headers: {
           "Content-Type": object.httpMetadata?.contentType || "image/jpeg",
@@ -1041,11 +792,10 @@ export default {
       status: 404,
     });
   },
-  
   async scheduled(
     event: ScheduledEvent,
     env: {
-      DB: D1Database; // 替换 KV 为 D1
+      KV: KVNamespace;
       ALIYUN_REFRESH_TOKEN: string;
       ALIYUN_CLIENT_ID: string;
       ALIYUN_CLIENT_SECRET: string;
@@ -1056,28 +806,20 @@ export default {
     ctx: ExecutionContext
   ): Promise<void> {
     console.log("定时调度任务执行:", new Date().toISOString());
-    
-    // 获取所有视频源配置
-    const sources:any = await env.DB.prepare("SELECT * FROM video_sources WHERE enabled = 1").all();
-    
-    if (sources.results.length === 0) {
-      console.log("无启用的视频源配置");
+    const sourceConfigStr = await env.KV.get("video_sources");
+    if (!sourceConfigStr) {
+      console.log("无视频源配置");
       return;
     }
-    
-    for (const source of sources.results) {
-      // 解析JSON字段
-      source.tags = JSON.parse(source.tags || "[]");
-      
-      // 检查是否到抓取时间
+    const sources = JSON.parse(sourceConfigStr);
+    for (const source of sources) {
+      if (!source.enabled) continue;
       if (!isTimeToFetch(source)) {
         console.log(`源[${source.name}]未到抓取时间，跳过`);
         continue;
       }
-      
       try {
         await setVideoList(source, env);
-        console.log(`源[${source.name}]抓取完成`);
       } catch (error) {
         console.error(`源[${source.name}]抓取失败:`, error);
         continue;

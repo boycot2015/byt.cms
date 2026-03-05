@@ -394,7 +394,7 @@ function Video(props) {
                         showSearch={{
                             optionFilterProp: 'label'
                         }}
-                        options={videoSources?.map(t => ({
+                        options={videoSources?.filter((el, index, self) => self.findIndex(t => t.type === el.type) === index)?.map(t => ({
                             label: t.type,
                             value: t.type
                         }))}
@@ -472,7 +472,7 @@ function Video(props) {
                         render: (tags) => (
                         <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap'}}>
                             {tags?.map(tag => (
-                            <Tag key={tag} variant="outlined" color="blue">{tag}</Tag>
+                            <Tag key={tag.id} variant="outlined" color="blue">{tag.name||tag}</Tag>
                             ))}
                         </div>
                         )
@@ -591,7 +591,7 @@ function Video(props) {
                         <Col span={24} style={{ marginTop: 8 }}>
                         <Text strong>标签：</Text>
                         {videoPlayDrawer.video?.tags?.map(tag => (
-                            <Tag key={tag}>{tag}</Tag>
+                            <Tag key={tag.id}>{tag.name||tag}</Tag>
                         ))}
                         </Col>
                         <Col span={24} style={{ marginTop: 8 }}>
@@ -678,7 +678,6 @@ function Video(props) {
                             render: (_, record, index) => (
                             <Select
                                 value={record.type}
-                                disabled={!!record.id}
                                 onChange={(value) => updateVideoSource(index, 'type', value)}
                                 style={{ width: 130 }}
                                 showSearch={{
@@ -732,22 +731,6 @@ function Video(props) {
                             />
                             )
                         },
-                        // {
-                        //     title: '标签',
-                        //     render: (_, record, index) => (
-                        //     <Select
-                        //         mode="tags"
-                        //         placeholder="选择/输入标签"
-                        //         value={record.tags || []}
-                        //         onChange={(value) => updateVideoSource(index, 'tags', value)}
-                        //         style={{ width: 200 }}
-                        //         options={tags?.map(t => ({
-                        //         label: t.name,
-                        //         value: t.name
-                        //         }))}
-                        //     />
-                        //     )
-                        // },
                         {
                             title: '启用',
                             render: (_, record, index) => (
