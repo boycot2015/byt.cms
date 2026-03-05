@@ -9,7 +9,7 @@ import sourceConfig from '../../sourceConfig';
 import Player from '../Player';
 import axios from 'axios';
 import { 
-  EditOutlined, DeleteOutlined, PlusOutlined, 
+  LoadingOutlined, DeleteOutlined, PlusOutlined, 
   ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
   DownloadOutlined, SearchOutlined,
 } from '@ant-design/icons';
@@ -395,13 +395,13 @@ function Video(props) {
                             optionFilterProp: 'label'
                         }}
                         options={videoSources?.filter((el, index, self) => self.findIndex(t => t.type === el.type) === index)?.map(t => ({
-                            label: t.type,
+                            label: sourceConfig[t.type]?.name || t.type,
                             value: t.type
                         }))}
                         />
-                        <Button 
+                        <Button
                         type="primary" 
-                        icon={<SearchOutlined />} 
+                        loading={videoLoading && {icon: <LoadingOutlined spin />}} 
                         onClick={() => fetchVideos()}
                         >
                         搜索
@@ -481,6 +481,7 @@ function Video(props) {
                         title: '来源',
                         dataIndex: 'source',
                         key: 'source',
+                        render: (source, row) => `${sourceConfig[source]?.name || source}(${row.source})`
                     },
                     {
                         title: '更新时间',

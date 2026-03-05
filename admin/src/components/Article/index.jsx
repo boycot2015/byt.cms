@@ -8,9 +8,8 @@ import axios from 'axios';
 // 新增：引入富文本编辑器组件
 import RichTextEditor from '../Editor';
 import { 
-  EditOutlined, DeleteOutlined, PlusOutlined, SyncOutlined, 
-  ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
-  DownloadOutlined, SearchOutlined,
+  EditOutlined, DeleteOutlined, PlusOutlined, 
+  LoadingOutlined, SearchOutlined,
 } from '@ant-design/icons';
 
 // 替换为你的Workers地址
@@ -160,7 +159,9 @@ function Article() {
       message.error('获取文章失败');
       console.error(err);
     } finally {
-      setArticleLoading(false);
+      setTimeout(() => {
+        setArticleLoading(false);
+      }, 500);
     }
   };
   const handleArticleSubmit = async () => {
@@ -246,7 +247,9 @@ function Article() {
             />
             <Button 
               type="primary" 
-              icon={<SearchOutlined />} 
+              loading={articleLoading && {
+                  icon: <LoadingOutlined spin />,
+              }} 
               onClick={() => fetchVideos()}
               >
               搜索

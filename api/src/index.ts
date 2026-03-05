@@ -287,6 +287,8 @@ async function fetchJianguoYunVideo(sourceConfig: any, env: any) {
 async function fetchCmsVideo(sourceConfig: any, env: any) {
   const video:any = await withRetry(() => fetch(sourceConfig.path || "/").then(res => res.json()));
   const videoDetial:any = await withRetry(() => fetch(sourceConfig.path.replace('?ac=list', '?ac=detail') || "/").then(res => res.json()));
+  // console.log(videoDetial?.list, 'videoDetial?.list');
+  
   let list = videoDetial?.list?.map((file: any) => ({
     title: file.vod_name || file.title || "",
     subTitle: file.vod_remarks || "",

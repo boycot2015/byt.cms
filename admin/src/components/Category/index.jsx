@@ -9,6 +9,7 @@ import {
   EditOutlined, DeleteOutlined, PlusOutlined, SyncOutlined, 
   ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
   DownloadOutlined, SearchOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 const { Title, Text, Paragraph } = Typography;
 // 替换为你的Workers地址
@@ -100,13 +101,15 @@ const Category = forwardRef((props, ref) => {
     const fetchCategories = async () => {
         setCategoryLoading(true);
         try {
-        const res = await axios.get(`${API_BASE}/api/categories`);
-        setCategories(res.data);
+            const res = await axios.get(`${API_BASE}/api/categories`);
+            setCategories(res.data);
         } catch (err) {
-        message.error('获取分类失败');
-        console.error(err);
+            message.error('获取分类失败');
+            console.error(err);
         } finally {
-        setCategoryLoading(false);
+            setTimeout(() => {
+                setCategoryLoading(false);
+            }, 500);
         }
     };
 
@@ -162,32 +165,41 @@ const Category = forwardRef((props, ref) => {
         <Fragment>
             <Row gutter={16} style={{ marginBottom: 16, alignItems: 'center' }}>
                 <Col flex="auto">
-                <Button 
-                    type="primary" 
-                    icon={<PlusOutlined />} 
-                    onClick={() => showCategoryModal()}
-                >
-                    新增分类
-                </Button>
-                <Button 
-                    danger
-                    type="primary"
-                    icon={<DeleteOutlined />} 
-                    onClick={batchDeleteCategories}
-                    style={{ marginLeft: 8 }}
-                    disabled={selectedCategories.length === 0}
-                >
-                    批量删除
-                </Button>
+                    <Button 
+                        type="primary" 
+                        icon={<PlusOutlined />} 
+                        onClick={() => showCategoryModal()}
+                    >
+                        新增分类
+                    </Button>
+                    <Button 
+                        danger
+                        type="primary"
+                        icon={<DeleteOutlined />} 
+                        onClick={batchDeleteCategories}
+                        style={{ marginLeft: 8 }}
+                        disabled={selectedCategories.length === 0}
+                    >
+                        批量删除
+                    </Button>
                 </Col>
                 <Col flex="0 0 300px">
-                <Input
-                    placeholder="搜索分类名称"
-                    value={categorySearch}
-                    allowClear
-                    onChange={(e) => setCategorySearch(e.target.value)}
-                    prefix={<SearchOutlined />}
-                />
+                    <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
+                        <Input
+                            placeholder="搜索分类名称"
+                            value={categorySearch}
+                            allowClear
+                            onChange={(e) => setCategorySearch(e.target.value)}
+                            prefix={<SearchOutlined />}
+                        />
+                        <Button
+                        type="primary"
+                        loading={categoryLoading && {
+                            icon: <LoadingOutlined spin />,
+                        }} 
+                        onClick={fetchCategories}
+                        >刷新</Button>
+                    </div>
                 </Col>
             </Row>
             

@@ -7,7 +7,7 @@ import {
 import axios from 'axios';
 import { 
   EditOutlined, DeleteOutlined, PlusOutlined, SyncOutlined, 
-  ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
+  LoadingOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
   DownloadOutlined, SearchOutlined,
 } from '@ant-design/icons';
 const { Title, Text, Paragraph } = Typography;
@@ -116,13 +116,15 @@ const TagComponent = forwardRef((props, ref) => {
     const fetchTags = async () => {
         setTagLoading(true);
         try {
-        const res = await axios.get(`${API_BASE}/api/tags`);
-        setTags(res.data);
+            const res = await axios.get(`${API_BASE}/api/tags`);
+            setTags(res.data);
         } catch (err) {
-        message.error('获取标签失败');
-        console.error(err);
+            message.error('获取标签失败');
+            console.error(err);
         } finally {
-        setTagLoading(false);
+            setTimeout(() => {
+                setTagLoading(false);
+            }, 500);
         }
     };
 
@@ -160,13 +162,22 @@ const TagComponent = forwardRef((props, ref) => {
                 </Button>
                 </Col>
                 <Col flex="0 0 300px">
-                    <Input
-                        placeholder="搜索标签名称"
-                        value={tagSearch}
-                        allowClear
-                        onChange={(e) => setTagSearch(e.target.value)}
-                        prefix={<SearchOutlined />}
-                    />
+                 <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
+                        <Input
+                            placeholder="搜索标签名称"
+                            value={tagSearch}
+                            allowClear
+                            onChange={(e) => setTagSearch(e.target.value)}
+                            prefix={<SearchOutlined />}
+                        />
+                        <Button
+                        type="primary"
+                        loading={tagLoading && {
+                            icon: <LoadingOutlined spin />,
+                        }} 
+                        onClick={fetchTags}
+                        >刷新</Button>
+                    </div>
                 </Col>
             </Row>
             

@@ -141,10 +141,11 @@ function Index() {
       token: {
         colorPrimary: '#ff9900',
         colorLink: '#ff9900',
+        colorBgSolidActive: '#ff9900',
       }
     }}>
       <App>
-        <Layout style={{ height: '100vh', width: '100%', overflowY: 'hidden' }}>
+        <Layout style={{ height: '100vh', width: '100%', minWidth: '1366px', overflow: 'hidden', overflowX: 'auto' }}>
           <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
             <Row justify="space-between" align="middle">
               <Col>
@@ -155,7 +156,7 @@ function Index() {
             </Row>
           </Header>
 
-          <Content style={{ padding: '24px 24px 0', width: '100%', minWidth: '1366px', overflow: 'hidden', overflowX: 'auto' }}>
+          <Content style={{ padding: '24px 24px 0', width: '100%' }}>
             <Card style={{ width: '100%' }} styles={{ body: { padding: '0 10px' } }}>
               <Tabs defaultActiveKey="1" style={{ width: '100%' }} items={[{
                 label: '视频资源管理',
