@@ -417,10 +417,14 @@ const setTag = async (body: any, env: any) => {
     name: body.name,
     createTime: new Date().toISOString()
   };
-  
-  await env.DB.prepare(
-    "INSERT INTO tags (id, name, createTime) VALUES (?, ?, ?)"
-  ).bind(tag.id, tag.name, tag.createTime).run();
+  try {
+    await env.DB.prepare(
+      "INSERT INTO tags (id, name, createTime) VALUES (?, ?, ?)"
+    ).bind(tag.id, tag.name, tag.createTime).run();
+  } catch (error) {
+    console.log("标签创建失败:", error);
+    // throw error;
+  }
   
   return tag;
 };
@@ -584,7 +588,12 @@ export default {
 
     // 文章管理
     if (path === "/api/articles" && request.method === "GET") {
-      const articles = await env.DB.prepare("SELECT * FROM articles").all();
+      let categoryId = url.searchParams.get("categoryId");
+      let tagId = url.searchParams.get("tagId");
+      let articles = await env.DB.prepare("SELECT * FROM articles").all();
+      if (categoryId) {
+        articles = await env.DB.prepare("SELECT * FROM articles WHERE categoryId = ?").bind(categoryId).all();
+      }
       let articlesWithDetails = await Promise.all(articles.results.map(async (article: any) => {
         // 获取分类信息
         if (article.categoryId) {
@@ -612,7 +621,14 @@ export default {
         
         return article;
       }));
-      
+      if (tagId) {
+        const articleIds = await env.DB.prepare(`
+          SELECT DISTINCT articleId FROM article_tags WHERE tagId = ?
+        `).bind(tagId).all();
+        
+        const articleIdList = articleIds.results.map((v: any) => v.articleId);
+        articlesWithDetails = articlesWithDetails.filter((v: any) => articleIdList.includes(v.id));
+      }
       return new Response(JSON.stringify(articlesWithDetails), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -1035,6 +1051,173 @@ export default {
           "Content-Type": object.httpMetadata?.contentType || "image/jpeg",
           "Cache-Control": "public, max-age=31536000",
         },
+      });
+    }
+
+    // 用户管理
+    if (path === "/api/users" && request.method === "GET") {
+      const users = await env.DB.prepare(
+        "SELECT id, username, nickname, avatar, role, status, createTime, updateTime FROM users ORDER BY createTime DESC"
+      ).all();
+      
+      return new Response(JSON.stringify(users.results), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (path === "/api/users/register" && request.method === "POST") {
+      const body = await request.json();
+      const { username, password, nickname } = body as any;
+      
+      if (!username || !password) {
+        return new Response(JSON.stringify({ error: "用户名和密码不能为空" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
+      }
+      
+      // 检查用户是否已存在
+      const existing = await env.DB.prepare(
+        "SELECT * FROM users WHERE username = ?"
+      ).bind(username).first();
+      const users = await env.DB.prepare(
+        "SELECT id, username, nickname, avatar, role, status, createTime, updateTime FROM users ORDER BY createTime DESC"
+      ).raw();
+      if (existing) {
+        return new Response(JSON.stringify({ error: "用户名已存在" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
+      }
+      
+      // 创建新用户
+      const id = `user:${Date.now()}`;
+      const now = new Date().toISOString();
+      const user = {
+        id,
+        username,
+        password, // 实际项目中应该加密密码
+        nickname: nickname || username,
+        avatar: "",
+        role: users?.length ? 'user' : "admin",
+        status: "active",
+        createTime: now,
+        updateTime: now
+      };
+      
+      await env.DB.prepare(
+        "INSERT INTO users (id, username, password, nickname, avatar, role, status, createTime, updateTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      ).bind(user.id, user.username, user.password, user.nickname, user.avatar, user.role, user.status, user.createTime, user.updateTime).run();
+      
+      // 不返回密码
+      const { password: _, ...userWithoutPassword } = user;
+      return new Response(JSON.stringify(userWithoutPassword), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 201,
+      });
+    }
+
+    if (path === "/api/users/login" && request.method === "POST") {
+      const body = await request.json();
+      const { username, password } = body as any;
+      
+      if (!username || !password) {
+        return new Response(JSON.stringify({ error: "用户名和密码不能为空" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
+      }
+      
+      // 查找用户
+      const user = await env.DB.prepare(
+        "SELECT * FROM users WHERE username = ?"
+      ).bind(username).first();
+      
+      if (!user || user.password !== password) {
+        return new Response(JSON.stringify({ error: "用户名或密码错误" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 401,
+        });
+      }
+      
+      // 检查用户状态
+      if (user.status !== 'active') {
+        return new Response(JSON.stringify({ error: "用户已被禁用，请联系管理员" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 403,
+        });
+      }
+      
+      // 不返回密码
+      const { password: _, ...userWithoutPassword } = user;
+      return new Response(JSON.stringify({
+        success: true,
+        user: userWithoutPassword
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (path.startsWith("/api/users/") && request.method === "POST") {
+      const id = path.replace("/api/users/", "");
+      const userId = `user:${id}`;
+      const body:any = await request.json();
+      
+      // 检查用户是否存在
+      const oldUser = await env.DB.prepare(
+        "SELECT * FROM users WHERE id = ?"
+      ).bind(userId).first();
+      
+      if (!oldUser) {
+        return new Response(JSON.stringify({ error: "用户不存在" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 404,
+        });
+      }
+      
+      // 更新用户
+      const now = new Date().toISOString();
+      const newUser:any = {
+        ...oldUser,
+        nickname: body.nickname || oldUser.nickname,
+        avatar: body.avatar || oldUser.avatar,
+        role: body.role || oldUser.role,
+        status: body.status || oldUser.status,
+        updateTime: now
+      };
+      
+      if (body.password) {
+        newUser.password = body.password;
+      }
+      
+      await env.DB.prepare(`
+        UPDATE users 
+        SET nickname = ?, avatar = ?, role = ?, status = ?, password = ?, updateTime = ?
+        WHERE id = ?
+      `).bind(
+        newUser.nickname, newUser.avatar, newUser.role, newUser.status,
+        newUser.password, newUser.updateTime, userId
+      ).run();
+      
+      // 不返回密码
+      const { password: _, ...userWithoutPassword } = newUser as any;
+      return new Response(JSON.stringify(userWithoutPassword), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (path.startsWith("/api/users/") && request.method === "DELETE") {
+      const id = path.replace("/api/users/", "");
+      const userId = `user:${id}`;
+      
+      // 删除用户
+      await env.DB.prepare(
+        "DELETE FROM users WHERE id = ?"
+      ).bind(userId).run();
+      
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
       });
     }
 

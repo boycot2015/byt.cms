@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment, forwardRef } from 'react';
 import { 
-  Layout, Table, Button, Modal, Form, Input, Typography, Space, 
+  message, Table, Button, Modal, Form, Input, Typography, Space, 
   App, Card, Row, Col, Tabs, Switch, Tag,
   Image, Drawer, Divider, ConfigProvider, Popconfirm
 } from 'antd';
@@ -10,19 +10,17 @@ import {
   LoadingOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
   DownloadOutlined, SearchOutlined,
 } from '@ant-design/icons';
+import { usePermission } from '../../hooks/usePermission';
 const { Title, Text, Paragraph } = Typography;
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 const TagComponent = forwardRef((props, ref) => {
-    const { message } = App.useApp();
+    const { isAdmin } = usePermission();
     const [selectedTags, setSelectedTags] = useState([]);
     const [tags, setTags] = useState([]);
     const [tagLoading, setTagLoading] = useState(false);
     const [tagSearch, setTagSearch] = useState('');
-    const [editingTag, setEditingTag] = useState(null);
-    // 批量操作状态
-    const [selectedTag, setSelectedTag] = useState(null);
     // ========== 标签列配置 ==========
     const tagColumns = [
         {
@@ -40,6 +38,7 @@ const TagComponent = forwardRef((props, ref) => {
         title: '操作',
         key: 'action',
         width: 200,
+        hidden: !isAdmin,
         fixed: 'right',
         render: (_, record) => (
             <Space style={{marginLeft: -25}}>
@@ -129,14 +128,13 @@ const TagComponent = forwardRef((props, ref) => {
     };
 
     const showTagModal = (tag = null) => {
-        setEditingTag(tag);
         props.setTagModalVisible(tag);
     };
 
     // ========== 初始化 ==========
     useEffect(() => {
         fetchTags();
-    }, [selectedTag]);
+    }, []);
     React.useImperativeHandle(ref, () => ({
         fetchTags
     }));

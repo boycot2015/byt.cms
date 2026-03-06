@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment, forwardRef, useImperativeHandle, useCallback } from 'react';
 import { 
-  Layout, Table, Button, Modal, Form, Input, Typography, Space, 
+  message, Table, Button, Modal, Form, Input, Typography, Space, 
   App, Card, Row, Col, Tabs, Switch, Select,
   Image, Drawer, Divider, ConfigProvider, Popconfirm
 } from 'antd';
@@ -11,12 +11,12 @@ import {
   EditOutlined, DeleteOutlined, PlusOutlined, 
   LoadingOutlined, SearchOutlined,
 } from '@ant-design/icons';
-
+import { usePermission } from '../../hooks/usePermission';
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-function Article() {
-  const { message } = App.useApp();
+const Article = forwardRef((props, ref) => {
+ const { isAdmin } = usePermission();
   // ========== 文章相关状态 ==========
   const [articles, setArticles] = useState([]);
   const [articleLoading, setArticleLoading] = useState(false);
@@ -27,26 +27,21 @@ function Article() {
   const [articleSearch, setArticleSearch] = useState('');
   const showArticleModal = (record = null) => {
     setEditingArticle(record);
-    articleForm.setFieldsValue(record || { title: '', categoryId: null, tagIds: [], content: '' });
+    articleForm.setFieldsValue({ title: '', categoryId: null, tagIds: record?.tags?.map(tag => tag.id) || [], content: '', ...record });
     setArticleModalVisible(true);
   };
   // ========== 分类/标签状态 ==========
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
   const [selectedTag, setSelectedTag] = useState(null);
-  const [categoryLoading, setCategoryLoading] = useState(false);
-  const [tagLoading, setTagLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const fetchCategories = async (method) => {
-    setCategoryLoading(true);
+  const fetchCategories = async () => {
     try {
       const res = await axios.get(`${API_BASE}/api/categories`);
       setCategories(res.data);
     } catch (err) {
       message.error('获取分类失败');
       console.error(err);
-    } finally {
-      setCategoryLoading(false);
     }
   };
   const getFilteredArticles = () => {
@@ -56,23 +51,14 @@ function Article() {
       );
   };
   const fetchTags = async () => {
-    setTagLoading(true);
     try {
-    const res = await axios.get(`${API_BASE}/api/tags`);
+      const res = await axios.get(`${API_BASE}/api/tags`);
     setTags(res.data);
     } catch (err) {
-    message.error('获取标签失败');
-    console.error(err);
-    } finally {
-    setTagLoading(false);
+      message.error('获取标签失败');
+      console.error(err);
     }
-};
-  // ========== 初始化 ==========
-  useEffect(() => {
-    fetchArticles();
-    fetchCategories();
-    fetchTags();
-  }, [articleSearch, selectedCategory, selectedTag]);
+  };
 
   // ========== 文章列配置 ==========
   const articleColumns = [
@@ -120,40 +106,50 @@ function Article() {
     {
       title: '操作',
       key: 'action',
+      hidden: !isAdmin,
       render: (_, record) => (
         <Space style={{marginLeft: -25}}>
-          <Button 
-            type="link"
-            size="small"
-            icon={<EditOutlined />} 
-            onClick={() => showArticleModal(record)}
-          >
-            编辑
-          </Button>
-          <Popconfirm
-            title="确定删除这篇文章吗？"
-            onConfirm={() => handleDeleteArticle(record)}
-            okText="确定"
-            cancelText="取消"
-          >
+          {isAdmin && (
+          <>
             <Button 
-              type="text" 
-              danger
+              type="link"
               size="small"
-              icon={<DeleteOutlined />} 
+              icon={<EditOutlined />} 
+              onClick={() => showArticleModal(record)}
             >
-              删除
+              编辑
             </Button>
-          </Popconfirm>
+            <Popconfirm
+              title="确定删除这篇文章吗？"
+              onConfirm={() => handleDeleteArticle(record)}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button 
+                type="text" 
+                danger
+                size="small"
+                icon={<DeleteOutlined />} 
+              >
+                删除
+              </Button>
+            </Popconfirm>
+          </>
+        )}
         </Space>
       ),
     },
   ];
   // ========== 文章管理方法 ==========
-  const fetchArticles = async () => {
+  const fetchArticles = useCallback(async () => {
     setArticleLoading(true);
     try {
-      const res = await axios.get(`${API_BASE}/api/articles`);
+      const res = await axios.get(`${API_BASE}/api/articles`, {
+        params: {
+          categoryId: selectedCategory,
+          tagId: selectedTag,
+        }
+      });
       setArticles(res.data);
     } catch (err) {
       message.error('获取文章失败');
@@ -163,7 +159,7 @@ function Article() {
         setArticleLoading(false);
       }, 500);
     }
-  };
+  }, [selectedCategory, selectedTag]);
   const handleArticleSubmit = async () => {
     try {
       const values = await articleForm.validateFields();
@@ -195,17 +191,28 @@ function Article() {
       console.error(err);
     }
   };
+  // ========== 初始化 ==========
+  useEffect(() => {
+    fetchArticles();
+    fetchCategories();
+    fetchTags();
+  }, [articleSearch, fetchArticles, selectedCategory, selectedTag]);
+
+  // 暴露方法给父组件
+  useImperativeHandle(ref, () => ({
+    fetchArticles
+  }));
   return (
     <Fragment>
       <Row justify="space-between" style={{ marginBottom: 16 }}>
         <Col span={8}>
-          <Button 
+          {isAdmin && <Button 
             type="primary" 
             icon={<PlusOutlined />} 
             onClick={() => showArticleModal()}
           >
             新增文章
-          </Button>
+          </Button>}
         </Col>
         <Col span={16}>
           <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>
@@ -250,7 +257,7 @@ function Article() {
               loading={articleLoading && {
                   icon: <LoadingOutlined spin />,
               }} 
-              onClick={() => fetchVideos()}
+              onClick={() => fetchArticles()}
               >
               搜索
               </Button>
@@ -303,7 +310,6 @@ function Article() {
             <Select
               placeholder="选择分类"
               style={{ width: '100%' }}
-              onChange={setSelectedCategory}
               allowClear
               showSearch={{
                   optionFilterProp: 'label'
@@ -322,13 +328,11 @@ function Article() {
             <Select
               placeholder="选择标签"
               style={{ width: '100%' }}
-              value={selectedTag}
               maxTagCount={6}
               mode="multiple"
               showSearch={{
                   optionFilterProp: 'label'
               }}
-              onChange={setSelectedTag}
               allowClear
               options={tags?.map(t => ({
                   label: t.name,
@@ -349,6 +353,6 @@ function Article() {
       </Modal>
     </Fragment>
   );
-}
+});
 
 export default Article;

@@ -79,9 +79,23 @@ CREATE TABLE IF NOT EXISTS video_sources (
   action TEXT DEFAULT 'put'
 );
 
+-- 用户表
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL,
+  nickname TEXT DEFAULT '',
+  avatar TEXT DEFAULT '',
+  role TEXT DEFAULT 'user',
+  status TEXT DEFAULT 'active',
+  createTime TEXT NOT NULL,
+  updateTime TEXT NOT NULL
+);
+
 -- 创建索引提升查询性能
 CREATE INDEX IF NOT EXISTS idx_videos_url ON videos(url);
 CREATE INDEX IF NOT EXISTS idx_videos_categoryId ON videos(categoryId);
 CREATE INDEX IF NOT EXISTS idx_videos_source ON videos(source);
 CREATE INDEX IF NOT EXISTS idx_categories_name ON categories(name);
 CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name);
+CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);

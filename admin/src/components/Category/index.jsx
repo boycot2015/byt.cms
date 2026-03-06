@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment, forwardRef } from 'react';
 import { 
-  Layout, Table, Button, Modal, Form, Input, Typography, Space, 
+  message, Table, Button, Modal, Form, Input, Typography, Space, 
   App, Card, Row, Col, Tabs, Switch, Select, Tag,
   Image, Drawer, Divider, ConfigProvider, Popconfirm
 } from 'antd';
@@ -11,12 +11,14 @@ import {
   DownloadOutlined, SearchOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
+import { usePermission } from '../../hooks/usePermission';
 const { Title, Text, Paragraph } = Typography;
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 const Category = forwardRef((props, ref) => {
-    const { message } = App.useApp();
+   
+    const { isAdmin } = usePermission();
     // ========== 分类/标签状态 ==========
     const [categories, setCategories] = useState([]);
     const [categoryLoading, setCategoryLoading] = useState(false);
@@ -25,10 +27,6 @@ const Category = forwardRef((props, ref) => {
     // 分类/标签搜索状态
     const [categorySearch, setCategorySearch] = useState('');
 
-    // ========== 视频相关状态 ==========
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedTag, setSelectedTag] = useState(null);
-    const [videos, setVideos] = useState([]);
     // ========== 分类列配置 ==========
     const categoryColumns = [
     {
@@ -60,33 +58,38 @@ const Category = forwardRef((props, ref) => {
         title: '操作',
         key: 'action',
         fixed: 'right',
+        hidden: !isAdmin,
         width: 200,
         render: (_, record) => (
         <Space style={{marginLeft: -25}}>
-            <Button 
-            type="link"
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => showCategoryModal(record)}
-            >
-            编辑
-            </Button>
-            <Popconfirm
-            title="确定删除这个分类吗？"
-            onConfirm={() => handleDeleteCategory(record)}
-            okText="确定"
-            cancelText="取消"
-            >
-            <Button 
-                type="text"
-                size="small" 
-                danger 
-                icon={<DeleteOutlined />}
-            >
-                删除
-            </Button>
-            </Popconfirm>
-        </Space>
+                {isAdmin && (
+                    <>
+                        <Button 
+                        type="link"
+                        size="small"
+                        icon={<EditOutlined />}
+                        onClick={() => showCategoryModal(record)}
+                        >
+                        编辑
+                        </Button>
+                        <Popconfirm
+                        title="确定删除这个分类吗？"
+                        onConfirm={() => handleDeleteCategory(record)}
+                        okText="确定"
+                        cancelText="取消"
+                        >
+                        <Button 
+                            type="text"
+                            size="small" 
+                            danger 
+                            icon={<DeleteOutlined />}
+                        >
+                            删除
+                        </Button>
+                        </Popconfirm>
+                    </>
+                )}
+            </Space>
         ),
     },
     ];
@@ -157,7 +160,7 @@ const Category = forwardRef((props, ref) => {
     // ========== 初始化 ==========
     useEffect(() => {
         fetchCategories();
-    }, [selectedCategory, selectedTag]);
+    }, []);
     React.useImperativeHandle(ref, () => ({
         fetchCategories
     }));
@@ -165,23 +168,27 @@ const Category = forwardRef((props, ref) => {
         <Fragment>
             <Row gutter={16} style={{ marginBottom: 16, alignItems: 'center' }}>
                 <Col flex="auto">
-                    <Button 
-                        type="primary" 
-                        icon={<PlusOutlined />} 
-                        onClick={() => showCategoryModal()}
-                    >
-                        新增分类
-                    </Button>
-                    <Button 
-                        danger
-                        type="primary"
-                        icon={<DeleteOutlined />} 
-                        onClick={batchDeleteCategories}
-                        style={{ marginLeft: 8 }}
-                        disabled={selectedCategories.length === 0}
-                    >
-                        批量删除
-                    </Button>
+                    {isAdmin && (
+                        <>
+                            <Button 
+                                type="primary" 
+                                icon={<PlusOutlined />} 
+                                onClick={() => showCategoryModal()}
+                            >
+                                新增分类
+                            </Button>
+                            <Button 
+                                danger
+                                type="primary"
+                                icon={<DeleteOutlined />} 
+                                onClick={batchDeleteCategories}
+                                style={{ marginLeft: 8 }}
+                                disabled={selectedCategories.length === 0}
+                            >
+                                批量删除
+                            </Button>
+                        </>
+                    )}
                 </Col>
                 <Col flex="0 0 300px">
                     <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px'}}>

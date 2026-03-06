@@ -1,7 +1,7 @@
-import { useState, useEffect, Fragment, useRef } from 'react';
+import { useState, useEffect, Fragment, useRef, forwardRef, useImperativeHandle } from 'react';
 import { useAsyncEffect } from 'ahooks';
 import { 
-  Table, Button, Modal, Form, Input, Typography, Space, 
+  Table, Button, message, Form, Input, Typography, Space, 
   App, Row, Col, Switch, Select, Tag,
   Image, Drawer, Divider, Popconfirm
 } from 'antd';
@@ -13,27 +13,22 @@ import {
   ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
   DownloadOutlined, SearchOutlined,
 } from '@ant-design/icons';
+import { usePermission } from '../../hooks/usePermission';
 const { Text } = Typography;
 
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-function Video(props) {
+const Video = forwardRef((props, ref) => {
     const playerRef = useRef(null);
-    const { message } = App.useApp();
+   
+    const { isAdmin } = usePermission();
     // ========== 分类/标签状态 ==========
     const [categories, setCategories] = useState([]);
     const [tags, setTags] = useState([]);
-    const [categoryLoading, setCategoryLoading] = useState(false);
-    const [tagLoading, setTagLoading] = useState(false);
     // 分类弹窗状态
-    const [categoryModalVisible, setCategoryModalVisible] = useState(false);
-    const [editingCategory, setEditingCategory] = useState(null);
     const [categoryForm] = Form.useForm();
     
-    // 标签弹窗状态
-    const [tagModalVisible, setTagModalVisible] = useState(false);
-    const [editingTag, setEditingTag] = useState(null);
     const [tagForm] = Form.useForm();
 
     // ========== 视频相关状态 ==========
@@ -62,20 +57,16 @@ function Video(props) {
 
     // ========== 分类管理方法 ==========
     const fetchCategories = async () => {
-        setCategoryLoading(true);
         try {
-        const res = await axios.get(`${API_BASE}/api/categories`);
-        setCategories(res.data || []);
+            const res = await axios.get(`${API_BASE}/api/categories`);
+            setCategories(res.data || []);
         } catch (err) {
-        message.error('获取分类失败');
-        console.error(err);
-        } finally {
-        setCategoryLoading(false);
+            message.error('获取分类失败');
+            console.error(err);
         }
     };
 
     const showCategoryModal = (category = null) => {
-        setEditingCategory(category);
         categoryForm.setFieldsValue({
         name: category?.name || '',
         desc: category?.desc || ''
@@ -85,20 +76,16 @@ function Video(props) {
 
     // ========== 标签管理方法 ==========
     const fetchTags = async () => {
-        setTagLoading(true);
         try {
-        const res = await axios.get(`${API_BASE}/api/tags`);
-        setTags(res.data);
+            const res = await axios.get(`${API_BASE}/api/tags`);
+            setTags(res.data);
         } catch (err) {
-        message.error('获取标签失败');
-        console.error(err);
-        } finally {
-        setTagLoading(false);
+            message.error('获取标签失败');
+            console.error(err);
         }
     };
 
     const showTagModal = (tag = null) => {
-        setEditingTag(tag);
         tagForm.setFieldsValue({
         name: tag?.name || ''
         });
@@ -221,8 +208,8 @@ function Video(props) {
             message.success('视频删除成功');
             fetchVideos();
         }
-        } catch (err) {
-            !isMultiple && message.error('删除失败');
+        } catch (error) {
+            !isMultiple && message.error('删除失败' + error);
         }
     };
     // 批量删除视频
@@ -311,40 +298,49 @@ function Video(props) {
         fetchTags();
         fetchVideoSources();
     }, []);
+
+    // 暴露方法给父组件
+    useImperativeHandle(ref, () => ({
+        fetchVideos
+    }));
     return (
         <Fragment>
             <Row gutter={16} style={{ marginBottom: 16 }}>
                 <Col span={8}>
                     <Space >
-                        <Button
-                        type="primary"
-                        icon={<ClockCircleOutlined />}
-                        onClick={() => setSourceConfigDrawer({ visible: true })}
-                        >
-                        视频源配置
-                        </Button>
-                        <Button 
-                        icon={<FolderAddOutlined />} 
-                        onClick={() => showCategoryModal()}
-                        >
-                        新增分类
-                        </Button>
-                        <Button 
-                        icon={<TagOutlined />} 
-                        onClick={() => showTagModal()}
-                        >
-                        新增标签
-                        </Button>
-                        <Button 
-                            danger
-                            type="primary"
-                            icon={<DeleteOutlined />} 
-                            onClick={batchDeleteVideos}
-                            style={{ marginLeft: 8 }}
-                            disabled={selectedVideos.length === 0}
-                        >
-                            批量删除
-                        </Button>
+                        {isAdmin && (
+                            <>
+                                <Button
+                                type="primary"
+                                icon={<ClockCircleOutlined />}
+                                onClick={() => setSourceConfigDrawer({ visible: true })}
+                                >
+                                视频源配置
+                                </Button>
+                                <Button 
+                                icon={<FolderAddOutlined />} 
+                                onClick={() => showCategoryModal()}
+                                >
+                                新增分类
+                                </Button>
+                                <Button 
+                                icon={<TagOutlined />} 
+                                onClick={() => showTagModal()}
+                                >
+                                新增标签
+                                </Button>
+                                <Button 
+                                    danger
+                                    type="primary"
+                                    icon={<DeleteOutlined />} 
+                                    onClick={batchDeleteVideos}
+                                    style={{ marginLeft: 8 }}
+                                    disabled={selectedVideos.length === 0}
+                                >
+                                    批量删除
+                                </Button>
+                            </>
+                        )}
                     </Space>
                 </Col>
                 <Col span={16}>
@@ -510,21 +506,23 @@ function Video(props) {
                             >
                             播放
                             </Button>
-                            <Popconfirm
-                            title="确定删除这个视频吗？"
-                            onConfirm={() => handleDeleteVideo(record)}
-                            okText="确定"
-                            cancelText="取消"
-                            >
-                            <Button 
-                                type="text" 
-                                danger
-                                size="small"
-                                icon={<DeleteOutlined />}
-                            >
-                                删除
-                            </Button>
-                            </Popconfirm>
+                            {isAdmin && (
+                                <Popconfirm
+                                title="确定删除这个视频吗？"
+                                onConfirm={() => handleDeleteVideo(record)}
+                                okText="确定"
+                                cancelText="取消"
+                                >
+                                <Button 
+                                    type="text" 
+                                    danger
+                                    size="small"
+                                    icon={<DeleteOutlined />}
+                                >
+                                    删除
+                                </Button>
+                                </Popconfirm>
+                            )}
                         </Space>
                         )
                     }
@@ -597,7 +595,7 @@ function Video(props) {
                         </Col>
                         <Col span={24} style={{ marginTop: 8 }}>
                             <Text strong>播放列表：</Text>
-                            <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap', marginTop: 5}}>
+                            <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap', marginTop: 5, maxHeight: 300, overflowY: 'auto'}}>
                                 {videoPlayDrawer.video?.urls.map(url => (
                                     <Button type='primary' size='small' key={url.url} onClick={() => setVideoPlayDrawer({...videoPlayDrawer, video: {...videoPlayDrawer.video, current: url, url: url.url }})}>{url.label}</Button>
                                 ))}
@@ -640,7 +638,7 @@ function Video(props) {
                     textAlign: 'right'
                 }
             }}
-            footer={[
+            footer={isAdmin ? [
                 // 新增：批量拉取按钮
                 <Button 
                 key="fetchAll"
@@ -654,7 +652,7 @@ function Video(props) {
                 <Button key="save" disabled={videoSourceLoading} type="primary" onClick={saveVideoSources}>
                 保存配置
                 </Button>
-            ]}
+            ] : null}
             >
                 <div style={{ padding: '0 20px' }}>
                     <Table 
@@ -746,44 +744,50 @@ function Video(props) {
                             fixed: 'right',
                             render: (_, record, index) => (
                             <Space>
-                                {/* 新增：手动拉取按钮 */}
-                                <Button 
-                                type="primary" 
-                                size="small"
-                                icon={<DownloadOutlined />}
-                                loading={fetchingSource === index}
-                                onClick={() => fetchVideoBySource(record, index)}
-                                disabled={!record.type}
-                                >
-                                手动拉取
-                                </Button>
-                                <Popconfirm
-                                title="确定删除这个视频源吗？"
-                                onConfirm={() => deleteVideoSource(index)}
-                                okText="确定"
-                                cancelText="取消"
-                                >
-                                <Button 
-                                    danger 
-                                    size="small"
-                                >
-                                    删除
-                                </Button>
-                                </Popconfirm>
+                                {isAdmin && (
+                                    <>
+                                        {/* 新增：手动拉取按钮 */}
+                                        <Button 
+                                        type="primary" 
+                                        size="small"
+                                        icon={<DownloadOutlined />}
+                                        loading={fetchingSource === index}
+                                        onClick={() => fetchVideoBySource(record, index)}
+                                        disabled={!record.type}
+                                        >
+                                        手动拉取
+                                        </Button>
+                                        <Popconfirm
+                                        title="确定删除这个视频源吗？"
+                                        onConfirm={() => deleteVideoSource(index)}
+                                        okText="确定"
+                                        cancelText="取消"
+                                        >
+                                        <Button 
+                                            danger 
+                                            size="small"
+                                        >
+                                            删除
+                                        </Button>
+                                        </Popconfirm>
+                                    </>
+                                )}
                             </Space>
                             )
                         }
                         ]}
                     />
-                    <Button 
-                        type="dashed"
-                        disabled={videoSourceLoading}
-                        icon={<PlusOutlined />}
-                        style={{ marginTop: 16, width: '100%' }}
-                        onClick={addVideoSource}
-                    >
-                        添加视频源
-                    </Button>
+                    {isAdmin && (
+                        <Button 
+                            type="dashed"
+                            disabled={videoSourceLoading}
+                            icon={<PlusOutlined />}
+                            style={{ marginTop: 16, width: '100%' }}
+                            onClick={addVideoSource}
+                        >
+                            添加视频源
+                        </Button>
+                    )}
                     <Divider />
                     <Text type="secondary">
                         Cron表达式格式：分 时 日 月 周<br/>
@@ -797,6 +801,6 @@ function Video(props) {
             </Drawer>
         </Fragment>
     );
-}
+});
 
 export default Video;
