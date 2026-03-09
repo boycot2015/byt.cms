@@ -353,13 +353,13 @@ async function fetchVideoBySource(sourceConfig: any, env: any) {
 function isTimeToFetch(sourceConfig: any): boolean {
   const now = new Date();
   const cronExpr = sourceConfig.cron || "* * * * *";
-  const [minute, hour, day, month, weekday] = cronExpr.split(" ").map(Number);
+  const [minute, hour, day, month, weekday] = cronExpr.split(" ");
   return (
-    (minute === "*" || now.getMinutes() === minute) &&
-    (hour === "*" || now.getHours() === hour) &&
-    (day === "*" || now.getDate() === day) &&
-    (month === "*" || now.getMonth() + 1 === month) &&
-    (weekday === "*" || now.getDay() === weekday)
+    (minute === "*" || now.getMinutes() === parseInt(minute)) &&
+    (hour === "*" || now.getHours() === parseInt(hour)) &&
+    (day === "*" || now.getDate() === parseInt(day)) &&
+    (month === "*" || now.getMonth() + 1 === parseInt(month)) &&
+    (weekday === "*" || now.getDay() === parseInt(weekday))
   );
 }
 
