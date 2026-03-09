@@ -40,7 +40,7 @@
 		"JIANGUOYUN_APP_PASSWORD": "agagm2wra6wai9mb"
 	},
 	// 定时任务（主调度任务，每5分钟执行一次，用于分发不同源的抓取）
-	"triggers":{ "crons": ["*/5 * * * *"] }
+	"triggers":{ "crons": ["0 22 * * *", "*/5 * * * *"] }
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

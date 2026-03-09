@@ -38,11 +38,8 @@ CREATE TABLE IF NOT EXISTS videos (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
   subTitle TEXT DEFAULT '',
-  url TEXT NOT NULL UNIQUE,
-  urls TEXT DEFAULT '[]',
   cover TEXT DEFAULT '',
   size INTEGER DEFAULT 0,
-  source TEXT NOT NULL,
   category TEXT DEFAULT '',
   categoryId TEXT,
   fetchTime TEXT DEFAULT '',
@@ -54,6 +51,18 @@ CREATE TABLE IF NOT EXISTS videos (
   updateTime TEXT NOT NULL,
   status TEXT DEFAULT 'active',
   FOREIGN KEY (categoryId) REFERENCES categories(id)
+);
+
+-- 视频来源表
+CREATE TABLE IF NOT EXISTS video_sources_mapping (
+  id TEXT PRIMARY KEY,
+  videoId TEXT NOT NULL,
+  source TEXT NOT NULL,
+  url TEXT NOT NULL,
+  urls TEXT DEFAULT '[]',
+  createTime TEXT NOT NULL,
+  updateTime TEXT NOT NULL,
+  FOREIGN KEY (videoId) REFERENCES videos(id)
 );
 
 -- 视频标签关联表
@@ -93,9 +102,9 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- 创建索引提升查询性能
-CREATE INDEX IF NOT EXISTS idx_videos_url ON videos(url);
 CREATE INDEX IF NOT EXISTS idx_videos_categoryId ON videos(categoryId);
-CREATE INDEX IF NOT EXISTS idx_videos_source ON videos(source);
+CREATE INDEX IF NOT EXISTS idx_videos_source_mapping_videoId ON video_sources_mapping(videoId);
+CREATE INDEX IF NOT EXISTS idx_videos_source_mapping_source ON video_sources_mapping(source);
 CREATE INDEX IF NOT EXISTS idx_categories_name ON categories(name);
 CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
