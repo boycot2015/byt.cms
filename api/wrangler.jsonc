@@ -25,7 +25,7 @@
 		{
 			"binding": "DB",
 			"database_name": "byt-cms",
-			"database_id": "6a6541a3-d4e7-4604-8c76-c6cf31f43cdc",
+			"database_id": "9b4c9d80-3cc1-4ad2-93e5-84281ed91e43",
 			"preview_database_id": "<ID_OF_PREVIEW_D1_DATABASE_FOR_LOCAL_DEVELOPMENT>"
 		}
 	],
