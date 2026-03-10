@@ -73,7 +73,7 @@ const PlayerComponent = forwardRef(({ id = 'mse', url, poster, urlList = [] }, r
             });
             playerInstance.current = player
         }
-    }, [url])
+    }, [id, poster, ref, url, urlList])
     return (
         <div id={id} ref={videoRef}></div>
         // <video 

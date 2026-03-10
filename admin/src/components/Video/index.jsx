@@ -1,7 +1,7 @@
 import { useState, useEffect, Fragment, useRef, forwardRef, useImperativeHandle } from 'react';
-import { useAsyncEffect } from 'ahooks';
+import { useAsyncEffect, useGetState } from 'ahooks';
 import { 
-  Table, Button, message, Form, Input, Typography, Space, 
+  Table, Button, message, Rate, Input, Typography, Space, 
   App, Row, Col, Switch, Select, Tag, Tabs,
   Image, Drawer, Divider, Popconfirm
 } from 'antd';
@@ -12,6 +12,7 @@ import {
   LoadingOutlined, DeleteOutlined, PlusOutlined, 
   ClockCircleOutlined, FolderAddOutlined, TagOutlined, PlayCircleOutlined,
   DownloadOutlined, SearchOutlined,
+  SyncOutlined,
 } from '@ant-design/icons';
 import { usePermission } from '../../hooks/usePermission';
 const { Text } = Typography;
@@ -26,20 +27,22 @@ const Video = forwardRef((props, ref) => {
     const [categories, setCategories] = useState([]);
     const [tags, setTags] = useState([]);
     // 分类弹窗状态
-    const [categoryForm] = Form.useForm();
+    // const [categoryForm] = Form.useForm();
     
-    const [tagForm] = Form.useForm();
+    // const [tagForm] = Form.useForm();
 
     // ========== 视频相关状态 ==========
     const [videos, setVideos] = useState([]);
     const [videoSearch, setVideoSearch] = useState('');
     const [videoLoading, setVideoLoading] = useState(false);
+    const [recommendLoading, setRecommendLoading] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedTag, setSelectedTag] = useState(null);
     const [pageSize, setPageSize] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useGetState(1);
     const [totalVideos, setTotalVideos] = useState(0);
     const [selectedSource, setSelectedSource] = useState(null);
+    const [selectedRecommended, setSelectedRecommended] = useState(null);
     const [videoPlayDrawer, setVideoPlayDrawer] = useState({
         visible: false,
         video: null
@@ -65,13 +68,13 @@ const Video = forwardRef((props, ref) => {
         }
     };
 
-    const showCategoryModal = (category = null) => {
-        categoryForm.setFieldsValue({
-        name: category?.name || '',
-        desc: category?.desc || ''
-        });
-        props.setCategoryModalVisible(true);
-    };
+    // const showCategoryModal = (category = null) => {
+    //     categoryForm.setFieldsValue({
+    //     name: category?.name || '',
+    //     desc: category?.desc || ''
+    //     });
+    //     props.setCategoryModalVisible(true);
+    // };
 
     // ========== 标签管理方法 ==========
     const fetchTags = async () => {
@@ -84,12 +87,12 @@ const Video = forwardRef((props, ref) => {
         }
     };
 
-    const showTagModal = (tag = null) => {
-        tagForm.setFieldsValue({
-        name: tag?.name || ''
-        });
-        props.setTagModalVisible(true);
-    };
+    // const showTagModal = (tag = null) => {
+    //     tagForm.setFieldsValue({
+    //     name: tag?.name || ''
+    //     });
+    //     props.setTagModalVisible(true);
+    // };
 
     // ========== 视频管理方法 ==========
     const fetchVideos = async () => {
@@ -101,6 +104,7 @@ const Video = forwardRef((props, ref) => {
             if (selectedTag) params.push(`tag=${selectedTag}`);
             if (selectedSource) params.push(`source=${selectedSource}`);
             if (videoSearch) params.push(`search=${encodeURIComponent(videoSearch)}`);
+            if (selectedRecommended !== null && selectedRecommended !== ''&& selectedRecommended !== undefined) params.push(`recommended=${selectedRecommended}`);
             params.push(`page=${currentPage}`);
             params.push(`pageSize=${pageSize}`);
             if (params.length) url += `?${params.join('&')}`;
@@ -120,6 +124,21 @@ const Video = forwardRef((props, ref) => {
             setTimeout(() => {
                 setVideoLoading(false);
             }, 500);
+        }
+    };
+
+    // 更新视频推荐状态
+    const updateVideoRecommended = async (video, recommended) => {
+        try {
+            const id = video.id.replace('video:', '');
+            await axios.post(`${API_BASE}/api/videos/recommended/${id}`, {
+                recommended
+            });
+            message.success(recommended ? '视频已添加到推荐' : '视频已取消推荐');
+            fetchVideos();
+        } catch (err) {
+            message.error('操作失败');
+            console.error(err);
         }
     };
 
@@ -145,7 +164,19 @@ const Video = forwardRef((props, ref) => {
             console.error(err);
         }
     };
-
+    const fetchVideoRecommend = async () => {
+        setRecommendLoading(true);
+        try {
+            const res = await axios.get(`${API_BASE}/api/videos/recommended/async`);
+            message.success(res.data.message || '推荐数据更新完成');
+            fetchVideos();
+        } catch (err) {
+            message.error('更新推荐数据失败');
+            console.error(err);
+        } finally {
+            setRecommendLoading(false);
+        }
+    };
     const saveVideoSources = async () => {
         try {
         await axios.post(`${API_BASE}/api/video-sources`, videoSources);
@@ -306,7 +337,12 @@ const Video = forwardRef((props, ref) => {
     useEffect(() => {
         fetchVideos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [videoSearch, selectedCategory, selectedTag, selectedSource, currentPage, pageSize]);
+    }, [currentPage, pageSize]);
+    useEffect(() => {
+        setCurrentPage(1);
+        fetchVideos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedRecommended, videoSearch, selectedCategory, selectedTag, selectedSource]);
     // ========== 初始化 ==========
     useAsyncEffect(async () => {
         await fetchCategories();
@@ -333,6 +369,13 @@ const Video = forwardRef((props, ref) => {
                                 视频源配置
                                 </Button>
                                 <Button 
+                                icon={<SyncOutlined />}
+                                loading={recommendLoading && {icon: <LoadingOutlined spin />}}
+                                onClick={() => fetchVideoRecommend()}
+                                >
+                                更新推荐视频
+                                </Button>
+                                {/* <Button 
                                 icon={<FolderAddOutlined />} 
                                 onClick={() => showCategoryModal()}
                                 >
@@ -343,7 +386,7 @@ const Video = forwardRef((props, ref) => {
                                 onClick={() => showTagModal()}
                                 >
                                 新增标签
-                                </Button>
+                                </Button> */}
                                 <Button 
                                     danger
                                     type="primary"
@@ -410,10 +453,23 @@ const Video = forwardRef((props, ref) => {
                             value: t.type != 'custom' ? t.type : t.name
                         }))}
                         />
+                        <Select
+                        placeholder="是否推荐"
+                        style={{ width: 120 }}
+                        value={selectedRecommended}
+                        onChange={setSelectedRecommended}
+                        allowClear
+                        options={[
+                            { label: '是', value: true },
+                            { label: '否', value: false }
+                        ]}
+                        />
                         <Button
                         type="primary" 
                         loading={videoLoading && {icon: <LoadingOutlined spin />}} 
-                        onClick={() => fetchVideos()}
+                        onClick={() => {
+                            setCurrentPage(1)
+                        }}
                         >
                         搜索
                         </Button>
@@ -424,6 +480,7 @@ const Video = forwardRef((props, ref) => {
                             setSelectedCategory(null)
                             setSelectedTag(null)
                             setSelectedSource(null)
+                            setSelectedRecommended(null)
                             setVideoSearch('')
                             setPageSize(10)
                             setCurrentPage(1)
@@ -456,7 +513,7 @@ const Video = forwardRef((props, ref) => {
                             />
                         ) : (
                             <div style={{ width:80, height:60, background:'#f5f5f5', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                            <PlayCircleOutlined onClick={() => playVideo(record)} style={{ cursor: 'pointer' }} />
+                                <PlayCircleOutlined onClick={() => playVideo(record)} style={{ cursor: 'pointer' }} />
                             </div>
                         )
                         )
@@ -467,9 +524,21 @@ const Video = forwardRef((props, ref) => {
                         key: 'title',
                         width: 240,
                         render: (title,record) => <div>
-                            {title}
-                            <p>{record.actors?.[0]?.split(',').filter(_ => _).join(',')}</p>
-                            <p>{record.subTitle}</p>
+                            {title}{isAdmin && (
+                                <Rate
+                                count={1}
+                                size="small"
+                                style={{marginLeft: 5}}
+                                value={record.recommended ? 1 : 0}
+                                onChange={() => updateVideoRecommended(record, !record.recommended)}
+                                >
+                                </Rate>
+                            )}
+                            <p style={{margin: '5px 0'}}>导演：{record?.director || '--'}</p>
+                            <Typography.Paragraph ellipsis={{ rows: 2, expandable: true, symbol: '展开' }}>
+                                主演：{record.actors?.join(', ') || '无'}
+                            </Typography.Paragraph>
+                            <p style={{margin: '5px 0'}}>{record.subTitle}</p>
                         </div>
                     },
                     {
@@ -616,13 +685,17 @@ const Video = forwardRef((props, ref) => {
                             <Col span={8}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
                             <Col span={8}><Text strong></Text>{videoPlayDrawer.video?.subTitle}</Col>
                             <Col span={8}><Text strong>分类：</Text>{videoPlayDrawer.video.category}</Col>
-                            <Col span={12}>
+                            <Col span={24}>
                                 <Text strong>主演：</Text>
                                 {videoPlayDrawer.video?.actors && videoPlayDrawer.video.actors.length > 0 ? (
-                                    videoPlayDrawer.video.actors
+                                    videoPlayDrawer.video.actors.join(', ')
                                 ) : (
                                     <Text type="secondary">无</Text>
                                 )}
+                            </Col>
+                             <Col span={12}>
+                                <Text strong>导演：</Text>
+                                {videoPlayDrawer.video?.director || '--'}
                             </Col>
                             <Col span={12}>
                                 <Text strong>标签：</Text>

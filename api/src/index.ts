@@ -570,7 +570,71 @@ const setVideoList = async (source: any, env: any) => {
     throw error;
   }
 };
-
+async function fetchVideoRecommend(env: any, params: any = {}) {
+  params = {
+    cmsname: "maccms10",
+    bbjtype: "hot",
+    codetype: "php",
+    filtercondi: "name",
+    orderby: "ASC",
+    num: 10,
+    level: 9,
+    ...params
+  }
+  // bbjtype : 自动更新最热海报: hot, 自动更新最新海报: new, 各分类均衡获取: even 
+  // https://bibij.icu/BBJ-code?cmsname=maccms10&bbjtype=hot&codetype=json&filtercondi=name&orderby=ASC&num=10&level=9
+  let res = await withRetry(() => fetch(`https://bibij.icu/BBJ-code?${Object.keys(params).map(key => `${key}=${params[key] || ""}`).join('&')}`)).then(res => res.text());
+  const result = [];
+  let recommendedVideos = [];
+  let match;
+  const regex = /vod_pic_slide='([^']+)'[\s,]+vod_level=\d+[\s,]+where[\s,]+vod_name='([^']+)'/g;
+  while (match = regex.exec(res)) {
+    const pic = match[1];
+    const name = match[2];
+    result.push({name, pic});
+  }
+  try {
+    console.log("开始更新推荐数据");
+    // 获取视频海报数据
+    console.log(`获取到 ${result.length} 个视频海报`);
+    
+    // 更新视频的 banner 字段并设置为推荐
+    for (const poster of result) {
+      try {
+        // 查找匹配的视频（通过标题）
+        const video = await env.DB.prepare(
+          "SELECT * FROM videos WHERE title LIKE ?"
+        ).bind(`%${poster.name}%`).first();
+        
+        if (video) {
+          // 更新视频的 banner 字段和推荐状态
+          await env.DB.prepare(
+            "UPDATE videos SET banner = ?, recommended = ?, updateTime = ? WHERE id = ?"
+          ).bind(poster.pic, true, new Date().toISOString(), video.id).run();
+          console.log(`更新视频 ${video.title} 的海报和推荐状态`);
+        } else {
+          console.log(`未找到匹配的视频: ${poster.name}`);
+        }
+      } catch (error) {
+        console.error(`更新视频 ${poster.name} 失败:`, error);
+      }
+    }
+    
+    // 检查推荐视频数量
+    recommendedVideos = await env.DB.prepare(
+      "SELECT * FROM videos WHERE recommended = 1 ORDER BY updateTime DESC"
+    ).all();
+    
+    console.log(`推荐视频数量: ${recommendedVideos.results.length}`);
+    if (recommendedVideos.results.length === 0) {
+      console.log("无推荐视频，将使用最近更新的视频作为推荐");
+    }
+    console.log("推荐数据更新完成");
+  } catch (error) {
+    console.error("更新推荐数据失败:", error);
+  }
+  return recommendedVideos.results || result;
+}
 export default {
   async fetch(
     request: Request,
@@ -895,6 +959,7 @@ export default {
       const tag = url.searchParams.get("tag");
       const source = url.searchParams.get("source");
       const search = url.searchParams.get("search");
+      const recommended = url.searchParams.get("recommended");
       const page = parseInt(url.searchParams.get("page") || "1");
       const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
       const offset = (page - 1) * pageSize;
@@ -942,6 +1007,13 @@ export default {
         query += " AND v.title LIKE ?";
         countQuery += " AND v.title LIKE ?";
         params.push(`%${search}%`);
+      }
+      
+      if (recommended !== null) {
+        const isRecommended = recommended === "true";
+        query += " AND v.recommended = ?";
+        countQuery += " AND v.recommended = ?";
+        params.push(isRecommended);
       }
       
       // 获取总数量
@@ -1014,6 +1086,93 @@ export default {
       });
     }
 
+    if (path.startsWith("/api/videos/recommended/") && request.method === "POST") {
+      const id = path.replace("/api/videos/recommended/", "");
+      const videoId = `video:${id}`;
+      const body = await request.json();
+      const { recommended } = body as any;
+      
+      // 更新视频推荐状态
+      await env.DB.prepare(
+        "UPDATE videos SET recommended = ?, updateTime = ? WHERE id = ?"
+      ).bind(recommended, new Date().toISOString(), videoId).run();
+      
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (path === "/api/videos/recommended" && request.method === "GET") {
+      // 首先查询推荐的视频
+      const recommendedVideos = await env.DB.prepare(
+        "SELECT * FROM videos WHERE recommended = 1 ORDER BY updateTime DESC"
+      ).all();
+      let videos = recommendedVideos.results;
+      
+      // 如果没有推荐数据，返回每个分类最近更新的5条数据
+      if (videos.length === 0) {
+        // 获取所有分类
+        const categories = await env.DB.prepare(
+          "SELECT DISTINCT categoryId, category FROM videos WHERE categoryId IS NOT NULL AND categoryId != ''"
+        ).all();
+        
+        const categoryList = categories.results;
+        const categoryVideos: any[] = [];
+        
+        // 为每个分类获取最近更新的5条视频
+        for (const category of categoryList) {
+          const categoryLatestVideos = await env.DB.prepare(
+            "SELECT * FROM videos WHERE categoryId = ? ORDER BY updateTime DESC LIMIT 5"
+          ).bind(category.categoryId).all();
+          
+          categoryVideos.push(...categoryLatestVideos.results);
+        }
+        
+        videos = categoryVideos;
+      }
+      
+      // 补充标签和来源信息
+      const videosWithDetails = await Promise.all(videos.map(async (video: any) => {
+        // 解析JSON字段
+        video.actors = JSON.parse(video.actors || "[]");
+        
+        // 获取标签
+        const tagRelations = await env.DB.prepare(`
+          SELECT t.* FROM video_tags vt
+          JOIN tags t ON vt.tagId = t.id
+          WHERE vt.videoId = ?
+        `).bind(video.id).all();
+        
+        video.tags = tagRelations.results;
+        
+        // 获取视频来源
+        const sources = await env.DB.prepare(`
+          SELECT * FROM video_sources_mapping WHERE videoId = ?
+        `).bind(video.id).all();
+        
+        // 解析来源的JSON字段
+        video.sources = sources.results.map((source: any) => {
+          source.urls = JSON.parse(source.urls || "[]");
+          return source;
+        });
+        
+        return video;
+      }));
+      
+      return new Response(JSON.stringify(videosWithDetails), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (path === "/api/videos/recommended/async" && request.method === "GET") {
+      let res = await fetchVideoRecommend(env, {
+        bbjtype: "hot",
+        num: 15,
+        level: 1,
+      });
+      return new Response(JSON.stringify({ success: true, data: res, message: "推荐数据更新完成" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     // 视频源配置管理
     if (path === "/api/video-sources" && request.method === "POST") {
       const body = await request.json();
@@ -1371,26 +1530,28 @@ export default {
     
     if (sources.results.length === 0) {
       console.log("无启用的视频源配置");
-      return;
+    } else {
+      for (const source of sources.results) {
+        // 解析JSON字段
+        source.tags = JSON.parse(source.tags || "[]");
+        
+        // 检查是否到抓取时间
+        if (!isTimeToFetch(source)) {
+          console.log(`源[${source.name}]未到抓取时间，跳过`);
+          continue;
+        }
+        
+        try {
+          await setVideoList(source, env);
+          console.log(`源[${source.name}]抓取完成`);
+        } catch (error) {
+          console.error(`源[${source.name}]抓取失败:`, error);
+          continue;
+        }
+      }
     }
     
-    for (const source of sources.results) {
-      // 解析JSON字段
-      source.tags = JSON.parse(source.tags || "[]");
-      
-      // 检查是否到抓取时间
-      if (!isTimeToFetch(source)) {
-        console.log(`源[${source.name}]未到抓取时间，跳过`);
-        continue;
-      }
-      
-      try {
-        await setVideoList(source, env);
-        console.log(`源[${source.name}]抓取完成`);
-      } catch (error) {
-        console.error(`源[${source.name}]抓取失败:`, error);
-        continue;
-      }
-    }
+    // 调用推荐API更新推荐数据
+    await fetchVideoRecommend(env);
   },
 };

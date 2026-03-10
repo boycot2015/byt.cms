@@ -172,6 +172,12 @@ function Index() {
     componentSize="medium"
     theme={{
       algorithm: darkMode? theme.darkAlgorithm : theme.defaultAlgorithm,
+      components: {
+        Rate: {
+          starBg: '#cccccc',
+          starColor: '#ff9900',
+        },
+      },
       token: {
         colorPrimary: '#ff9900',
         colorLink: '#ff9900',
@@ -282,7 +288,7 @@ function Index() {
           </Content>
 
           <Footer style={{ textAlign: 'center' }}>
-            Cloudflare + KV + Ant Design CMS ©{new Date().getFullYear()}
+            Cloudflare Workers + Ant Design CMS ©{new Date().getFullYear()}
           </Footer>
 
           {/* 分类编辑/新增弹窗（优化） */}

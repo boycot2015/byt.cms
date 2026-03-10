@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS videos (
   title TEXT NOT NULL,
   subTitle TEXT DEFAULT '',
   cover TEXT DEFAULT '',
+  banner TEXT DEFAULT '',
   size INTEGER DEFAULT 0,
   category TEXT DEFAULT '',
   categoryId TEXT,
@@ -50,6 +51,7 @@ CREATE TABLE IF NOT EXISTS videos (
   createTime TEXT NOT NULL,
   updateTime TEXT NOT NULL,
   status TEXT DEFAULT 'active',
+  recommended BOOLEAN DEFAULT false,
   FOREIGN KEY (categoryId) REFERENCES categories(id)
 );
 
