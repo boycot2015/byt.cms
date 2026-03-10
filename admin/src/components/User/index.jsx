@@ -154,7 +154,7 @@ const User = forwardRef((props, ref) => {
       key: 'action',
       hidden: !isAdmin,
       render: (_, record) => (
-        <Space size="middle">
+        <Space style={{marginLeft: -15}}>
           <Button type="link" icon={<EditOutlined />} onClick={() => showModal(record)}>
             编辑
           </Button>

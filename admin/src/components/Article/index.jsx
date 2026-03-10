@@ -25,6 +25,10 @@ const Article = forwardRef((props, ref) => {
   const [articleForm] = Form.useForm();
   // 搜索
   const [articleSearch, setArticleSearch] = useState('');
+  // 分页
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalArticles, setTotalArticles] = useState(0);
   const showArticleModal = (record = null) => {
     setEditingArticle(record);
     articleForm.setFieldsValue({ title: '', categoryId: null, tagIds: record?.tags?.map(tag => tag.id) || [], content: '', ...record });
@@ -43,12 +47,6 @@ const Article = forwardRef((props, ref) => {
       message.error('获取分类失败');
       console.error(err);
     }
-  };
-  const getFilteredArticles = () => {
-      if (!articleSearch) return articles;
-      return articles.filter(a => 
-      a.title.toLowerCase().includes(articleSearch.toLowerCase())
-      );
   };
   const fetchTags = async () => {
     try {
@@ -148,9 +146,13 @@ const Article = forwardRef((props, ref) => {
         params: {
           categoryId: selectedCategory,
           tagId: selectedTag,
+          search: articleSearch,
+          page: currentPage,
+          pageSize: pageSize,
         }
       });
-      setArticles(res.data);
+      setArticles(res.data?.list || []);
+      setTotalArticles(res.data?.total || 0);
     } catch (err) {
       message.error('获取文章失败');
       console.error(err);
@@ -159,7 +161,7 @@ const Article = forwardRef((props, ref) => {
         setArticleLoading(false);
       }, 500);
     }
-  }, [selectedCategory, selectedTag]);
+  }, [selectedCategory, selectedTag, articleSearch, currentPage, pageSize]);
   const handleArticleSubmit = async () => {
     try {
       const values = await articleForm.validateFields();
@@ -268,6 +270,8 @@ const Article = forwardRef((props, ref) => {
                   setSelectedCategory(null)
                   setSelectedTag(null)
                   setArticleSearch('')
+                  setPageSize(10)
+                  setCurrentPage(1)
                   fetchArticles()
               }}
               >
@@ -278,11 +282,20 @@ const Article = forwardRef((props, ref) => {
       </Row>
       <Table 
         columns={articleColumns} 
-        dataSource={getFilteredArticles()} 
+        dataSource={articles} 
         rowKey="id" 
         style={{ width: '100%' }}
         loading={articleLoading}
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          pageSize: pageSize,
+          current: currentPage,
+          total: totalArticles,
+          showTotal: () => `共 ${totalArticles} 条`,
+          onChange (page, pageSize) {
+            setPageSize(pageSize)
+            setCurrentPage(page)
+          }
+        }}
       />
       {/* 文章编辑/新增弹窗 */}
       <Modal

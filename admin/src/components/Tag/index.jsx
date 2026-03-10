@@ -41,7 +41,7 @@ const TagComponent = forwardRef((props, ref) => {
         hidden: !isAdmin,
         fixed: 'right',
         render: (_, record) => (
-            <Space style={{marginLeft: -25}}>
+            <Space style={{marginLeft: -5}}>
             <Button 
                 type="link"
                 size='small'

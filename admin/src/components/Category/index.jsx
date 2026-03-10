@@ -61,7 +61,7 @@ const Category = forwardRef((props, ref) => {
         hidden: !isAdmin,
         width: 200,
         render: (_, record) => (
-        <Space style={{marginLeft: -25}}>
+        <Space style={{marginLeft: -5}}>
                 {isAdmin && (
                     <>
                         <Button 

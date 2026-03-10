@@ -629,10 +629,51 @@ export default {
     if (path === "/api/articles" && request.method === "GET") {
       let categoryId = url.searchParams.get("categoryId");
       let tagId = url.searchParams.get("tagId");
-      let articles = await env.DB.prepare("SELECT * FROM articles").all();
-      if (categoryId) {
-        articles = await env.DB.prepare("SELECT * FROM articles WHERE categoryId = ?").bind(categoryId).all();
+      const search = url.searchParams.get("search");
+      const page = parseInt(url.searchParams.get("page") || "1");
+      const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
+      const offset = (page - 1) * pageSize;
+      
+      // 构建查询条件
+      let query = "SELECT DISTINCT a.* FROM articles a";
+      let countQuery = "SELECT COUNT(DISTINCT a.id) as total FROM articles a";
+      const params: any[] = [];
+      
+      // 标签筛选
+      if (tagId) {
+        query += " JOIN article_tags at ON a.id = at.articleId";
+        countQuery += " JOIN article_tags at ON a.id = at.articleId";
       }
+      
+      //  WHERE 子句
+      query += " WHERE 1=1";
+      countQuery += " WHERE 1=1";
+      
+      if (categoryId) {
+        query += " AND a.categoryId = ?";
+        countQuery += " AND a.categoryId = ?";
+        params.push(categoryId);
+      }
+      
+      if (tagId) {
+        query += " AND at.tagId = ?";
+        countQuery += " AND at.tagId = ?";
+        params.push(tagId);
+      }
+      
+      if (search) {
+        query += " AND a.title LIKE ?";
+        countQuery += " AND a.title LIKE ?";
+        params.push(`%${search}%`);
+      }
+      
+      // 获取总数量
+      const countResult = await env.DB.prepare(countQuery).bind(...params).first();
+      const total = countResult?.total || 0;
+      
+      // 基础文章查询（带分页）
+      let articles = await env.DB.prepare(query + " ORDER BY a.createdAt DESC LIMIT ? OFFSET ?").bind(...params, pageSize, offset).all();
+      
       let articlesWithDetails = await Promise.all(articles.results.map(async (article: any) => {
         // 获取分类信息
         if (article.categoryId) {
@@ -644,31 +685,24 @@ export default {
         
         // 获取标签信息
         if (article.id) {
-          const tagRelations = await env.DB.prepare(
-            "SELECT tagId FROM article_tags WHERE articleId = ?"
-          ).bind(article.id).all();
+          const tagRelations = await env.DB.prepare(`
+            SELECT t.* FROM article_tags at
+            JOIN tags t ON at.tagId = t.id
+            WHERE at.articleId = ?
+          `).bind(article.id).all();
           
-          const tags = await Promise.all(tagRelations.results.map(async (rel: any) => {
-            const tag = await env.DB.prepare(
-              "SELECT * FROM tags WHERE id = ?"
-            ).bind(rel.tagId).first();
-            return tag || {};
-          }));
-          
-          article.tags = tags.filter(tag => tag && tag.id);
+          article.tags = tagRelations.results;
         }
         
         return article;
       }));
-      if (tagId) {
-        const articleIds = await env.DB.prepare(`
-          SELECT DISTINCT articleId FROM article_tags WHERE tagId = ?
-        `).bind(tagId).all();
-        
-        const articleIdList = articleIds.results.map((v: any) => v.articleId);
-        articlesWithDetails = articlesWithDetails.filter((v: any) => articleIdList.includes(v.id));
-      }
-      return new Response(JSON.stringify(articlesWithDetails), {
+      
+      return new Response(JSON.stringify({
+        list: articlesWithDetails,
+        total,
+        page,
+        pageSize
+      }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -860,29 +894,63 @@ export default {
       const category = url.searchParams.get("category");
       const tag = url.searchParams.get("tag");
       const source = url.searchParams.get("source");
+      const search = url.searchParams.get("search");
+      const page = parseInt(url.searchParams.get("page") || "1");
+      const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
+      const offset = (page - 1) * pageSize;
       
       // 构建查询条件
-      let query = "SELECT * FROM videos WHERE 1=1";
+      let query = "SELECT DISTINCT v.* FROM videos v";
+      let countQuery = "SELECT COUNT(DISTINCT v.id) as total FROM videos v";
       const params: any[] = [];
       
+      // 标签筛选
+      if (tag) {
+        query += " JOIN video_tags vt ON v.id = vt.videoId";
+        countQuery += " JOIN video_tags vt ON v.id = vt.videoId";
+      }
+      
+      // 来源筛选
+      if (source) {
+        query += " JOIN video_sources_mapping vsm ON v.id = vsm.videoId";
+        countQuery += " JOIN video_sources_mapping vsm ON v.id = vsm.videoId";
+      }
+      
+      //  WHERE 子句
+      query += " WHERE 1=1";
+      countQuery += " WHERE 1=1";
+      
       if (category) {
-        query += " AND categoryId = ?";
+        query += " AND v.categoryId = ?";
+        countQuery += " AND v.categoryId = ?";
         params.push(category);
       }
       
-      // 基础视频查询
-      let videos:any = await env.DB.prepare(query + " ORDER BY updateTime DESC").bind(...params).all();
-      videos = videos.results;
-      
-      // 如果有标签筛选，需要关联查询
       if (tag) {
-        const videoIds = await env.DB.prepare(`
-          SELECT DISTINCT videoId FROM video_tags WHERE tagId = ?
-        `).bind(tag).all();
-        
-        const videoIdList = videoIds.results.map((v: any) => v.videoId);
-        videos = videos.filter((v: any) => videoIdList.includes(v.id));
+        query += " AND vt.tagId = ?";
+        countQuery += " AND vt.tagId = ?";
+        params.push(tag);
       }
+      
+      if (source) {
+        query += " AND vsm.source = ?";
+        countQuery += " AND vsm.source = ?";
+        params.push(source);
+      }
+      
+      if (search) {
+        query += " AND v.title LIKE ?";
+        countQuery += " AND v.title LIKE ?";
+        params.push(`%${search}%`);
+      }
+      
+      // 获取总数量
+      const countResult = await env.DB.prepare(countQuery).bind(...params).first();
+      const total = countResult?.total || 0;
+      
+      // 基础视频查询（带分页）
+      let videos:any = await env.DB.prepare(query + " ORDER BY v.updateTime DESC LIMIT ? OFFSET ?").bind(...params, pageSize, offset).all();
+      videos = videos.results;
       
       // 补充标签和来源信息
       const videosWithDetails = await Promise.all(videos.map(async (video: any) => {
@@ -909,21 +977,15 @@ export default {
           return source;
         });
         
-        // 如果有来源筛选，过滤视频
-        if (source) {
-          video.sources = video.sources.filter((s: any) => s.source === source);
-          if (video.sources.length === 0) {
-            return null;
-          }
-        }
-        
         return video;
       }));
       
-      // 过滤掉没有符合条件来源的视频
-      const filteredVideos = videosWithDetails.filter((video: any) => video !== null);
-      
-      return new Response(JSON.stringify(filteredVideos), {
+      return new Response(JSON.stringify({
+        list: videosWithDetails,
+        total,
+        page,
+        pageSize
+      }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

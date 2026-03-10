@@ -100,10 +100,19 @@ const Video = forwardRef((props, ref) => {
             if (selectedCategory) params.push(`category=${selectedCategory}`);
             if (selectedTag) params.push(`tag=${selectedTag}`);
             if (selectedSource) params.push(`source=${selectedSource}`);
+            if (videoSearch) params.push(`search=${encodeURIComponent(videoSearch)}`);
+            params.push(`page=${currentPage}`);
+            params.push(`pageSize=${pageSize}`);
             if (params.length) url += `?${params.join('&')}`;
             const res = await axios.get(url);
-            setVideos(res.data || []);
-            setTotalVideos(res.data?.length || 0);
+            setVideos(res.data?.list.map(el => ({
+                ...el,
+                sources: el.sources?.map(source => ({
+                    ...source,
+                    urls: source.urls?.reverse() || []
+                })) || []
+            })) || []);
+            setTotalVideos(res.data?.total || 0);
         } catch (err) {
             message.error('获取视频失败');
             console.error(err);
@@ -240,7 +249,7 @@ const Video = forwardRef((props, ref) => {
             visible: true,
             video: {
                 ...video,
-                currentSource: firstSource,
+                currentSource: {...firstSource, url: firstSource?.urls?.[0]?.url || ''},
                 current: firstSource?.urls?.[0] || {}
             }
         });
@@ -294,17 +303,10 @@ const Video = forwardRef((props, ref) => {
         newSources.splice(index, 1);
         setVideoSources(newSources);
     };
-     // 筛选标签列表
-    const getFilteredVideos = () => {
-        if (!videoSearch) return videos;
-        return videos.filter(t => 
-        t.title.toLowerCase().includes(videoSearch.toLowerCase())
-        );
-    };
     useEffect(() => {
         fetchVideos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedCategory, selectedTag, selectedSource]);
+    }, [videoSearch, selectedCategory, selectedTag, selectedSource, currentPage, pageSize]);
     // ========== 初始化 ==========
     useAsyncEffect(async () => {
         await fetchCategories();
@@ -423,7 +425,6 @@ const Video = forwardRef((props, ref) => {
                             setSelectedTag(null)
                             setSelectedSource(null)
                             setVideoSearch('')
-                            fetchVideos()
                             setPageSize(10)
                             setCurrentPage(1)
                         }}
@@ -436,7 +437,7 @@ const Video = forwardRef((props, ref) => {
 
             {/* 视频列表（带预览） */}
             <Table
-                scroll={{ x: 'auto', y:'calc(100vh - 400px)' }}
+                scroll={{ y:'calc(100vh - 400px)' }}
                 columns={[
                     {
                         title: '封面',
@@ -444,9 +445,9 @@ const Video = forwardRef((props, ref) => {
                         width: 100,
                         render: (_, record) => (
                         record.cover ? (
-                            <Image 
-                            width={80} 
-                            height={120} 
+                            <Image
+                            width={80}
+                            height={120}
                             src={record.cover} 
                             fallback="https://via.placeholder.com/80x60?text=无封面"
                             preview={false}
@@ -518,7 +519,7 @@ const Video = forwardRef((props, ref) => {
                         align: 'left',
                         fixed: 'right',
                         render: (_, record) => (
-                        <Space style={{marginLeft: -25}}>
+                        <Space style={{marginLeft: -5}}>
                             <Button 
                             type="link"
                             size="small"
@@ -548,7 +549,7 @@ const Video = forwardRef((props, ref) => {
                         )
                     }
                 ]} 
-                dataSource={getFilteredVideos()} 
+                dataSource={videos}
                 rowKey="id" 
                 loading={videoLoading}
                 rowSelection={{
@@ -575,6 +576,11 @@ const Video = forwardRef((props, ref) => {
             <Drawer
             title={(videoPlayDrawer.video?.title + ' - ' + (videoPlayDrawer.video?.currentSource?.source || '') + ' - ' + (videoPlayDrawer.video?.current?.label || '')) || "视频播放"}
             open={videoPlayDrawer.visible}
+            styles={{
+                body: {
+                    padding: 0
+                }
+            }}
             onClose={() => {
                 setVideoPlayDrawer({...videoPlayDrawer, visible: false})
             }}
@@ -604,90 +610,90 @@ const Video = forwardRef((props, ref) => {
             {videoPlayDrawer.video ? (
                 <div>
                     <Player id="video" ref={playerRef} key={videoPlayDrawer.video.currentSource?.url} url={videoPlayDrawer.video.currentSource?.url || ''} poster={videoPlayDrawer.video.cover||''} />
-                    <Divider />
-                    <Row gutter={16}>
-                        <Col span={12}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
-                        <Col span={12}><Text strong></Text>{videoPlayDrawer.video?.subTitle}</Col>
-                        <Col span={12} style={{ marginTop: 8 }}><Text strong>分类：</Text>{videoPlayDrawer.video.category}</Col>
-                        <Col span={12}>
-                        <Text strong>标签：</Text>
-                        {videoPlayDrawer.video?.tags?.map(tag => (
-                            <Tag key={tag.id} color="blue" style={{ margin: 5 }}>{tag.name||tag}</Tag>
-                        ))}
-                        </Col>
-                        <Col span={12} style={{ marginTop: 8 }}>
-                            <Text strong>主演：</Text>
-                            {videoPlayDrawer.video?.actors && videoPlayDrawer.video.actors.length > 0 ? (
-                                videoPlayDrawer.video.actors.map((actor, index) => (
-                                    <Tag key={index}>{actor}</Tag>
-                                ))
-                            ) : (
-                                <Text type="secondary">无</Text>
-                            )}
-                        </Col>
-                        <Col span={24} style={{ marginTop: 8 }}>
-                            <Text strong>播放列表：</Text>
-                            <Tabs
-                                activeKey={videoPlayDrawer.video.currentSource?.id}
-                                styles={{
-                                    header: {
-                                        marginBottom: 0
-                                    }
-                                }}
-                                onChange={(key) => {
-                                    const source = videoPlayDrawer.video.sources.find(s => s.id === key);
-                                    if (source) {
-                                        setVideoPlayDrawer({
-                                            ...videoPlayDrawer,
-                                            video: {
-                                                ...videoPlayDrawer.video,
-                                                currentSource: source,
-                                                current: source.urls?.[0] || {}
-                                            }
-                                        });
-                                    }
-                                }}
-                                items={videoPlayDrawer.video.sources.map(source => ({
-                                    label: source.source,
-                                    key: source.id,
-                                    children: <div style={{ marginTop: 16 }}>
-                                        <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap', maxHeight: 300, overflowY: 'auto'}}>
-                                            {source.urls.map(url => (
-                                                <Button 
-                                                    type='primary' 
-                                                    size='small' 
-                                                    key={url.url} 
-                                                    onClick={() => setVideoPlayDrawer({
-                                                        ...videoPlayDrawer, 
-                                                        video: {
-                                                            ...videoPlayDrawer.video, 
-                                                            current: url,
-                                                            currentSource: {
-                                                                ...source,
-                                                                label: url.label || url.url,
-                                                                url: url.url
+                    {/* <Divider /> */}
+                    <div style={{padding: 10}}>
+                        <Row gutter={16}>
+                            <Col span={8}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
+                            <Col span={8}><Text strong></Text>{videoPlayDrawer.video?.subTitle}</Col>
+                            <Col span={8}><Text strong>分类：</Text>{videoPlayDrawer.video.category}</Col>
+                            <Col span={12}>
+                                <Text strong>主演：</Text>
+                                {videoPlayDrawer.video?.actors && videoPlayDrawer.video.actors.length > 0 ? (
+                                    videoPlayDrawer.video.actors
+                                ) : (
+                                    <Text type="secondary">无</Text>
+                                )}
+                            </Col>
+                            <Col span={12}>
+                                <Text strong>标签：</Text>
+                                {videoPlayDrawer.video?.tags?.map(tag => (
+                                    <Tag key={tag.id} color="blue" style={{ margin: 5 }}>{tag.name||tag}</Tag>
+                                ))}
+                            </Col>
+                            <Col span={24} style={{ marginTop: 8 }}>
+                                <Text strong>播放列表：</Text>
+                                <Tabs
+                                    activeKey={videoPlayDrawer.video.currentSource?.id}
+                                    styles={{
+                                        header: {
+                                            marginBottom: 0
+                                        }
+                                    }}
+                                    onChange={(key) => {
+                                        const source = videoPlayDrawer.video.sources.find(s => s.id === key);
+                                        if (source) {
+                                            setVideoPlayDrawer({
+                                                ...videoPlayDrawer,
+                                                video: {
+                                                    ...videoPlayDrawer.video,
+                                                    currentSource: {...source, url: source.urls?.[0]?.url || ''},
+                                                    current: source.urls?.[0] || {}
+                                                }
+                                            });
+                                        }
+                                    }}
+                                    items={videoPlayDrawer.video.sources.map(source => ({
+                                        label: source.source,
+                                        key: source.id,
+                                        children: <div style={{ marginTop: 16 }}>
+                                            <div style={{display: 'inline-flex', gap: '5px', flexWrap: 'wrap', maxHeight: 180, overflowY: 'auto'}}>
+                                                {source.urls?.map(url => (
+                                                    <Button 
+                                                        type={url.url === videoPlayDrawer.video.current?.url ? 'primary' : ''}
+                                                        size='small' 
+                                                        key={url.url} 
+                                                        onClick={() => setVideoPlayDrawer({
+                                                            ...videoPlayDrawer, 
+                                                            video: {
+                                                                ...videoPlayDrawer.video, 
+                                                                current: url,
+                                                                currentSource: {
+                                                                    ...source,
+                                                                    label: url.label || url.url,
+                                                                    url: url.url
+                                                                }
                                                             }
-                                                        }
-                                                    })}
-                                                >
-                                                    {url.label}
-                                                </Button>
-                                            ))}
+                                                        })}
+                                                    >
+                                                        {url.label}
+                                                    </Button>
+                                                ))}
+                                            </div>
+                                            {/* <div style={{ marginTop: 10 }}>
+                                                <Text strong>视频链接：</Text>
+                                                <Input 
+                                                    value={source.url || ''} 
+                                                    readOnly 
+                                                    style={{ marginTop: 8, width: 600 }}
+                                                />
+                                            </div> */}
                                         </div>
-                                        <div style={{ marginTop: 16 }}>
-                                            <Text strong>视频链接：</Text>
-                                            <Input 
-                                                value={source.url || ''} 
-                                                readOnly 
-                                                style={{ marginTop: 8, width: 600 }}
-                                            />
-                                        </div>
-                                    </div>
-                                }))}
-                            >
-                            </Tabs>
-                        </Col>
-                    </Row>
+                                    }))}
+                                >
+                                </Tabs>
+                            </Col>
+                        </Row>
+                    </div>
                 </div>
             ) : (
                 <div style={{ textAlign: 'center', padding: 40 }}>
