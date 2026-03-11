@@ -1,8 +1,10 @@
 import axios from 'axios'
-
-// 创建 axios 实例
+let baseURL = 'https://cms-api.boycot.dpdns.org/api'
+if (import.meta.env.DEV) {
+  baseURL = 'http://localhost:3000/api'
+}
 const api = axios.create({
-  baseURL: 'http://localhost:8787/api', // API 基础URL
+  baseURL, // API 基础URL
   timeout: 10000, // 请求超时时间
   headers: {
     'Content-Type': 'application/json'
