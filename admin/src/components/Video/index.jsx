@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment, useRef, forwardRef, useImperativeHandle } from 'react';
-import { useAsyncEffect, useGetState } from 'ahooks';
+import { useAsyncEffect, useGetState, useRequest } from 'ahooks';
 import { 
   Table, Button, message, Rate, Input, Typography, Space, 
   App, Row, Col, Switch, Select, Tag, Tabs,
@@ -34,7 +34,6 @@ const Video = forwardRef((props, ref) => {
     // ========== 视频相关状态 ==========
     const [videos, setVideos] = useState([]);
     const [videoSearch, setVideoSearch] = useState('');
-    const [videoLoading, setVideoLoading] = useState(false);
     const [recommendLoading, setRecommendLoading] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedTag, setSelectedTag] = useState(null);
@@ -95,8 +94,7 @@ const Video = forwardRef((props, ref) => {
     // };
 
     // ========== 视频管理方法 ==========
-    const fetchVideos = async () => {
-        setVideoLoading(true);
+    const {loading: videoLoading, run: fetchVideos} = useRequest(async () => {
         try {
             let url = `${API_BASE}/api/videos`;
             const params = [];
@@ -120,12 +118,13 @@ const Video = forwardRef((props, ref) => {
         } catch (err) {
             message.error('获取视频失败');
             console.error(err);
-        } finally {
-            setTimeout(() => {
-                setVideoLoading(false);
-            }, 500);
         }
-    };
+    }, {
+        refreshDeps: [currentPage, pageSize],
+        // manual: true,
+        loadingDelay: 1000,
+        debounceWait: 300
+    });
 
     // 更新视频推荐状态
     const updateVideoRecommended = async (video, recommended) => {
@@ -258,7 +257,6 @@ const Video = forwardRef((props, ref) => {
             message.warning('请选择要删除的视频');
             return;
         }
-        setVideoLoading(true)
         try {
             // 批量删除
             for (const video of selectedVideos) {
@@ -334,10 +332,6 @@ const Video = forwardRef((props, ref) => {
         newSources.splice(index, 1);
         setVideoSources(newSources);
     };
-    useEffect(() => {
-        fetchVideos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage, pageSize]);
     useEffect(() => {
         setCurrentPage(1);
         fetchVideos();
@@ -677,25 +671,25 @@ const Video = forwardRef((props, ref) => {
             size={800}
             >
             {videoPlayDrawer.video ? (
-                <div>
-                    <Player id="video" ref={playerRef} key={videoPlayDrawer.video.currentSource?.url} url={videoPlayDrawer.video.currentSource?.url || ''} poster={videoPlayDrawer.video.cover||''} />
+                <div style={{position: 'relative'}}>
+                    <Player id="video" ref={playerRef} key={videoPlayDrawer.video.currentSource?.url} url={videoPlayDrawer.video.currentSource?.url || ''} poster={videoPlayDrawer.video.banner||videoPlayDrawer.video.cover||''} />
                     {/* <Divider /> */}
                     <div style={{padding: 10}}>
                         <Row gutter={16}>
                             <Col span={8}><Text strong>标题：</Text>{videoPlayDrawer.video.title}</Col>
-                            <Col span={8}><Text strong></Text>{videoPlayDrawer.video?.subTitle}</Col>
                             <Col span={8}><Text strong>分类：</Text>{videoPlayDrawer.video.category}</Col>
-                            <Col span={24}>
+                            <Col span={8}>{videoPlayDrawer.video?.subTitle}</Col>
+                            <Col span={8}>
+                                <Text strong>导演：</Text>
+                                {videoPlayDrawer.video?.director || '--'}
+                            </Col>
+                            <Col span={16}>
                                 <Text strong>主演：</Text>
                                 {videoPlayDrawer.video?.actors && videoPlayDrawer.video.actors.length > 0 ? (
                                     videoPlayDrawer.video.actors.join(', ')
                                 ) : (
                                     <Text type="secondary">无</Text>
                                 )}
-                            </Col>
-                             <Col span={12}>
-                                <Text strong>导演：</Text>
-                                {videoPlayDrawer.video?.director || '--'}
                             </Col>
                             <Col span={12}>
                                 <Text strong>标签：</Text>
@@ -729,7 +723,7 @@ const Video = forwardRef((props, ref) => {
                                         label: source.source,
                                         key: source.id,
                                         children: <div style={{ marginTop: 16 }}>
-                                            <div style={{display: 'inline-flex', gap: '5px', flexWrap: 'wrap', maxHeight: 180, overflowY: 'auto'}}>
+                                            <div style={{display: 'inline-flex', gap: '5px', flexWrap: 'wrap'}}>
                                                 {source.urls?.map(url => (
                                                     <Button 
                                                         type={url.url === videoPlayDrawer.video.current?.url ? 'primary' : ''}

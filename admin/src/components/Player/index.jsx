@@ -75,7 +75,7 @@ const PlayerComponent = forwardRef(({ id = 'mse', url, poster, urlList = [] }, r
         }
     }, [id, poster, ref, url, urlList])
     return (
-        <div id={id} ref={videoRef}></div>
+        <div id={id} style={{position: 'sticky', top: 0, zIndex: 1000}} ref={videoRef}></div>
         // <video 
         //     src={url}
         //     controls

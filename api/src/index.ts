@@ -292,6 +292,7 @@ async function fetchCmsVideo(sourceConfig: any, env: any) {
   let list = videoDetial?.list?.map((file: any) => ({
     title: file.vod_name || file.title || "",
     subTitle: file.vod_remarks || "",
+    desc: file.vod_content || "",
     url: file.vod_play_url?.split('#')?.[0]?.split('$')?.[1] || file.url || "",
     urls: file.vod_play_url?.split('#').map((item: string) => ({
       label: item.split('$')?.[0] || "",
@@ -439,7 +440,7 @@ const setVideoList = async (source: any, env: any) => {
   try {
     const data = await withRetry(() => fetchVideoBySource(source, env));
     let videos = data.list || data || [];
-    
+    // console.log(videos, 'videos');
     for (const video of videos) {
       // 检查视频是否已存在（通过标题和分类判断）
       const existingVideo = await env.DB.prepare(
@@ -462,15 +463,9 @@ const setVideoList = async (source: any, env: any) => {
       const videoId = existingVideo?.id || `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
       const videoData = {
         id: videoId,
-        title: video.title || "",
-        subTitle: video.subTitle || "",
-        cover: video.cover || "",
-        size: video.size || 0,
-        category: video.category || "",
-        categoryId: category.id || "",
-        fetchTime: video.fetchTime || "",
-        path: video.path || "",
+        ...video,
         actors: JSON.stringify(video.actors || []),
+        categoryId: category.id || "",
         director: video.director || "",
         writer: video.writer || "",
         createTime: existingVideo?.createTime || new Date().toISOString(),
@@ -484,13 +479,13 @@ const setVideoList = async (source: any, env: any) => {
           // 更新现有视频
           await env.DB.prepare(`
             UPDATE videos 
-            SET title = ?, subTitle = ?, cover = ?, size = ?, 
-                category = ?, categoryId = ?, fetchTime = ?, path = ?,
+            SET title = ?, subTitle = ?, desc = ?, cover = ?, 
+                category = ?, categoryId = ?, fetchTime = ?, 
                 actors = ?, director = ?, writer = ?, updateTime = ?, status = ?
             WHERE id = ?
           `).bind(
-            videoData.title, videoData.subTitle, videoData.cover, videoData.size,
-            videoData.category, videoData.categoryId, videoData.fetchTime, videoData.path,
+            videoData.title, videoData.subTitle, videoData.desc, videoData.cover,
+            videoData.category, videoData.categoryId, videoData.fetchTime,
             videoData.actors, videoData.director, videoData.writer,
             videoData.updateTime, videoData.status, videoData.id
           ).run();
@@ -503,14 +498,14 @@ const setVideoList = async (source: any, env: any) => {
           // 插入新视频
           await env.DB.prepare(`
             INSERT INTO videos (
-              id, title, subTitle, cover, size, category,
-              categoryId, fetchTime, path, actors, director, writer,
+              id, title, subTitle, desc, cover, category,
+              categoryId, fetchTime, actors, director, writer,
               createTime, updateTime, status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `).bind(
-            videoData.id, videoData.title, videoData.subTitle, videoData.cover,
-            videoData.size, videoData.category, videoData.categoryId, videoData.fetchTime,
-            videoData.path, videoData.actors, videoData.director, videoData.writer,
+            videoData.id, videoData.title, videoData.subTitle, videoData.desc, videoData.cover,
+            videoData.category, videoData.categoryId, videoData.fetchTime,
+            videoData.actors, videoData.director, videoData.writer,
             videoData.createTime, videoData.updateTime, videoData.status
           ).run();
         }
@@ -955,6 +950,7 @@ export default {
 
     // 视频管理
     if (path === "/api/videos" && request.method === "GET") {
+      const id = url.searchParams.get("id");
       const category = url.searchParams.get("category");
       const tag = url.searchParams.get("tag");
       const source = url.searchParams.get("source");
@@ -963,6 +959,43 @@ export default {
       const page = parseInt(url.searchParams.get("page") || "1");
       const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
       const offset = (page - 1) * pageSize;
+      
+      // 如果提供了id参数，直接根据id查询单个视频
+      if (id) {
+        const videoId = id.startsWith("video:") ? id : `video:${id}`;
+        const video = await env.DB.prepare("SELECT * FROM videos WHERE id = ?").bind(videoId).first();
+        
+        if (!video) {
+          return new Response(JSON.stringify({ error: "视频不存在" }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 404,
+          });
+        }
+        
+        // 获取标签
+        const tagRelations = await env.DB.prepare(`
+          SELECT t.* FROM video_tags vt
+          JOIN tags t ON vt.tagId = t.id
+          WHERE vt.videoId = ?
+        `).bind(video.id).all();
+        
+        video.tags = tagRelations.results;
+        
+        // 获取视频来源
+        const sources = await env.DB.prepare(`
+          SELECT * FROM video_sources_mapping WHERE videoId = ?
+        `).bind(video.id).all();
+        
+        // 解析来源的JSON字段
+        video.sources = sources.results.map((source: any) => {
+          source.urls = JSON.parse(source.urls || "[]");
+          return source;
+        });
+        
+        return new Response(JSON.stringify(video), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
       
       // 构建查询条件
       let query = "SELECT DISTINCT v.* FROM videos v";

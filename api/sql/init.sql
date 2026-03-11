@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS article_tags (
 CREATE TABLE IF NOT EXISTS videos (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
+  desc TEXT DEFAULT '',
   subTitle TEXT DEFAULT '',
   cover TEXT DEFAULT '',
   banner TEXT DEFAULT '',
