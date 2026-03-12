@@ -7,12 +7,11 @@
     <main class="content py-4 px-4">
       <div class="container mx-auto">
         <!-- 加载状态 -->
-        <div v-if="videoStore.loading" class="flex justify-center items-center py-10">
-          <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
-        </div>
+        <!-- <Loading v-if="videoStore.videos.length === 0 && videoStore.loading" message="加载中..." size="md" color="border-red-600" /> -->
+
         
         <!-- 分类列表 -->
-        <section v-else v-for="category in categories" :key="category.key" class="mb-8">
+        <section v-for="category in categories" :key="category.key" class="mb-8">
           <!-- 即将上映 -->
           <div class="coming-soon-section mb-6" v-if="category.affix">
             <div class="flex justify-between items-center mb-4">
@@ -48,19 +47,7 @@
               
               <!-- 排行榜 -->
               <div class="col-span-1">
-                <div class="bg-white rounded-lg p-3 border border-gray-200">
-                  <h3 class="text-base font-bold text-gray-800 mb-3">{{ category.title }}排行榜</h3>
-                  <ul class="space-y-3">
-                    <li v-for="(item, index) in category.rankings" :key="item.id">
-                      <div class="flex items-center">
-                        <div class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold" :class="index < 3 ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600'">
-                          {{ index + 1 }}
-                        </div>
-                        <router-link :to="`/detail/${item.id}`" class="ml-2 text-sm text-gray-800 hover:text-red-600 line-clamp-1">{{ item.title }}</router-link>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+                <Ranking :title="category.title" :items="category.rankings" showSuffix />
               </div>
             </div>
           </div>
@@ -72,9 +59,10 @@
 
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
 import Banner from '../components/Banner.vue'
 import VideoCard from '../components/VideoCard.vue'
+import Ranking from '../components/Ranking.vue'
 import { useVideoStore } from '../store/video'
 import type { Video } from '../types'
 
@@ -86,11 +74,12 @@ const categories = reactive(
   router.options?.routes?.filter((item: any) => item.meta?.showInHome).map(el => ({
       key: el.name,
       path: el.path,
-      title: el.meta?.title || '',
+      recommended: (el.meta?.recommended || undefined)  as boolean|undefined,
+      title: (el.meta?.title || '') as string,
       category: (el.meta?.category || '') as string,
       affix: el.meta?.affix || false,
-      data: [] as Video[],
-      rankings: [] as Video[]
+      data: [...Array(18).keys()].map(() => ({loading:true})) as Video[],
+      rankings: [...Array(18).keys()].map(() => ({loading:true})) as Video[]
   })) || []
 )
 
@@ -105,7 +94,7 @@ onMounted(async () => {
     ...categories.map(async (category) => {
       let cateIds = videoStore.categories.filter((item: any) => category.category?.includes(item.name)).map((item: any) => item.id)
       // 获取分类视频列表
-      category.data = await videoStore.fetchCategoryVideos(cateIds)
+      category.data = await videoStore.fetchVideosByParams({categoryIds: cateIds.join(','), recommended: category.recommended || undefined})
       // 获取分类排行榜数据
       category.rankings = await videoStore.fetchCategoryRankings(cateIds)
     })

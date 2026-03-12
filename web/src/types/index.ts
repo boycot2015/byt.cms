@@ -1,11 +1,11 @@
 export type Category = {name: string, id: string}
 export type Tag = {name: string, id: string}
-export type Source = {id: string, label: string, source?: string, urls: Source[]}
+export type Source = {id: string, label: string, source?: string,url?: string, urls: Source[]}
 export type Video = {
     id: string,
-    title: string,
-    subTitle: string,
-    cover: string,
+    title?: string,
+    subTitle?: string,
+    cover?: string,
     banner?: string,
     category?: string,
     desc?: string,
@@ -13,10 +13,11 @@ export type Video = {
     releaseYear?: number,
     recommended?: boolean,
     country?: string,
-    source: string,
-    tags: Tag[],
+    source?: string,
+    tags?: Tag[],
     director?: string,
-    actors: string,
+    actors?: string[],
     updateTime?: string,
-    sources?: Source[]
+    sources?: Source[],
+    loading?: boolean
 }

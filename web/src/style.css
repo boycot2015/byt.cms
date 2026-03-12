@@ -2,3 +2,7 @@
 @tailwind components;
 @tailwind utilities; */
 @import "tailwindcss";
+
+button,select {
+  cursor: pointer;
+}

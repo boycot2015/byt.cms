@@ -2,15 +2,14 @@
   <div class="detail-view">
     <!-- 主要内容 -->
     <div class="container mx-auto py-6 px-4">
-      <div v-if="loading" class="flex justify-center items-center py-10">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
-      </div>
+      <Loading v-if="loading" message="加载中..." size="md" color="border-red-600" />
+
       <div v-else-if="video" class="bg-white rounded-lg shadow-sm p-6 mb-6">
         <div class="flex flex-col md:flex-row">
           <!-- 左侧内容 -->
           <div class="md:w-5/6 pr-0 md:pr-6 mb-6 md:mb-0">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ video.title }}</h1>
-            <p class="text-sm text-gray-500 mb-4">{{ video.title.toLowerCase().replace(/\s+/g, '') }}</p>
+            <p class="text-sm text-gray-500 mb-4">{{ video.title?.toLowerCase().replace(/\s+/g, '') }}</p>
             
             <!-- 标签 -->
             <div class="flex flex-wrap gap-2 mb-4">
@@ -21,7 +20,7 @@
             <!-- 信息 -->
             <div class="space-y-2 mb-4">
               <p class="text-sm"><span class="text-gray-600">导演：</span> {{ video.director || '未知' }}</p>
-              <p class="text-sm"><span class="text-gray-600">主演：</span> {{ JSON.parse(video.actors)?.join('、') || '未知' }}</p>
+              <p class="text-sm"><span class="text-gray-600">主演：</span> {{ JSON.parse((video.actors || '[]') as string)?.join('、') || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">更新：</span> {{ video.updateTime || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">集数：</span> {{ video.subTitle || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">评分：</span> 
@@ -42,7 +41,7 @@
                 </svg>
                 <span class="ml-1">8.5</span>
               </p>
-              <p class="text-sm"><span class="text-gray-600">TAG：</span> {{ video.tags.map(tag => tag.name).join('、') || '未知' }}</p>
+              <p class="text-sm"><span class="text-gray-600">TAG：</span> {{ video.tags?.map(tag => tag.name).join('、') || '未知' }}</p>
             </div>
           </div>
           
@@ -58,7 +57,7 @@
         </div>
         
         <!-- 播放按钮 -->
-        <button class="bg-red-600 text-white px-6 py-2 rounded-full flex items-center hover:bg-red-700 transition-colors">
+        <button class="bg-red-600 cursor-pointer text-white px-6 py-2 rounded-full flex items-center hover:bg-red-700 transition-colors" @click="playVideo">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -81,7 +80,7 @@
               v-for="(source, index) in video.sources" 
               :key="source.id || index"
               @click="activeSource = index; activeEpisode = 0"
-              class="mx-4 py-2 border-b-2 transition-colors"
+              class="mx-4 py-2 border-b-2 transition-colors cursor-pointer"
               :class="activeSource === index ? 'border-red-500 text-red-500' : 'border-transparent text-gray-600 hover:text-red-500'"
             >
               {{ source.source || `资源${index + 1}` }}
@@ -97,9 +96,8 @@
           <button 
             v-for="(episode, index) in currentEpisodes" 
             :key="index"
-            class="px-4 py-1 border rounded text-sm transition-colors"
-            :class="activeEpisode === index ? 'border-red-500 bg-red-50 text-red-500' : 'border-gray-300 hover:bg-gray-100'"
-            @click="activeEpisode = index"
+            class=" cursor-pointer px-4 py-1 border rounded text-sm transition-colors border-gray-300 hover:bg-gray-100"
+            @click="activeEpisode = index;playVideo()"
           >
             {{ episode.label || `第${String(index + 1).padStart(2, '0')}集` }}
           </button>
@@ -119,7 +117,7 @@
               title: item.title,
               source: item.source || '未知',
               tags: item.tags || [],
-              actors: item.actors || '',
+              actors: item.actors || undefined,
               cover: item.cover || 'https://via.placeholder.com/200x300?text=暂无封面',
               subTitle: item.subTitle || '未知',
             }" />
@@ -132,11 +130,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import VideoCard from '../../components/VideoCard.vue'
+import Loading from '../../components/Loading.vue'
 import { apiService } from '../../services/api'
 import type { Video, Source } from '../../types'
 const route = useRoute()
+const router = useRouter()
 const video = ref<Video>()
 const recommendList = ref<Video[]>([])
 const loading = ref(true)
@@ -185,7 +185,11 @@ const getVideoDetail = async () => {
     loading.value = false
   }
 }
-
+const playVideo = () => {
+  if (video.value) {
+    router.push({ path: `/detail/${video.value.id}/${video.value?.sources?.[activeSource.value]?.source || ''}/${currentEpisodes.value[activeEpisode.value].label || currentEpisodes.value[0].label || ''}` })
+  }
+}
 onMounted(async () => {
   await getVideoDetail()
   await getRecommendList()

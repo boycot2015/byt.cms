@@ -5,6 +5,7 @@ import type { Video, Category } from '../types'
 export const useVideoStore = defineStore('video', {
   state: () => ({
     videos: [] as Video[],
+    total: 0, 
     categories: [] as Category[],
     loading: false,
     error: null as string | null
@@ -37,10 +38,10 @@ export const useVideoStore = defineStore('video', {
       }
     },
 
-    async fetchVideos(params: any) {
+    async fetchVideos(params: {category: string, recommended?: boolean, page?: number, pageSize?: number}) {
       try {
         this.loading = true
-        const data: { list: Video[] } = await apiService.getVideos(params)
+        const data: { list: Video[], total: number } = await apiService.getVideos(params)
         const videos = data.list || []
         // 将获取的视频数据添加到store中
         videos.forEach(video => {
@@ -51,6 +52,7 @@ export const useVideoStore = defineStore('video', {
             this.videos[existingIndex] = video
           }
         })
+        this.total = data.total || 0
         return videos
       } catch (error) {
         console.error('获取视频数据失败:', error)
@@ -61,10 +63,10 @@ export const useVideoStore = defineStore('video', {
       }
     },
 
-    async fetchCategoryVideos(categoryIds: string[]) {
+    async fetchVideosByParams({ categoryIds = '', recommended = undefined}:{categoryIds: string, recommended?: boolean|undefined}) {
       try {
         this.loading = true
-        const promises = categoryIds.map(id => this.fetchVideos({ category: id, page: 1, pageSize: 10 }))
+        const promises = categoryIds.split(',').map(category => this.fetchVideos({ category: category, recommended, page: 1, pageSize: 10 }))
         const results = await Promise.all(promises)
         return results.flat().slice(0, 10)
       } catch (error) {
@@ -82,7 +84,7 @@ export const useVideoStore = defineStore('video', {
         const promises = categoryIds.map(id => this.fetchVideos({ category: id, recommended: true, page: 1, pageSize: 10 }))
         const results = await Promise.all(promises)
         const rankings = results.flat().slice(0, 10)
-        return rankings.length > 0 ? rankings : this.fetchCategoryVideos(categoryIds)
+        return rankings.length > 0 ? rankings : this.fetchVideosByParams({ categoryIds: categoryIds.join(',') })
       } catch (error) {
         console.error('获取分类排行榜失败:', error)
         this.error = '获取分类排行榜失败'

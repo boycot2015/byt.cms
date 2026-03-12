@@ -14,10 +14,11 @@ const routes = [
         path: '/',
         name: 'Custom',
         meta: {
-            title: '即将上映',
+            title: '热门推荐',
             affix: true,
             showInHome: true,
-            category: '国产动漫,科幻片,预告片',
+            recommended: true,
+            // category: '国产动漫,科幻片,预告片',
             hideInMenu: true
         },
         component: () => import('../views/HomeView.vue')
@@ -31,7 +32,7 @@ const routes = [
             category: '国产动漫,日韩动漫',
             hideInMenu: false
         },
-        component: () => import('../views/AnimeView.vue')
+        component: () => import('../views/MovieView.vue')
     },
     {
         path: '/movie',
@@ -53,7 +54,7 @@ const routes = [
             category: '国产剧,日韩剧',
             hideInMenu: false
         },
-        component: () => import('../views/TVView.vue')
+        component: () => import('../views/MovieView.vue')
     },
     {
         path: '/variety',
@@ -64,7 +65,7 @@ const routes = [
             category: '大陆综艺,日韩综艺,港台综艺',
             hideInMenu: false
         },
-        component: () => import('../views/VarietyView.vue')
+        component: () => import('../views/MovieView.vue')
     },
     {
         path: '/trailer',
@@ -74,7 +75,7 @@ const routes = [
             category: '预告片',
             hideInMenu: false
         },
-        component: () => import('../views/TrailerView.vue')
+        component: () => import('../views/MovieView.vue')
     },
     {
         path: '/:title/:id',
@@ -86,7 +87,7 @@ const routes = [
         component: () => import('../views/detail/index.vue')
     },
     {
-        path: '/:title/:id/:playerId',
+        path: '/:title/:id/:source/:episode',
         name: 'PlayDetail',
         meta: {
             title: '影视播放详情',

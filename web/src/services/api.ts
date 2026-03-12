@@ -58,7 +58,7 @@ export const apiService = {
     recommended?: boolean
     id?: string
   }) => {
-    return api.get('/videos', { params }) as Promise<{list: Video[]}>
+    return api.get('/videos', { params }) as Promise<{list: Video[], total: number}>
   },
   
   // 根据 id 获取视频详情
