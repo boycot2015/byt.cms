@@ -14,13 +14,24 @@ const routes = [
         path: '/',
         name: 'Custom',
         meta: {
-            title: '推荐视频',
+            title: '即将上映',
             affix: true,
             showInHome: true,
-            category: '国产动漫,科幻片',
+            category: '国产动漫,科幻片,预告片',
             hideInMenu: true
         },
         component: () => import('../views/HomeView.vue')
+    },
+    {
+        path: '/anime',
+        name: 'Anime',
+        meta: {
+            title: '动漫',
+            showInHome: true,
+            category: '国产动漫,日韩动漫',
+            hideInMenu: false
+        },
+        component: () => import('../views/AnimeView.vue')
     },
     {
         path: '/movie',
@@ -54,17 +65,6 @@ const routes = [
             hideInMenu: false
         },
         component: () => import('../views/VarietyView.vue')
-    },
-    {
-        path: '/anime',
-        name: 'Anime',
-        meta: {
-            title: '动漫',
-            showInHome: true,
-            category: '国产动漫,日韩动漫',
-            hideInMenu: false
-        },
-        component: () => import('../views/AnimeView.vue')
     },
     {
         path: '/trailer',

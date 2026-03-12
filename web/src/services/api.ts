@@ -1,7 +1,8 @@
 import axios from 'axios'
+import type { Category, Video } from '../types'
 let baseURL = 'https://cms-api.boycot.dpdns.org/api'
 if (import.meta.env.DEV) {
-  baseURL = 'http://localhost:3000/api'
+  baseURL = 'http://localhost:8787/api'
 }
 const api = axios.create({
   baseURL, // API 基础URL
@@ -37,7 +38,7 @@ api.interceptors.response.use(
 export const apiService = {
   // 获取推荐视频
   getRecommendedVideos: () => {
-    return api.get('/videos/recommended')
+    return api.get('/videos/recommended') as Promise<Video[]>
   },
     // 获取分类
   getCates: (params?: {
@@ -45,7 +46,7 @@ export const apiService = {
     pageSize?: number
     search?: string
   }) => {
-    return api.get('/categories', { params })
+    return api.get('/categories', { params }) as Promise<Category[]>
   },
   // 获取视频列表
   getVideos: (params?: {
@@ -57,7 +58,7 @@ export const apiService = {
     recommended?: boolean
     id?: string
   }) => {
-    return api.get('/videos', { params })
+    return api.get('/videos', { params }) as Promise<{list: Video[]}>
   },
   
   // 根据 id 获取视频详情

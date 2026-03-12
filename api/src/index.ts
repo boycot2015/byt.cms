@@ -375,8 +375,8 @@ const setCategory = async (body: any, env: any) => {
     // 更新现有分类
     const updatedCategory = { ...existing, ...body };
     await env.DB.prepare(
-      "UPDATE categories SET name = ?, desc = ? WHERE id = ?"
-    ).bind(updatedCategory.name, updatedCategory.desc || "", updatedCategory.id).run();
+      "UPDATE categories SET name = ?, desc = ?, `order` = ? WHERE id = ?"
+    ).bind(updatedCategory.name, updatedCategory.desc || "", updatedCategory.order || 0, updatedCategory.id).run();
     return updatedCategory;
   }
   
@@ -386,12 +386,13 @@ const setCategory = async (body: any, env: any) => {
     id,
     name: body.name,
     desc: body.desc || "",
+    order: body.order || 0,
     createTime: new Date().toISOString()
   };
   
   await env.DB.prepare(
-    "INSERT INTO categories (id, name, desc, createTime) VALUES (?, ?, ?, ?)"
-  ).bind(category.id, category.name, category.desc, category.createTime).run();
+    "INSERT INTO categories (id, name, desc, `order`, createTime) VALUES (?, ?, ?, ?, ?)"
+  ).bind(category.id, category.name, category.desc, category.order, category.createTime).run();
   
   return category;
 };
@@ -878,8 +879,19 @@ export default {
 
     // 分类管理
     if (path === "/api/categories" && request.method === "GET") {
+      const sortBy = url.searchParams.get("sortBy") || "order";
+      const sortOrder = url.searchParams.get("sortOrder") || "desc";
+      
+      // 构建排序语句
+      let orderByClause = "ORDER BY `order` DESC, createTime DESC";
+      if (sortBy === "createTime") {
+        orderByClause = `ORDER BY createTime ${sortOrder.toUpperCase()}`;
+      } else if (sortBy === "name") {
+        orderByClause = `ORDER BY name ${sortOrder.toUpperCase()}`;
+      }
+      
       const categories = await env.DB.prepare(
-        "SELECT * FROM categories ORDER BY createTime DESC"
+        `SELECT * FROM categories ${orderByClause}`
       ).all();
       
       return new Response(JSON.stringify(categories.results), {

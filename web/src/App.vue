@@ -7,7 +7,7 @@
           <h1 class="text-2xl font-bold text-red-600 mr-6">影视在线</h1>
           <nav>
             <ul class="flex space-x-4 text-sm">
-              <li v-for="route in routes" v-show="!route.meta.hideInMenu"><router-link :to="route.path" class="hover:text-red-600" :active-class="currentRoute.path==route.path?'text-red-600 border-b-2 border-red-600 pb-1':''">{{route.meta?.title||route.name}}</router-link></li>
+              <li v-for="route in routes" v-show="!route.meta?.hideInMenu" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :active-class="currentRoute.path==route.path?'text-red-600 border-b-2 border-red-600 pb-1':''">{{route.meta?.title||route.name}}</router-link></li>
             </ul>
           </nav>
         </div>
@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 const router = useRouter()
-console.log(router, 'router');
+// console.log(router, 'router');
 const routes = router.options?.routes || []
 const currentRoute = router.currentRoute
 </script>

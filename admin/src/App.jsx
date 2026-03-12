@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Layout, message, Button, Modal, Form, Input, Typography, Space, 
-  Card, Row, Col, Tabs, Switch, Select, Dropdown, Menu, Badge,
+  Card, Row, Col, Tabs, Select, Dropdown, Menu, Badge,
   theme, Drawer, Divider, ConfigProvider, App
 } from 'antd';
 import axios from 'axios';
@@ -20,6 +20,7 @@ const { Title, Text, Paragraph } = Typography;
 
 // 替换为你的Workers地址
 const API_BASE = import.meta.env.VITE_API_BASE;
+const WEB_URL = import.meta.env.VITE_WEB_URL;
 
 function Index() {
   const categoryRef = React.useRef(null);
@@ -88,6 +89,7 @@ function Index() {
     categoryForm.setFieldsValue({
       name: category?.name || '',
       desc: category?.desc || '',
+      order: category?.order || 0,
     });
     setCategoryModalVisible(true);
   };
@@ -193,59 +195,60 @@ function Index() {
                   CMS 管理平台
                 </Title>
               </Col>
-                <Col>
-                  <Space size="middle">
-                    <Dropdown
-                      menu={{
-                        items: [
-                          {
-                            key: 'system',
-                            label: (
-                              <Space>
-                                跟随系统
-                                {themeMode === 'system' && <Badge status="success" />}
-                              </Space>
-                            ),
-                            onClick: () => setThemeMode('system')
-                          },
-                          {
-                            key: 'light',
-                            label: (
-                              <Space>
-                                浅色主题
-                                {themeMode === 'light' && <Badge status="success" />}
-                              </Space>
-                            ),
-                            onClick: () => setThemeMode('light')
-                          },
-                          {
-                            key: 'dark',
-                            label: (
-                              <Space>
-                                暗黑主题
-                                {themeMode === 'dark' && <Badge status="success" />}
-                              </Space>
-                            ),
-                            onClick: () => setThemeMode('dark')
-                          }
-                        ]
-                      }}
+              <Col>
+                <Space>
+                  <Button type="link" href={WEB_URL} target="_blank">网站首页</Button>  
+                  <Dropdown
+                    menu={{
+                      items: [
+                        {
+                          key: 'system',
+                          label: (
+                            <Space>
+                              跟随系统
+                              {themeMode === 'system' && <Badge status="success" />}
+                            </Space>
+                          ),
+                          onClick: () => setThemeMode('system')
+                        },
+                        {
+                          key: 'light',
+                          label: (
+                            <Space>
+                              浅色主题
+                              {themeMode === 'light' && <Badge status="success" />}
+                            </Space>
+                          ),
+                          onClick: () => setThemeMode('light')
+                        },
+                        {
+                          key: 'dark',
+                          label: (
+                            <Space>
+                              暗黑主题
+                              {themeMode === 'dark' && <Badge status="success" />}
+                            </Space>
+                          ),
+                          onClick: () => setThemeMode('dark')
+                        }
+                      ]
+                    }}
+                  >
+                    <Button
+                      type="link"
+                      icon={darkMode ? <MoonOutlined /> : <SunOutlined />}
                     >
-                      <Button
-                        type="link"
-                        icon={darkMode ? <MoonOutlined /> : <SunOutlined />}
-                      >
-                      </Button>
-                    </Dropdown>
-                    <Text>欢迎，{user.nickname}</Text>
-                    <Button 
-                      icon={<LogoutOutlined />} 
-                      onClick={handleLogout}
-                    >
-                      登出
                     </Button>
-                  </Space>
-                </Col>
+                  </Dropdown>
+                  <Text>欢迎，{user.nickname}</Text>
+                  <Button 
+                    icon={<LogoutOutlined />} 
+                    onClick={handleLogout}
+                  >
+                    登出
+                  </Button>
+                </Space>
+              </Col>
             </Row>
           </Header>
 
@@ -307,6 +310,17 @@ function Index() {
               >
                 <Input 
                   placeholder="如：电影、短视频、动漫" 
+                />
+              </Form.Item>
+              <Form.Item
+                name="order"
+                label="排序值"
+                rules={[{ required: true, message: '请输入排序值' }, { type: 'number', message: '排序值必须是数字' }]}
+              >
+                <Input.Number 
+                  placeholder="数字越小，排序越靠前" 
+                  min={0}
+                  style={{ width: '100%' }}
                 />
               </Form.Item>
               <Form.Item

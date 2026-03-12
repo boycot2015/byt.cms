@@ -7,7 +7,7 @@ export const usePermission = () => {
   const isAdmin = user?.role === 'admin';
   
   // 检查是否有操作权限
-  const hasPermission = (action) => {
+  const hasPermission = () => {
     // 这里可以根据需要扩展权限控制逻辑
     // 目前只有管理员有所有操作权限
     return isAdmin;

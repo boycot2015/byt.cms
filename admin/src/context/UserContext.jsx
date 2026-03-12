@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { createContext, useState, useContext, useEffect, useCallback } from 'react';
 
 const UserContext = createContext();
 
@@ -12,26 +13,25 @@ export const useUser = () => {
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
+  const getUserInfo = () => {
+    setUser(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null);
+  };
   // 检查登录状态
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+     getUserInfo();
   }, []);
 
   // 更新用户信息
-  const updateUser = (userInfo) => {
+  const updateUser = useCallback((userInfo) => {
     setUser(userInfo);
     localStorage.setItem('user', JSON.stringify(userInfo));
-  };
+  }, []);
 
   // 登出
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     localStorage.removeItem('user');
-  };
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, updateUser, logout }}>

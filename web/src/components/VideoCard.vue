@@ -13,17 +13,9 @@
 </template>
 
 <script setup lang="ts">
+import type { Video } from '../types'
 defineProps<{
-  video: {
-    id: string
-    title: string
-    cover: string
-    subTitle?: string
-    releaseYear?: number
-    category?: string
-    country?: string
-    size?: string
-  }
+  video: Video & { size?: string | undefined }
 }>()
 </script>
 

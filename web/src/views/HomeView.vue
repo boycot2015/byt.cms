@@ -6,8 +6,13 @@
     <!-- 内容区域 -->
     <main class="content py-4 px-4">
       <div class="container mx-auto">
+        <!-- 加载状态 -->
+        <div v-if="videoStore.loading" class="flex justify-center items-center py-10">
+          <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+        </div>
+        
         <!-- 分类列表 -->
-        <section v-for="category in categories" :key="category.key" class="mb-8">
+        <section v-else v-for="category in categories" :key="category.key" class="mb-8">
           <!-- 即将上映 -->
           <div class="coming-soon-section mb-6" v-if="category.affix">
             <div class="flex justify-between items-center mb-4">
@@ -28,7 +33,7 @@
                 <span class="text-red-600 mr-2">●</span>
                 {{ category.title }}
               </h2>
-              <a :href="'#'" class="text-sm text-gray-600 hover:text-red-600">更多{{ category.title }} ></a>
+              <a :href="category.path" class="text-sm text-gray-600 hover:text-red-600">更多{{ category.title }} ></a>
             </div>
             
             <div class="grid grid-cols-6 gap-4">
@@ -51,7 +56,7 @@
                         <div class="w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold" :class="index < 3 ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600'">
                           {{ index + 1 }}
                         </div>
-                        <a href="#" class="ml-2 text-sm text-gray-800 hover:text-red-600 line-clamp-1">{{ item.title }}</a>
+                        <router-link :to="`/detail/${item.id}`" class="ml-2 text-sm text-gray-800 hover:text-red-600 line-clamp-1">{{ item.title }}</router-link>
                       </div>
                     </li>
                   </ul>
@@ -67,61 +72,42 @@
 
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import Banner from '../components/Banner.vue'
 import VideoCard from '../components/VideoCard.vue'
-import { apiService } from '../services/api'
+import { useVideoStore } from '../store/video'
+import type { Video } from '../types'
+
 const router = useRouter()
+const videoStore = useVideoStore()
+
 // 分类配置
 const categories = reactive(
   router.options?.routes?.filter((item: any) => item.meta?.showInHome).map(el => ({
       key: el.name,
+      path: el.path,
       title: el.meta?.title || '',
-      category: el.meta?.category || '',
+      category: (el.meta?.category || '') as string,
       affix: el.meta?.affix || false,
-      data: [],
-      rankings: []
+      data: [] as Video[],
+      rankings: [] as Video[]
   })) || []
 )
 
-// 获取视频数据的通用函数
-const fetchVideos = async (params) => {
-  try {
-    const data:any = await apiService.getVideos(params)
-    return data.list || []
-  } catch (error) {
-    console.error('获取视频数据失败:', error)
-    return []
-  }
-}
-const fetchCategories = async () => {
-  try {
-    const data = await apiService.getCates()
-    return data || []
-  } catch (error) {
-    console.error('获取分类数据失败:', error)
-    return []
-  }
-}
 // 页面加载时获取数据
 onMounted(async () => {
- let cates:any = await fetchCategories()
-//  console.log(cates, 'cates');
-   // 并行获取所有数据
+  // 先获取分类数据
+  await videoStore.fetchCategories()
+  
+  // 并行获取所有数据
   await Promise.all([
     // 遍历获取所有分类数据
     ...categories.map(async (category) => {
-      let cateIds = cates.filter((item: any) => category.category?.includes(item.name)).map((item: any) => item.id)
+      let cateIds = videoStore.categories.filter((item: any) => category.category?.includes(item.name)).map((item: any) => item.id)
       // 获取分类视频列表
-      let datas:any = await Promise.all(cateIds.map((id: string) => fetchVideos({ category: id, page: 1, pageSize: 10 })))
-      category.data = datas.flat().slice(0, 10)
-      // 获取分类排行榜
-      let rankingsDatas:any = await Promise.all(cateIds.map((id: string) => fetchVideos({ category: id, recommended: true, page: 1, pageSize: 10})))
-      category.rankings = rankingsDatas.flat().slice(0, 10)
-      // 如果没有推荐数据，使用普通列表数据
-      if (!category.rankings.length) {
-        category.rankings = category.data.slice(0, 10)
-      }
+      category.data = await videoStore.fetchCategoryVideos(cateIds)
+      // 获取分类排行榜数据
+      category.rankings = await videoStore.fetchCategoryRankings(cateIds)
     })
   ])
 })

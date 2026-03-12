@@ -36,7 +36,7 @@ const LoginModal = ({ visible, onClose, onLoginSuccess }) => {
       setLoading(true);
       const values = await registerForm.validateFields();
       const response = await axios.post(`${API_BASE}/api/users/register`, values);
-      message.success('注册成功，请登录');
+      response.data.success && message.success('注册成功，请登录');
       setActiveTab('login');
       loginForm.setFieldsValue({ username: values.username });
     } catch (error) {

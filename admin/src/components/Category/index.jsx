@@ -11,6 +11,7 @@ import {
   DownloadOutlined, SearchOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
+import { useDebounceFn } from 'ahooks';
 import { usePermission } from '../../hooks/usePermission';
 const { Title, Text, Paragraph } = Typography;
 // 替换为你的Workers地址
@@ -28,7 +29,40 @@ const Category = forwardRef((props, ref) => {
     const [categorySearch, setCategorySearch] = useState('');
 
     // ========== 分类列配置 ==========
+    const { run: handleOrderChange } = useDebounceFn(
+    async (value, record) => {
+        record.order = value
+        try {
+            await axios.post(`${API_BASE}/api/categories`, { ...record, order: value });
+            message.success('排序更新成功');
+            fetchCategories();
+        } catch (err) {
+            message.error('排序更新失败');
+            console.error(err);
+        }
+    },
+    {
+      wait: 1000,
+    },
+  );
+
     const categoryColumns = [
+    {
+        title: '排序',
+        dataIndex: 'order',
+        key: 'order',
+        width: 80,
+        render: (order, record) => isAdmin ? (
+            <Input
+                defaultValue={order || 0}
+                onChange={(e) => handleOrderChange(e.target.value, record)}
+                min={0}
+                style={{ width: '60px' }}
+            />
+        ) : (
+            order || 0
+        )
+    },
     {
         title: '分类名称',
         dataIndex: 'name',

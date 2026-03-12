@@ -22,7 +22,6 @@
             <div class="space-y-2 mb-4">
               <p class="text-sm"><span class="text-gray-600">导演：</span> {{ video.director || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">主演：</span> {{ JSON.parse(video.actors)?.join('、') || '未知' }}</p>
-              <p class="text-sm"><span class="text-gray-600">上映：</span> {{ video.releaseYear || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">更新：</span> {{ video.updateTime || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">集数：</span> {{ video.subTitle || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">评分：</span> 
@@ -55,7 +54,7 @@
         <!-- 剧情简介 -->
         <div class="mb-6">
           <h3 class="text-gray-600 font-medium mb-2">剧情：</h3>
-          <p class="text-sm text-gray-700 leading-relaxed" v-html="video.desc || video.description || '未知'"></p>
+          <p class="text-sm text-gray-700 leading-relaxed" v-html="video.desc || '未知'"></p>
         </div>
         
         <!-- 播放按钮 -->
@@ -118,6 +117,9 @@
             <VideoCard :video="{
               id: item.id,
               title: item.title,
+              source: item.source || '未知',
+              tags: item.tags || [],
+              actors: item.actors || '',
               cover: item.cover || 'https://via.placeholder.com/200x300?text=暂无封面',
               subTitle: item.subTitle || '未知',
             }" />
@@ -133,21 +135,21 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import VideoCard from '../../components/VideoCard.vue'
 import { apiService } from '../../services/api'
-
+import type { Video, Source } from '../../types'
 const route = useRoute()
-const video = ref(null)
-const recommendList = ref([])
+const video = ref<Video>()
+const recommendList = ref<Video[]>([])
 const loading = ref(true)
 const activeSource = ref(0)
 const activeEpisode = ref(0)
 
 // 计算当前选中资源平台的剧集列表
-const currentEpisodes = computed(() => {
+const currentEpisodes = computed<Source[]>(() => {
   if (!video.value?.sources || !video.value.sources[activeSource.value]) {
-    return []
+    return [] as Source[]
   }
   const source = video.value.sources[activeSource.value]
-  return source.urls || []
+  return source.urls || [] as Source[]
 })
 
 const getRecommendList = async () => {
@@ -179,7 +181,7 @@ const getVideoDetail = async () => {
     loading.value = false
   } catch (error) {
     console.error('获取视频详情失败:', error)
-    video.value = null
+    video.value = undefined
     loading.value = false
   }
 }

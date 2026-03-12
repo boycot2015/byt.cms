@@ -30,13 +30,7 @@
         <VideoCard 
           v-for="video in videos" 
           :key="video.id" 
-          :video="{
-            id: video.id,
-            title: video.title,
-            cover: video.cover || 'https://via.placeholder.com/200x300?text=暂无封面',
-            subTitle: video.subTitle || video.category,
-            category: video.category
-          }" 
+          :video="video"
         />
       </div>
       
@@ -53,17 +47,17 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { apiService } from '../services/api'
 import VideoCard from '../components/VideoCard.vue'
-
+import type { Category, Video } from '../types'
 const router = useRouter()
-const categories = ref([])
-const videos = ref([])
+const categories = ref<Category[]>([])
+const videos = ref<Video[]>([])
 const loading = ref(false)
 const currentCategory = router.currentRoute.value.meta.category as string
 const currentCategoryId = ref('')
 // 获取分类数据
 const fetchCategories = async () => {
   try {
-    const data: any = await apiService.getCates()
+    const data: Category[] = await apiService.getCates()
     categories.value = data.filter(el => currentCategory.includes(el.name)) || []
     // 设置默认分类
     if (categories.value && categories.value.length > 0) {
@@ -77,7 +71,7 @@ const fetchCategories = async () => {
 }
 
 // 根据分类获取视频数据
-const fetchVideosByCategory = async (categoryId) => {
+const fetchVideosByCategory = async (categoryId: string) => {
   try {
     loading.value = true
     const data: any = await apiService.getVideos({
@@ -95,7 +89,7 @@ const fetchVideosByCategory = async (categoryId) => {
 }
 
 // 处理分类切换
-const handleCategoryChange = (categoryId) => {
+const handleCategoryChange = (categoryId: string) => {
   currentCategoryId.value = categoryId
   fetchVideosByCategory(categoryId)
 }
