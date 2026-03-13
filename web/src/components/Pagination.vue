@@ -1,6 +1,6 @@
 <template>
   <div v-if="total > 0" class="flex justify-center mt-8">
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-1 md:space-x-4">
       <span class="text-sm">共{{ total }}条</span>
       <button 
         @click="handlePageChange(currentPage - 1)" 

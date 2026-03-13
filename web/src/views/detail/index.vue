@@ -4,10 +4,10 @@
     <div class="container mx-auto py-6 px-4">
       <Loading v-if="loading" message="加载中..." size="md" color="border-red-600" />
 
-      <div v-else-if="video" class="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <div v-else-if="video" class="bg-white rounded-lg shadow-sm p-4 mb-6">
         <div class="flex flex-col md:flex-row">
           <!-- 左侧内容 -->
-          <div class="md:w-5/6 pr-0 md:pr-6 mb-6 md:mb-0">
+          <div class="md:w-5/6 pr-0 md:pr-6 mb-0">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ video.title }}</h1>
             <p class="text-sm text-gray-500 mb-4">{{ video.title?.toLowerCase().replace(/\s+/g, '') }}</p>
             
@@ -21,9 +21,9 @@
             <div class="space-y-2 mb-4">
               <p class="text-sm"><span class="text-gray-600">导演：</span> {{ video.director || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">主演：</span> {{ JSON.parse((video.actors || '[]') as string)?.join('、') || '未知' }}</p>
-              <p class="text-sm"><span class="text-gray-600">更新：</span> {{ video.updateTime || '未知' }}</p>
+              <p class="text-sm"><span class="text-gray-600">更新：</span> {{ new Date(video.updateTime|| '').toLocaleString() || '未知' }}</p>
               <p class="text-sm"><span class="text-gray-600">集数：</span> {{ video.subTitle || '未知' }}</p>
-              <p class="text-sm"><span class="text-gray-600">评分：</span> 
+              <p class="text-sm"><span class="text-gray-600">评分：</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                 </svg>
@@ -51,7 +51,7 @@
           </div>
         </div>
         <!-- 剧情简介 -->
-        <div class="mb-6">
+        <div class="mb-6 mt-2 md:mt-0">
           <h3 class="text-gray-600 font-medium mb-2">剧情：</h3>
           <p class="text-sm text-gray-700 leading-relaxed" v-html="video.desc || '未知'"></p>
         </div>
@@ -70,8 +70,8 @@
       </div>
       
       <!-- 选集播放 -->
-      <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <h2 class="text-lg font-bold text-gray-800 mb-4">选集播放：</h2>
+      <div class="bg-white rounded-lg shadow-sm p-4 pr-2 mb-6">
+        <h2 class="text-lg font-bold text-gray-800 mb-2">选集播放：</h2>
         
         <!-- 资源平台切换 -->
         <div v-if="video?.sources && video.sources.length > 0" class="mb-4">
@@ -80,7 +80,7 @@
               v-for="(source, index) in video.sources" 
               :key="source.id || index"
               @click="activeSource = index; activeEpisode = 0"
-              class="mx-4 py-2 border-b-2 transition-colors cursor-pointer"
+              class="mx-0 p-2 border-b-2 transition-colors cursor-pointer"
               :class="activeSource === index ? 'border-red-500 text-red-500' : 'border-transparent text-gray-600 hover:text-red-500'"
             >
               {{ source.source || `资源${index + 1}` }}
@@ -92,9 +92,9 @@
         </div>
         
         <!-- 选集列表 -->
-        <div class="flex flex-wrap gap-2 max-h-80 overflow-auto">
-          <button 
-            v-for="(episode, index) in currentEpisodes" 
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 pr-3 max-h-80 overflow-auto">
+          <button
+            v-for="(episode, index) in currentEpisodes"
             :key="index"
             class=" cursor-pointer px-4 py-1 border rounded text-sm transition-colors border-gray-300 hover:bg-gray-100"
             @click="activeEpisode = index;playVideo()"
@@ -108,7 +108,7 @@
       </div>
       
       <!-- 相关影片 -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
+      <div class="bg-white rounded-lg shadow-sm p-4">
         <h2 class="text-lg font-bold text-gray-800 mb-4">相关影片</h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
           <div v-for="item in recommendList" :key="item.id">

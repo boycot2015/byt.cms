@@ -1,5 +1,5 @@
 <template>
-  <div class="banner relative h-[400px] overflow-hidden" v-if="recommendedVideos.length">
+  <div class="banner relative h-[200px] md:h-[400px] overflow-hidden" v-if="recommendedVideos.length">
     <div 
       v-for="(video, index) in recommendedVideos" 
       :key="video.id"
@@ -16,8 +16,8 @@
       :class="{ 'z-9': currentIndex === index }"
       >
         <div class="container mx-auto px-4 flex justify-between items-center">
-          <div class="max-w-1/3">
-            <h2 class="text-4xl font-bold text-white mb-2">{{ video.title }}</h2>
+          <div class="md:max-w-1/3">
+            <h2 class="text-xl md:text-2xl lg:text-4xl font-bold text-white mb-2">{{ video.title }}</h2>
             <p class="text-gray-200 mb-4">{{ video.subTitle || '精彩内容，不容错过' }}</p>
             <div class="flex space-x-3">
               <router-link :key="video.id" :to="`/detail/${video.id}/${video.sources?.[0].source}/${video.sources?.[0].urls?.[0].label}`" class="bg-red-600 text-white px-5 py-2 rounded hover:bg-red-700 flex items-center text-sm">
@@ -37,16 +37,16 @@
           </div>
           
           <!-- 右侧排行榜 -->
-          <Ranking class="!bg-white/60" :items="hotRanking" :show-suffix="false" />
+          <Ranking class="!bg-white/60 hidden md:block" :items="hotRanking" :show-suffix="false" />
         </div>
       </div>
     </div>
     <!-- 轮播指示器 -->
-    <div class="absolute z-99 bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+    <div class="absolute z-99 bottom-2 md:bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
       <button 
         v-for="(video, index) in recommendedVideos" 
         :key="video.id"
-        class="w-12 h-2 rounded-md transition-colors duration-300 cursor-pointer"
+        class="w-6 h-1 md:w-12 md:h-2 rounded-md transition-colors duration-300 cursor-pointer"
         :class="{ 'bg-red-600': currentIndex === index, 'bg-white bg-opacity-50': currentIndex !== index }"
         @click="currentIndex = index"
       ></button>

@@ -18,27 +18,27 @@
             <!-- 视频播放器 -->
             <div class="aspect-video bg-gray-900 relative">
               <!-- 视频 -->
-              <Player id="video" ref="playerRef" v-if="activeEpisode" class="w-full h-full object-cover" :url="activeEpisode" :poster="video.banner||video.cover" :urlList="video.sources[0].urls?.map(el =>el.url)" />
+              <Player id="video" ref="playerRef" v-if="activeEpisode" class="w-full h-full object-cover" :url="activeEpisode" :poster="video.banner||video.cover" :urlList="video.sources?.[0]?.urls?.map(el =>el.url||'') || []" />
             </div>
             
             <!-- 视频信息和控制栏 -->
             <div class="p-4 bg-gray-800">
               <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold">{{ video?.title || '视频标题' }} <span class="text-sm font-normal text-gray-400">{{ video?.subTitle || '第1集' }}</span></h2>
-                <div class="flex space-x-4">
-                  <button class="text-gray-400 hover:text-white flex items-center">
+                <h2 class="md:text-xl flex flex-col md:flex-row md:items-center md:gap-2 font-bold">{{ video?.title || '视频标题' }} <span class="text-sm hidden md:block font-normal text-gray-400">{{ video?.subTitle || '第1集' }}</span></h2>
+                <div class="flex space-x-2 md:space-x-4">
+                  <button class="text-xs text-gray-400 hover:text-white flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
                     下载
                   </button>
-                  <button class="text-gray-400 hover:text-white flex items-center">
+                  <button class="text-xs text-gray-400 hover:text-white flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                     收藏
                   </button>
-                  <button class="text-gray-400 hover:text-white flex items-center">
+                  <button class="text-xs text-gray-400 hover:text-white flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                     </svg>
@@ -52,7 +52,10 @@
                   </button> -->
                 </div>
               </div>
-              
+              <div class="flex text-xs flex-wrap items-center gap-4 mb-4" v-if="video.actors && video.actors.length > 0">
+                <span>导演：{{video.director}}</span>
+                <span>主演：{{video.actors.join('、')}}</span>
+              </div>
               <!-- 视频标签 -->
               <div class="flex flex-wrap gap-2 mb-4">
                 <span v-for="tag in video?.tags || []" :key="tag.id" class="bg-purple-600 text-white text-xs px-2 py-1 rounded">{{ tag.name }}</span>
@@ -108,7 +111,7 @@
         <h3 class="text-lg font-bold mb-4">相关影片</h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div v-for="item in relatedVideos" :key="item.id" class="movie-card">
-            <div class="relative">
+            <router-link :to="{ path: `/detail/${item.id}` }" class="relative cursor-pointer">
               <img 
                 :src="item.cover || 'https://via.placeholder.com/200x300?text=暂无封面'" 
                 :alt="item.title" 
@@ -118,7 +121,7 @@
                 <p class="text-xs text-white line-clamp-1">{{ item.title }}</p>
                 <p class="text-xs text-gray-300">{{ item.subTitle || '更新至第1集' }}</p>
               </div>
-            </div>
+            </router-link>
           </div>
         </div>
       </div>
@@ -184,11 +187,11 @@ const getVideoDetail = async () => {
     video.value = data || null
     if (video.value) {
       video.value.desc = video.value?.desc?.replace(/style\s*=\s*["'][^"']*["']/gi, '')
-      
+      video.value.actors = JSON.parse((video.value?.actors || '[]') as unknown as string)
       // 处理路由参数中的 source
       const source = route.params.source as string
       const episode = route.params.episode as string
-      console.log(episode, video.value.sources?.[0]?.urls, 'video.value.sources')
+      // console.log(episode, video.value.sources?.[0]?.urls, 'video.value.sources')
       
       // 初始化资源和集数
       if (video.value.sources && video.value.sources.length > 0) {

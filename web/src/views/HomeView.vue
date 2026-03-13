@@ -20,7 +20,7 @@
                 {{category.title || '即将上映'}}
               </h2>
             </div>
-            <div class="grid grid-cols-6 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
               <div v-for="video in category.data.slice(0,6)" :key="video.id">
                 <VideoCard :video="video" />
               </div>
@@ -35,10 +35,10 @@
               <a :href="category.path" class="text-sm text-gray-600 hover:text-red-600">更多{{ category.title }} ></a>
             </div>
             
-            <div class="grid grid-cols-6 gap-4">
+            <div class="grid lg:grid-cols-6 gap-4">
               <!-- 视频列表 -->
-              <div class="col-span-5">
-                <div class="grid grid-cols-5 gap-3">
+              <div class="col-span-12 md:col-span-5">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                   <div v-for="item in category.data" :key="item.id">
                     <VideoCard :video="item" />
                   </div>
@@ -46,7 +46,7 @@
               </div>
               
               <!-- 排行榜 -->
-              <div class="col-span-1">
+              <div class="hidden lg:block md:col-span-1">
                 <Ranking :title="category.title" :items="category.rankings" showSuffix />
               </div>
             </div>
@@ -68,7 +68,7 @@ import type { Video } from '../types'
 
 const router = useRouter()
 const videoStore = useVideoStore()
-
+const defaultList = [...Array(18).keys()].map(() => ({loading:true})) as Video[]
 // 分类配置
 const categories = reactive(
   router.options?.routes?.filter((item: any) => item.meta?.showInHome).map(el => ({
@@ -78,8 +78,8 @@ const categories = reactive(
       title: (el.meta?.title || '') as string,
       category: (el.meta?.category || '') as string,
       affix: el.meta?.affix || false,
-      data: [...Array(18).keys()].map(() => ({loading:true})) as Video[],
-      rankings: [...Array(18).keys()].map(() => ({loading:true})) as Video[]
+      data: defaultList,
+      rankings: defaultList
   })) || []
 )
 
@@ -92,11 +92,15 @@ onMounted(async () => {
   await Promise.all([
     // 遍历获取所有分类数据
     ...categories.map(async (category) => {
-      let cateIds = videoStore.categories.filter((item: any) => category.category?.includes(item.name)).map((item: any) => item.id)
+      const cateIds = videoStore.categories.filter((item: any) => category.category?.includes(item.name)).map((item: any) => item.id)
       // 获取分类视频列表
-      category.data = await videoStore.fetchVideosByParams({categoryIds: cateIds.join(','), recommended: category.recommended || undefined})
+      const videos = await videoStore.fetchVideosByParams({categoryIds: cateIds.join(','), recommended: category.recommended || undefined})
       // 获取分类排行榜数据
-      category.rankings = await videoStore.fetchCategoryRankings(cateIds)
+      const rankings = await videoStore.fetchCategoryRankings(cateIds)
+      setTimeout(() => {
+        category.data = videos
+        category.rankings = rankings
+      }, 300);
     })
   ])
 })
