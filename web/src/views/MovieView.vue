@@ -3,7 +3,7 @@
     <div class="container mx-auto md:p-4">
       <h1 class="hidden md:block text-2xl font-bold text-gray-800 mb-6">{{router.currentRoute.value.meta.title}}</h1>
       <!-- 分类导航 -->
-      <div v-if="categories.length > 1" class="category-nav bg-gray-100 p-4 pb-2 md:py-2 md:px-4 border-b border-gray-200 mb-3 md:mb-8">
+      <div v-if="categories.length > 1" class="category-nav p-4 pb-2 md:py-2 md:px-4 border-b border-gray-200 mb-3 md:mb-8">
         <div class="container mx-auto">
           <ul class="flex space-x-6 text-sm">
             <li v-for="item in categories" :key="item.id">
@@ -19,7 +19,7 @@
           </ul>
         </div>
       </div>
-      <div class="p-4 pt-1 md:p-0">
+      <div class="p-4 pt-1 md:p-0 min-h-[72vh]">
         <!-- 视频列表 -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <VideoCard 
@@ -99,7 +99,7 @@ const fetchVideosByCategory = async (categoryId: string, page: number) => {
     setTimeout(() => {
       videos.value = data.list || []
       total.value = data.total || 0
-    }, 300)
+    }, 100)
     currentPage.value = page
   } catch (error) {
     console.error('获取视频数据失败:', error)
@@ -142,7 +142,7 @@ watch(() => router.currentRoute.value.meta.category, async () => {
 <style scoped>
 .movie-view {
   min-height: 100%;
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
 }
 
 .movie-card {

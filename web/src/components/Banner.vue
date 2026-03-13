@@ -37,7 +37,7 @@
           </div>
           
           <!-- 右侧排行榜 -->
-          <Ranking class="!bg-white/60 hidden md:block" :items="hotRanking" :show-suffix="false" />
+          <Ranking class="!bg-white-60 hidden md:block" :items="hotRanking" :show-suffix="false" />
         </div>
       </div>
     </div>

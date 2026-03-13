@@ -100,7 +100,7 @@ onMounted(async () => {
       setTimeout(() => {
         category.data = videos
         category.rankings = rankings
-      }, 300);
+      }, 100);
     })
   ])
 })

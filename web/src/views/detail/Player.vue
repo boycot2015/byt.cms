@@ -5,12 +5,12 @@
       <!-- 面包屑导航 -->
       <div class="breadcrumb text-sm text-gray-400 mb-4">
         <a href="/" class="hover:text-white">首页</a> &gt; 
-        <a href="/anime" class="hover:text-white">{{video?.category||''}}</a> &gt; 
+        <a :href="`${categoryPath}`" class="hover:text-white">{{video?.category||''}}</a> &gt; 
         <span class="text-white">{{ video?.title || '视频详情' }}</span>
       </div>
 
       <!-- 视频播放区域 -->
-      <div class="flex flex-col lg:flex-row gap-6" v-if="video">
+      <div class="flex flex-col lg:flex-row md:gap-6" v-if="video">
         <!-- 左侧视频播放器 -->
         <div class="lg:w-2/3">
           <!-- 播放器容器 -->
@@ -18,7 +18,7 @@
             <!-- 视频播放器 -->
             <div class="aspect-video bg-gray-900 relative">
               <!-- 视频 -->
-              <Player id="video" ref="playerRef" v-if="activeEpisode" class="w-full h-full object-cover" :url="activeEpisode" :poster="video.banner||video.cover" :urlList="video.sources?.[0]?.urls?.map(el =>el.url||'') || []" />
+              <Player id="video" ref="playerRef" v-if="activeEpisode" class="w-full h-full object-cover" :key="activeEpisode" :url="activeEpisode" :poster="video.banner||video.cover" :urlList="video.sources?.[0]?.urls?.map(el =>el.url||'') || []" />
             </div>
             
             <!-- 视频信息和控制栏 -->
@@ -84,7 +84,7 @@
             </div>
             </div>
             <!-- 剧集列表 -->
-             <div class="h-[460px] overflow-y-auto pr-2">
+             <div class="md:h-124 overflow-y-auto pr-2">
               <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                 <button 
                   v-for="episode in episodes" 
@@ -111,7 +111,7 @@
         <h3 class="text-lg font-bold mb-4">相关影片</h3>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div v-for="item in relatedVideos" :key="item.id" class="movie-card">
-            <router-link :to="{ path: `/detail/${item.id}` }" class="relative cursor-pointer">
+            <!-- <router-link :to="{ path: `/detail/${item.id}` }" class="relative cursor-pointer">
               <img 
                 :src="item.cover || 'https://via.placeholder.com/200x300?text=暂无封面'" 
                 :alt="item.title" 
@@ -121,7 +121,8 @@
                 <p class="text-xs text-white line-clamp-1">{{ item.title }}</p>
                 <p class="text-xs text-gray-300">{{ item.subTitle || '更新至第1集' }}</p>
               </div>
-            </router-link>
+            </router-link> -->
+            <VideoCard :video="item" placement="inner" />
           </div>
         </div>
       </div>
@@ -167,10 +168,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { apiService } from '../../services/api'
 import type { Video } from '../../types'
 import Player from '../../components/Player/index.vue'
+import VideoCard from '../../components/VideoCard.vue'
 const playerRef = ref<any>(null)
 const route = useRoute()
 const router = useRouter()
 const video = ref<Video>()
+const routes = router.options?.routes || []
+const categoryPath = ref('')
 const relatedVideos = ref<Video[]>([])
 const episodes = ref<{ id: string, title: string }[]>([])
 const activeEpisode = ref('')
@@ -186,7 +190,7 @@ const getVideoDetail = async () => {
     const data: any = await apiService.getVideoById(route.params.id as string)
     video.value = data || null
     if (video.value) {
-      video.value.desc = video.value?.desc?.replace(/style\s*=\s*["'][^"']*["']/gi, '')
+      video.value.desc = video.value?.desc?.replace(/style\s*=\s*["'][^"']*["']/gi, '').replace(/&nbsp;|<p>|<br\/>|<\/p>|<\/br>/g, '').trim()
       video.value.actors = JSON.parse((video.value?.actors || '[]') as unknown as string)
       // 处理路由参数中的 source
       const source = route.params.source as string
@@ -236,6 +240,11 @@ const getVideoDetail = async () => {
           activeEpisode.value = video.value.sources[0].urls[0]?.url || ''
         }
       }
+      // 更新分类路径
+      categoryPath.value = routes.find(r => {
+        let category = (r.meta?.category || '') as string
+        return category.includes(video.value?.category || '')
+      })?.path || ''
     }
   } catch (error) {
     console.error('获取视频详情失败:', error)
@@ -268,18 +277,14 @@ const handleSourceChange = (sourceId: string) => {
       id: el.url || '',
       title: el.label || ''
     })) || []
-    // 切换到新资源的第一集
-    activeEpisode.value = source.urls[0]?.url || ''
-    
+    let episode = episodes.value?.find(item => item.title === route.params.episode)?.id || episodes.value?.[0]?.id || ''
     // 更新路由参数
-    updateRouteParams(sourceId, activeEpisode.value)
+    updateRouteParams(sourceId, episode)
   }
 }
 
 // 切换集数
-const handleEpisodeChange = (episodeId: string) => {
-  activeEpisode.value = episodeId
-  
+const handleEpisodeChange = (episodeId: string) => {  
   // 更新路由参数
   updateRouteParams(activeSource.value, episodeId)
 }
@@ -300,20 +305,34 @@ const updateRouteParams = (sourceId: string, episodeId: string) => {
 // 监听路由参数变化
 watch(() => route.params.source, async (newsource) => {
   if (newsource && video.value) {
-    await getVideoDetail()
+    let source = video.value?.sources?.find(s => s.source === newsource)
+    let episode = source?.urls?.find(item => item.label === route.params.episode)?.url || source?.urls?.[0]?.url || ''
+    activeSource.value = source?.id || ''
+    activeEpisode.value = episode
+    console.log(episode,activeEpisode.value, '2123');
+    // await getVideoDetail()
+  }
+})
+watch(() => route.params.episode, async (newepisode) => {
+  if (newepisode && video.value) {
+     let source = video.value?.sources?.find(s => s.id === activeSource.value)
+    let episode = source?.urls?.find(item => item.label === newepisode)?.url || ''
+    activeEpisode.value = episode
+    // await getVideoDetail()
   }
 })
 
 onMounted(async () => {
   await getVideoDetail()
   await getRelatedVideos()
-  document.addEventListener('scroll', (e:any) => {
-    if (playerRef.value && e.target?.scrollingElement?.scrollTop > 300) {
-      playerRef.value.player?.root?.children?.[1].requestPictureInPicture()
-    } else if (document.pictureInPictureElement) {
-      document.exitPictureInPicture();
-    }
-  })
+  // document.addEventListener('scroll', (e:any) => {
+  //   if (playerRef.value && e.target?.scrollingElement?.scrollTop > 300) {
+  //     let requestPictureInPicture = playerRef.value.player?.root?.children?.[1].requestPictureInPicture || null
+  //     if (requestPictureInPicture instanceof Function) requestPictureInPicture()
+  //   } else if (document.pictureInPictureElement) {
+  //     document.exitPictureInPicture();
+  //   }
+  // })
 })
 </script>
 

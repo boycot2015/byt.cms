@@ -1,13 +1,13 @@
 <template>
-  <div class="detail-view">
+  <div class="detail-view bg-gray-100">
     <!-- 主要内容 -->
-    <div class="container mx-auto py-6 px-4">
+    <div class="container mx-auto p-4">
       <Loading v-if="loading" message="加载中..." size="md" color="border-red-600" />
 
       <div v-else-if="video" class="bg-white rounded-lg shadow-sm p-4 mb-6">
         <div class="flex flex-col md:flex-row">
           <!-- 左侧内容 -->
-          <div class="md:w-5/6 pr-0 md:pr-6 mb-0">
+          <div class="md:w-2/3 lg:w-5/6 pr-0 md:pr-6 mb-0">
             <h1 class="text-2xl font-bold text-gray-800 mb-2">{{ video.title }}</h1>
             <p class="text-sm text-gray-500 mb-4">{{ video.title?.toLowerCase().replace(/\s+/g, '') }}</p>
             
@@ -46,8 +46,8 @@
           </div>
           
           <!-- 右侧推荐 -->
-          <div class="md:w-1/6">
-            <VideoCard :video="{...video, size: 'large' }" />
+          <div class="md:w-1/3 lg:w-1/6">
+            <VideoCard :video="{...video, actors: JSON.parse((video.actors || '[]') as unknown as string), size: 'large' }" />
           </div>
         </div>
         <!-- 剧情简介 -->
@@ -112,15 +112,7 @@
         <h2 class="text-lg font-bold text-gray-800 mb-4">相关影片</h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
           <div v-for="item in recommendList" :key="item.id">
-            <VideoCard :video="{
-              id: item.id,
-              title: item.title,
-              source: item.source || '未知',
-              tags: item.tags || [],
-              actors: item.actors || undefined,
-              cover: item.cover || 'https://via.placeholder.com/200x300?text=暂无封面',
-              subTitle: item.subTitle || '未知',
-            }" />
+            <VideoCard :video="item" />
           </div>
         </div>
       </div>
@@ -178,6 +170,7 @@ const getVideoDetail = async () => {
     // 重置选中状态
     activeSource.value = 0
     activeEpisode.value = 0
+    if (video.value) video.value.desc = video.value?.desc?.replace(/style\s*=\s*["'][^"']*["']/gi, '').replace(/&nbsp;|<p>|<br\/>|<\/p>|<\/br>/g, '').trim() || '暂无描述'
     loading.value = false
   } catch (error) {
     console.error('获取视频详情失败:', error)
@@ -206,6 +199,5 @@ watch(() => route.params.id, async (newId) => {
 <style scoped>
 .detail-view {
   min-height: 100vh;
-  background-color: #f5f5f5;
 }
 </style>
