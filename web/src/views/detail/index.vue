@@ -70,7 +70,7 @@
       </div>
       
       <!-- 选集播放 -->
-      <div class="bg-white rounded-lg shadow-sm p-4 pr-2 mb-6">
+      <div v-if="video" class="bg-white rounded-lg shadow-sm p-4 pr-2 mb-6">
         <h2 class="text-lg font-bold text-gray-800 mb-2">选集播放：</h2>
         
         <!-- 资源平台切换 -->
@@ -96,7 +96,7 @@
           <button
             v-for="(episode, index) in currentEpisodes"
             :key="index"
-            class=" cursor-pointer px-4 py-1 border rounded text-sm transition-colors border-gray-300 hover:bg-gray-100"
+            class=" cursor-pointer px-4 py-1 border rounded text-sm transition-colors border-gray-300 hover:bg-red-500 hover:text-white"
             @click="activeEpisode = index;playVideo()"
           >
             {{ episode.label || `第${String(index + 1).padStart(2, '0')}集` }}
@@ -107,9 +107,9 @@
         </div>
       </div>
       
-      <!-- 相关影片 -->
+      <!-- 相关推荐 -->
       <div class="bg-white rounded-lg shadow-sm p-4">
-        <h2 class="text-lg font-bold text-gray-800 mb-4">相关影片</h2>
+        <h2 class="text-lg font-bold text-gray-800 mb-4">相关推荐</h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
           <div v-for="item in recommendList" :key="item.id">
             <VideoCard :video="item" />

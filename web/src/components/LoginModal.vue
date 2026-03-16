@@ -11,18 +11,15 @@
       <!-- 内容 -->
       <div class="px-6 pb-8">
         <!-- 登录表单 -->
-        <div v-if="activeTab === 'login'">
-          <!-- 手机号输入 -->
+        <div v-if="activeTab === 'login' && loginMode === 'password'">
+          <!-- 账号输入 -->
           <div class="mb-4 relative">
             <div class="flex border border-gray-300 rounded-md overflow-hidden">
-              <div class="px-3 py-2 border-r border-gray-300 flex items-center">
-                <span>+86</span>
-              </div>
               <input 
                 v-model="loginForm.phone" 
-                type="tel" 
+                type="text" 
                 class="flex-1 px-3 py-2 focus:outline-none"
-                placeholder="请输入手机号"
+                placeholder="请输入账号"
               />
             </div>
           </div>
@@ -41,11 +38,10 @@
                 class="px-3 py-2 border-l border-gray-300 flex items-center"
               >
                 <svg v-if="showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M15.536 8.464l-4.242-4.242m13.5-1.5l-1.5 1.5m-12 0l-1.5-1.5m3 4.242l-4.242 4.242M16.5 19.5l-1.5 1.5" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M15.536 8.464l-4.242-4.242m13.5-1.5l-1.5 1.5m-12 0l-1.5-1.5m3 4.242l-4.242 4.242M16.5 19.5l-1.5 1.5" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" v-else width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M2 5.27L3.28 4L20 20.72L18.73 22l-3.08-3.08c-1.15.38-2.37.58-3.65.58c-5 0-9.27-3.11-11-7.5c.69-1.76 1.79-3.31 3.19-4.54zM12 9a3 3 0 0 1 3 3a3 3 0 0 1-.17 1L11 9.17A3 3 0 0 1 12 9m0-4.5c5 0 9.27 3.11 11 7.5a11.8 11.8 0 0 1-4 5.19l-1.42-1.43A9.86 9.86 0 0 0 20.82 12A9.82 9.82 0 0 0 12 6.5c-1.09 0-2.16.18-3.16.5L7.3 5.47c1.44-.62 3.03-.97 4.7-.97M3.18 12A9.82 9.82 0 0 0 12 17.5c.69 0 1.37-.07 2-.21L11.72 15A3.064 3.064 0 0 1 9 12.28L5.6 8.87c-.99.85-1.82 1.91-2.42 3.13"/></svg>
               </button>
             </div>
           </div>
@@ -120,7 +116,7 @@
           <!-- 登录按钮 -->
           <button 
             @click="handleSmsLogin" 
-            class="w-full bg-red-600 py-2.5 rounded-md hover:bg-red-600 transition-colors flex items-center justify-center"
+            class="w-full bg-red-600 text-white py-2.5 rounded-md hover:bg-red-600 transition-colors flex items-center justify-center"
             :disabled="userStore.isLoading"
           >
             <svg v-if="userStore.isLoading" class="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -187,11 +183,10 @@
                 class="px-3 py-2 border-l border-gray-300 flex items-center"
               >
                 <svg v-if="showRegisterPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M15.536 8.464l-4.242-4.242m13.5-1.5l-1.5 1.5m-12 0l-1.5-1.5m3 4.242l-4.242 4.242M16.5 19.5l-1.5 1.5" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                 </svg>
-                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M15.536 8.464l-4.242-4.242m13.5-1.5l-1.5 1.5m-12 0l-1.5-1.5m3 4.242l-4.242 4.242M16.5 19.5l-1.5 1.5" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" v-else width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M2 5.27L3.28 4L20 20.72L18.73 22l-3.08-3.08c-1.15.38-2.37.58-3.65.58c-5 0-9.27-3.11-11-7.5c.69-1.76 1.79-3.31 3.19-4.54zM12 9a3 3 0 0 1 3 3a3 3 0 0 1-.17 1L11 9.17A3 3 0 0 1 12 9m0-4.5c5 0 9.27 3.11 11 7.5a11.8 11.8 0 0 1-4 5.19l-1.42-1.43A9.86 9.86 0 0 0 20.82 12A9.82 9.82 0 0 0 12 6.5c-1.09 0-2.16.18-3.16.5L7.3 5.47c1.44-.62 3.03-.97 4.7-.97M3.18 12A9.82 9.82 0 0 0 12 17.5c.69 0 1.37-.07 2-.21L11.72 15A3.064 3.064 0 0 1 9 12.28L5.6 8.87c-.99.85-1.82 1.91-2.42 3.13"/></svg>
               </button>
             </div>
           </div>

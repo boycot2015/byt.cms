@@ -40,7 +40,7 @@ const routes = [
         meta: {
             title: '电影',
             showInHome: true,
-            category: '科幻片,喜剧片,剧情片,爱情片,动作片',
+            category: '科幻片,喜剧片,剧情片,爱情片,动作片,战争片,动画片',
             hideInMenu: false
         },
         component: () => import('../views/MovieView.vue')
@@ -51,7 +51,7 @@ const routes = [
         meta: {
             title: '电视剧',
             showInHome: true,
-            category: '国产剧,日韩剧',
+            category: '国产剧,韩国剧,欧美剧,香港剧,台湾剧,日本剧',
             hideInMenu: false
         },
         component: () => import('../views/MovieView.vue')
@@ -62,7 +62,7 @@ const routes = [
         meta: {
             title: '综艺',
             showInHome: true,
-            category: '大陆综艺,日韩综艺,港台综艺',
+            category: '大陆综艺,日韩综艺,港台综艺,欧美综艺',
             hideInMenu: false
         },
         component: () => import('../views/MovieView.vue')

@@ -39,21 +39,24 @@
     
     <!-- 无结果提示 -->
     <div v-if="showDropdown && searchResults.length === 0 && searchQuery.trim()" class="absolute top-full left-0 right-0 mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-lg z-50 p-4">
-      <p class="text-sm text-gray-400 text-center">暂无匹配结果</p>
+      <p class="text-sm text-gray-400 text-center" v-if="!loading">暂无匹配结果</p>
+      <Loading class="text-sm text-gray-400 text-center" v-else message="加载中..."></Loading>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { apiService } from '../services/api'
 import type { Video } from '../types'
+import Loading from '../components/Loading.vue'
 
 const router = useRouter()
 const searchQuery = ref('')
 const searchResults = ref<Video[]>([])
 const showDropdown = ref(false)
+const loading = ref(false)
 let debounceTimer: number | null = null
 
 // 防抖函数
@@ -81,8 +84,10 @@ const searchVideos = async (query: string) => {
       page: 1,
       pageSize: 10
     })
+    loading.value = false
     searchResults.value = data.list || []
   } catch (error) {
+    loading.value = false
     console.error('搜索失败:', error)
     searchResults.value = []
   }
@@ -93,6 +98,7 @@ const debouncedSearch = debounce(searchVideos, 300)
 
 // 处理输入
 const handleInput = () => {
+  loading.value = true
   debouncedSearch(searchQuery.value)
   showDropdown.value = true
 }

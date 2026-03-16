@@ -14,8 +14,8 @@
         <div class="flex items-center space-x-3 text-white">
           <Search />
           <div v-if="userStore.isLoggedIn" class="flex items-center space-x-3">
-            <span class="text-sm text-gray-700">{{ userStore.user?.username }}</span>
-            <button @click="handleLogout" class="text-sm text-gray-600 hover:text-gray-900">退出</button>
+            <span class="text-sm text-white-700">{{ userStore.user?.username }}</span>
+            <button @click="handleLogout" class="text-sm text-white-600 hover:text-red-500">退出</button>
           </div>
           <button v-else @click="showLoginModal = true" class="bg-red-600 text-white px-3 py-1.5 rounded-full hover:bg-red-700 text-sm">登录</button>
         </div>
@@ -36,7 +36,7 @@
     <!-- 页脚 -->
     <footer class="footer bg-gray-800 text-white py-6 px-4">
       <div class="container mx-auto">
-        <div class="flex justify-center mb-4">
+        <!-- <div class="flex justify-center mb-4">
           <ul class="flex space-x-2 md:space-x-6 text-sm">
             <li><a href="#" class="hover:text-red-600">关于我们</a></li>
             <li><a href="#" class="hover:text-red-600">联系方式</a></li>
@@ -44,7 +44,7 @@
             <li><a href="#" class="hover:text-red-600">用户协议</a></li>
             <li><a href="#" class="hover:text-red-600">网站地图</a></li>
           </ul>
-        </div>
+        </div> -->
         <div class="text-center text-sm text-gray-400">
           <p>© 2026 影视在线 版权所有</p>
         </div>

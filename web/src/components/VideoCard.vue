@@ -2,18 +2,24 @@
   <div class="movie-card cursor-pointer relative group" v-if="video">
     <router-link :to="{ path: `/detail/${video.id}` }" v-if="!video.loading">
       <div class="relative overflow-hidden rounded-md">
-        <img :src="video.cover" :alt="video.title" class="w-full h-70 md:h-50 lg:h-60 xl:h-70 object-cover rounded" :class="video.size=='large'?'h-120 md:h-90 lg:h-60 xl:h-80':''" />
+        <img 
+          :src="video.cover" 
+          :alt="video.title" 
+          loading="lazy"
+          class="w-full h-70 md:h-50 lg:h-60 xl:h-70 object-cover rounded transition-opacity duration-300"
+          :class="video.size=='large'?'h-120 md:h-90 lg:h-60 xl:h-80':''"
+        />
         <!-- 底部信息区域 -->
         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
-          <div class="text-white">
-            <p class="text-xs mb-1">导演: {{ video.director || '未知' }}</p>
-            <p class="text-xs line-clamp-1 mb-1">主演: {{ video.actors ? video.actors.join(',') || '未知' : '未知' }}</p>
-            <p class="text-xs line-clamp-2 mt-2" :title="desc" v-html="desc"></p>
+          <div class="text-white text-xs ">
+            <p class="line-clamp-1 mb-1" :title="video.director">导演: {{ video.director || '未知' }}</p>
+            <p class="line-clamp-1 mb-1" :title="video.actors ? video.actors.join(',') || '未知' : '未知'">主演: {{ video.actors ? video.actors.join(',') || '未知' : '未知' }}</p>
+            <p class="line-clamp-2 mt-2" :title="desc" v-html="desc"></p>
           </div>
         </div>
-        <div v-if="placement=='inner'" class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 group-hover:opacity-0 transition-opacity duration-300 ease-in-out">
-          <p class="text-xs text-white line-clamp-1">{{ video.title }}</p>
-          <div class="text-xs text-gray-300">{{ video.subTitle || '更新至第1集' }}</div>
+        <div v-if="placement=='inner'" class="text-xs absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 group-hover:opacity-0 transition-opacity duration-300 ease-in-out">
+          <p class="text-white line-clamp-1">{{ video.title }}</p>
+          <div class="text-gray-300">{{ video.subTitle || '更新至第1集' }}</div>
         </div>
       </div>
       <div class="mt-2" v-if="video.size!='large'&&placement!='inner'">
@@ -22,7 +28,7 @@
       </div>
     </router-link>
     <div v-else class="w-full">
-      <div class="rounded-xl h-70 md:h-50 lg:h-60 xl:h-70 bg-gray-200 w-full animate-pulse"></div>
+      <div class="rounded-md h-70 md:h-50 lg:h-60 xl:h-70 bg-gray-200 w-full animate-pulse"></div>
       <p class="text-sm h-4 mt-2 bg-gray-200 w-[100%] animate-pulse"></p>
       <p class="text-sm h-4 mt-2 bg-gray-200 w-[60%] animate-pulse"></p>
     </div>

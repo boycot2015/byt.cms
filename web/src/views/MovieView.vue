@@ -1,9 +1,11 @@
 <template>
   <div class="movie-view">
     <div class="container mx-auto md:p-4">
-      <h1 class="hidden md:block text-2xl font-bold text-gray-800 mb-6">{{router.currentRoute.value.meta.title}}</h1>
+      <h1 class="hidden md:block text-2xl font-bold text-gray-800 mb-2">
+        <span v-if="router.currentRoute.value.meta.icon">{{ router.currentRoute.value.meta.icon }}</span>
+        {{router.currentRoute.value.meta.title}}</h1>
       <!-- 分类导航 -->
-      <div v-if="categories.length > 1" class="category-nav p-4 pb-2 md:py-2 md:px-4 border-b border-gray-200 mb-3 md:mb-8">
+      <div v-if="categories.length > 1" class="category-nav p-4 pb-2 md:py-2 md:px-0 border-b border-gray-200 mb-3 md:mb-4">
         <div class="container mx-auto">
           <ul class="flex space-x-6 text-sm">
             <li v-for="item in categories" :key="item.id">
