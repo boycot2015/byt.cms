@@ -10,6 +10,7 @@ import Category from './components/Category';
 import Article from './components/Article';
 import TagComponent from './components/Tag';
 import User from './components/User';
+import Comment from './components/Comment';
 import LoginModal from './components/Auth/LoginModal';
 import { LogoutOutlined, MoonOutlined, SunOutlined, SettingOutlined } from '@ant-design/icons';
 import zhCN from 'antd/locale/zh_CN';
@@ -28,6 +29,7 @@ function Index() {
   const videoRef = React.useRef(null);
   const articleRef = React.useRef(null);
   const userRef = React.useRef(null);
+  const commentRef = React.useRef(null);
  
   const { user, updateUser, logout } = useUser();
   const [activeTab, setActiveTab] = useState('1');
@@ -72,6 +74,9 @@ function Index() {
         break;
       case '5': // 用户管理
         userRef.current?.fetchUsers?.();
+        break;
+      case '6': // 评论管理
+        commentRef.current?.fetchComments?.();
         break;
       default:
         break;
@@ -284,6 +289,11 @@ function Index() {
                   label: '用户管理',
                   key: '5',
                   children:  <User ref={userRef} />
+                },
+                {
+                  label: '评论管理',
+                  key: '6',
+                  children:  <Comment ref={commentRef} />
                 }
               ]}>
               </Tabs>

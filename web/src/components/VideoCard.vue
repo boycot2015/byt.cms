@@ -14,7 +14,7 @@
           <div class="text-white text-xs ">
             <p class="line-clamp-1 mb-1" :title="video.director">导演: {{ video.director || '未知' }}</p>
             <p class="line-clamp-1 mb-1" :title="video.actors ? video.actors.join(',') || '未知' : '未知'">主演: {{ video.actors ? video.actors.join(',') || '未知' : '未知' }}</p>
-            <p class="line-clamp-2 mt-2" :title="desc" v-html="desc"></p>
+            <p class="line-clamp-2 mt-2" :title="desc" v-html="desc || '暂无描述'"></p>
           </div>
         </div>
         <div v-if="placement=='inner'" class="text-xs absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 group-hover:opacity-0 transition-opacity duration-300 ease-in-out">

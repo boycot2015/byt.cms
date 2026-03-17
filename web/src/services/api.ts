@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Category, Video } from '../types'
+import type { Category, Video, Comment } from '../types'
 let baseURL = 'https://cms-api.boycot.dpdns.org/api'
 if (import.meta.env.DEV) {
   baseURL = 'http://localhost:8787/api'
@@ -15,7 +15,18 @@ const api = axios.create({
 // 请求拦截器
 api.interceptors.request.use(
   config => {
-    // 可以在这里添加 token 等认证信息
+    // 添加 token 认证信息
+    const userStr = localStorage.getItem('user')
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr)
+        if (user.token) {
+          config.headers['Authorization'] = `Bearer ${user.token}`
+        }
+      } catch (error) {
+        console.error('Failed to parse user from localStorage', error)
+      }
+    }
     return config
   },
   error => {
@@ -73,6 +84,49 @@ export const apiService = {
     search?: string
   }) => {
     return api.get('/articles', { params })
+  },
+  
+  // 获取评论列表
+  getComments: (params: {
+    videoId: string
+    episodeId?: string
+    page?: number
+    pageSize?: number
+  }) => {
+    return api.get('/comments', { params }) as Promise<{list: Comment[], total: number}>
+  },
+  
+  // 创建评论
+  createComment: (data: {
+    videoId: string
+    episodeId?: string
+    userId: string
+    content: string
+    parentId?: string
+  }) => {
+    return api.post('/comments', data) as Promise<Comment>
+  },
+  
+  // 点赞评论
+  likeComment: (commentId: string) => {
+    return api.post(`/comments/${commentId}/like`) as Promise<{success: boolean, likes: number}>
+  },
+  
+  // 用户登录
+  login: (data: {
+    username: string
+    password: string
+  }) => {
+    return api.post('/users/login', data) as Promise<{success: boolean, user: any}>
+  },
+  
+  // 用户注册
+  register: (data: {
+    username: string
+    password: string
+    nickname?: string
+  }) => {
+    return api.post('/users/register', data) as Promise<any>
   }
 }
 

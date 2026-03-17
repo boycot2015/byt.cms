@@ -77,14 +77,14 @@
           <!-- 手机号输入 -->
           <div class="mb-4 relative">
             <div class="flex border border-gray-300 rounded-md overflow-hidden">
-              <div class="px-3 py-2 border-r border-gray-300 flex items-center">
+              <!-- <div class="px-3 py-2 border-r border-gray-300 flex items-center">
                 <span>+86</span>
-              </div>
+              </div> -->
               <input 
                 v-model="smsForm.phone" 
                 type="tel" 
                 class="flex-1 px-3 py-2 focus:outline-none"
-                placeholder="请输入手机号"
+                placeholder="请输入账号/手机号"
               />
             </div>
           </div>
@@ -138,14 +138,14 @@
           <!-- 手机号输入 -->
           <div class="mb-4 relative">
             <div class="flex border border-gray-300 rounded-md overflow-hidden">
-              <div class="px-3 py-2 border-r border-gray-300 flex items-center">
+              <!-- <div class="px-3 py-2 border-r border-gray-300 flex items-center">
                 <span>+86</span>
-              </div>
+              </div> -->
               <input 
                 v-model="registerForm.phone" 
                 type="tel" 
                 class="flex-1 px-3 py-2 focus:outline-none"
-                placeholder="请输入手机号"
+                placeholder="请输入账号/手机号"
               />
             </div>
           </div>

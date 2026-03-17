@@ -18,7 +18,17 @@
             <!-- 视频播放器 -->
             <div class="aspect-video bg-gray-900 relative">
               <!-- 视频 -->
-              <Player id="video" ref="playerRef" v-if="activeEpisode" class="w-full h-full object-cover" :key="activeEpisode" :url="activeEpisode" :poster="video.banner||video.cover" :urlList="video.sources?.[0]?.urls?.map(el =>el.url||'') || []" />
+              <Player
+              id="video"
+              ref="playerRef"
+              v-if="activeEpisode"
+              class="w-full h-full object-cover"
+              :videoId="video.id"
+              :episodeId="activeEpisode"
+              :url="activeEpisode"
+              :comments="comments?.slice(0, 20) || []"
+              :poster="video.banner||video.cover"
+              :urlList="video.sources?.[0]?.urls?.map(el =>el.url||'') || []" />
             </div>
             
             <!-- 视频信息和控制栏 -->
@@ -127,37 +137,22 @@
         </div>
       </div>
       <!-- 影片评论 -->
-      <div class="mt-6 bg-gray-900 rounded-lg p-4">
-        <h3 class="text-lg font-bold mb-4">影片评论</h3>
-        <div class="mb-4">
-          <textarea 
-            class="w-full bg-gray-800 border border-gray-700 rounded p-3 text-white text-sm"
-            placeholder="请输入评论内容..."
-            rows="3"
-          ></textarea>
-          <div class="mt-2 flex justify-end">
-            <button class="bg-red-600 text-white px-4 py-1 rounded text-sm hover:bg-red-700">
-              发表评论
-            </button>
-          </div>
-        </div>
-        <div class="space-y-4">
-          <div v-for="comment in comments" :key="comment.id" class="border-b border-gray-800 pb-4">
-            <div class="flex items-start">
-              <div class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center mr-3">
-                <span class="text-sm">{{ comment.user.charAt(0) }}</span>
-              </div>
-              <div class="flex-1">
-                <div class="flex justify-between items-center mb-1">
-                  <span class="text-sm font-medium">{{ comment.user }}</span>
-                  <span class="text-xs text-gray-500">{{ comment.time }}</span>
-                </div>
-                <p class="text-sm text-gray-300">{{ comment.content }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div v-if="video" class="mt-6">
+        <Comment 
+          :videoId="video.id" 
+          :comments="comments"
+          class="!bg-gray-900 rounded-lg p-4"
+          :totalComments="totalComments"
+          :episodeId="episodes.length > 1 ? activeEpisode || '' : ''" 
+          @openLogin="showLoginModal = true"
+        />
       </div>
+      
+      <!-- 登录模态框 -->
+      <LoginModal 
+        v-model:visible="showLoginModal" 
+        @close="showLoginModal = false"
+      />
     </div>
   </div>
 </template>
@@ -166,10 +161,11 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiService } from '../../services/api'
-import type { Video } from '../../types'
+import type { Video, Comment as CommentType } from '../../types'
 import Player from '../../components/Player/index.vue'
 import VideoCard from '../../components/VideoCard.vue'
-const playerRef = ref<any>(null)
+import Comment from '../../components/Comment.vue'
+import LoginModal from '../../components/LoginModal.vue'
 const route = useRoute()
 const router = useRouter()
 const video = ref<Video>()
@@ -179,11 +175,9 @@ const relatedVideos = ref<Video[]>([])
 const episodes = ref<{ id: string, title: string }[]>([])
 const activeEpisode = ref('')
 const activeSource = ref('')
-const comments = ref([
-  { id: 1, user: '用户1', time: '2024-01-02 15:30', content: '主角的成长历程很感人，配音也很到位，期待下一季！' },
-  { id: 2, user: '用户2', time: '2024-01-01 12:00', content: '这部动漫真的太精彩了，剧情紧凑，画面精美，强烈推荐！' },
-  { id: 3, user: '用户3', time: '2024-01-03 10:15', content: '打斗场景制作得非常出色，看得很过瘾，支持国漫！' },
-])
+const showLoginModal = ref(false)
+const comments = ref<CommentType[]>([])
+const totalComments = ref(0)
 
 const getVideoDetail = async () => {
   try {
@@ -245,6 +239,7 @@ const getVideoDetail = async () => {
         let category = (r.meta?.category || '') as string
         return category.includes(video.value?.category || '')
       })?.path || ''
+      await fetchComments()
     }
   } catch (error) {
     console.error('获取视频详情失败:', error)
@@ -301,7 +296,21 @@ const updateRouteParams = (sourceId: string, episodeId: string) => {
     path: `/detail/${route.params.id}/${data.source}/${data.episode}`,
   })
 }
-
+const fetchComments = async () => {
+  if (!video.value?.id || !activeEpisode.value) return
+  try {
+    const data = await apiService.getComments({
+      videoId: video.value?.id,
+      episodeId: episodes.value.length > 1 ? activeEpisode.value || '' : '',
+      page: 1,
+      pageSize: 200
+    })
+    comments.value = data.list || []
+    totalComments.value = data.total || 0
+  } catch (error) {
+    console.error('获取评论失败:', error)
+  }
+}
 // 监听路由参数变化
 watch(() => route.params.source, async (newsource) => {
   if (newsource && video.value) {

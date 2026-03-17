@@ -21,3 +21,27 @@ export type Video = {
     sources?: Source[],
     loading?: boolean
 }
+
+export type User = {
+    id: string,
+    username: string,
+    nickname: string,
+    avatar?: string,
+    role?: string,
+    status?: string
+}
+
+export type Comment = {
+    id: string,
+    videoId: string,
+    episodeId?: string,
+    userId: string,
+    content: string,
+    parentId?: string,
+    likes: number,
+    status: string,
+    createTime: string,
+    updateTime: string,
+    user?: User,
+    replies?: Comment[]
+}

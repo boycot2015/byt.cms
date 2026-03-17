@@ -107,6 +107,14 @@
         </div>
       </div>
       
+      <!-- 评论区 -->
+      <div v-if="video" class="mb-6">
+        <Comment 
+          :videoId="video.id" 
+          @openLogin="showLoginModal = true"
+        />
+      </div>
+      
       <!-- 相关推荐 -->
       <div class="bg-white rounded-lg shadow-sm p-4">
         <h2 class="text-lg font-bold text-gray-800 mb-4">相关推荐</h2>
@@ -117,6 +125,12 @@
         </div>
       </div>
     </div>
+    
+    <!-- 登录模态框 -->
+    <LoginModal 
+      v-model:visible="showLoginModal"
+      @close="showLoginModal = false"
+    />
   </div>
 </template>
 
@@ -125,6 +139,8 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import VideoCard from '../../components/VideoCard.vue'
 import Loading from '../../components/Loading.vue'
+import Comment from '../../components/Comment.vue'
+import LoginModal from '../../components/LoginModal.vue'
 import { apiService } from '../../services/api'
 import type { Video, Source } from '../../types'
 const route = useRoute()
@@ -134,6 +150,7 @@ const recommendList = ref<Video[]>([])
 const loading = ref(true)
 const activeSource = ref(0)
 const activeEpisode = ref(0)
+const showLoginModal = ref(false)
 
 // 计算当前选中资源平台的剧集列表
 const currentEpisodes = computed<Source[]>(() => {

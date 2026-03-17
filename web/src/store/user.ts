@@ -1,9 +1,16 @@
 import { defineStore } from 'pinia'
+import { apiService } from '../services/api'
 
 interface User {
   id: string
   username: string
+  nickname: string
+  avatar: string
+  role: string
+  status: string
   token: string
+  createTime: string
+  updateTime: string
 }
 
 export const useUserStore = defineStore('user', {
@@ -21,25 +28,17 @@ export const useUserStore = defineStore('user', {
       this.isLoading = true
       this.error = null
       try {
-        // 模拟API调用
-        // 实际项目中替换为真实的API调用
-        const response = await new Promise<{ user: User }>((resolve) => {
-          setTimeout(() => {
-            resolve({
-              user: {
-                id: '1',
-                username,
-                token: 'mock-token-' + Date.now()
-              }
-            })
-          }, 1000)
-        })
-        
-        this.user = response.user
-        this.saveToLocalStorage()
-        return response.user
-      } catch (error) {
-        this.error = '登录失败，请检查用户名和密码'
+        const response = await apiService.login({ username, password })
+        if (response.success) {
+          this.user = response.user
+          this.saveToLocalStorage()
+          return response.user
+        } else {
+          this.error = '登录失败，请检查用户名和密码'
+          throw new Error('登录失败')
+        }
+      } catch (error: any) {
+        this.error = error.response?.data?.error || '登录失败，请检查用户名和密码'
         throw error
       } finally {
         this.isLoading = false
@@ -47,29 +46,16 @@ export const useUserStore = defineStore('user', {
     },
     
     // 注册
-    async register(username: string, password: string) {
+    async register(username: string, password: string, nickname?: string) {
       this.isLoading = true
       this.error = null
       try {
-        // 模拟API调用
-        // 实际项目中替换为真实的API调用
-        const response = await new Promise<{ user: User }>((resolve) => {
-          setTimeout(() => {
-            resolve({
-              user: {
-                id: '1',
-                username,
-                token: 'mock-token-' + Date.now()
-              }
-            })
-          }, 1000)
-        })
-        
-        this.user = response.user
+        const user = await apiService.register({ username, password, nickname })
+        this.user = user
         this.saveToLocalStorage()
-        return response.user
-      } catch (error) {
-        this.error = '注册失败，请稍后重试'
+        return user
+      } catch (error: any) {
+        this.error = error.response?.data?.error || '注册失败，请稍后重试'
         throw error
       } finally {
         this.isLoading = false

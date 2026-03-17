@@ -105,6 +105,23 @@ CREATE TABLE IF NOT EXISTS users (
   updateTime TEXT NOT NULL
 );
 
+-- 评论表
+CREATE TABLE IF NOT EXISTS comments (
+  id TEXT PRIMARY KEY,
+  videoId TEXT NOT NULL,
+  episodeId TEXT DEFAULT NULL,
+  userId TEXT NOT NULL,
+  content TEXT NOT NULL,
+  parentId TEXT DEFAULT NULL,
+  likes INTEGER DEFAULT 0,
+  status TEXT DEFAULT 'active',
+  createTime TEXT NOT NULL,
+  updateTime TEXT NOT NULL,
+  FOREIGN KEY (videoId) REFERENCES videos(id),
+  FOREIGN KEY (userId) REFERENCES users(id),
+  FOREIGN KEY (parentId) REFERENCES comments(id)
+);
+
 -- 创建索引提升查询性能
 CREATE INDEX IF NOT EXISTS idx_videos_categoryId ON videos(categoryId);
 CREATE INDEX IF NOT EXISTS idx_videos_source_mapping_videoId ON video_sources_mapping(videoId);
@@ -112,3 +129,7 @@ CREATE INDEX IF NOT EXISTS idx_videos_source_mapping_source ON video_sources_map
 CREATE INDEX IF NOT EXISTS idx_categories_name ON categories(name);
 CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name);
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+CREATE INDEX IF NOT EXISTS idx_comments_videoId ON comments(videoId);
+CREATE INDEX IF NOT EXISTS idx_comments_episodeId ON comments(episodeId);
+CREATE INDEX IF NOT EXISTS idx_comments_userId ON comments(userId);
+CREATE INDEX IF NOT EXISTS idx_comments_parentId ON comments(parentId);
