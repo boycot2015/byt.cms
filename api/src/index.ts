@@ -1372,13 +1372,18 @@ export default {
       const episodeId = url.searchParams.get("episodeId");
       const page = parseInt(url.searchParams.get("page") || "1");
       const pageSize = parseInt(url.searchParams.get("pageSize") || "20");
+      const search = url.searchParams.get("search");
       const offset = (page - 1) * pageSize;
       
       // 构建查询条件
       let countQuery = "SELECT COUNT(*) as total FROM comments WHERE status = 'active' AND parentId IS NULL";
       let commentQuery = "SELECT * FROM comments WHERE status = 'active' AND parentId IS NULL ORDER BY createTime DESC LIMIT ? OFFSET ?";
       const params: any[] = [];
-      
+      if (search) {
+        countQuery = "SELECT COUNT(*) as total FROM comments WHERE content LIKE ? AND status = 'active' AND parentId IS NULL";
+        commentQuery = "SELECT * FROM comments WHERE content LIKE ? AND status = 'active' AND parentId IS NULL ORDER BY createTime DESC LIMIT ? OFFSET ?";
+        params.push(`%${search}%`);
+      } 
       // 如果提供了videoId，添加到查询条件中
       if (videoId) {
         countQuery = "SELECT COUNT(*) as total FROM comments WHERE videoId = ? AND status = 'active' AND parentId IS NULL";
@@ -1407,7 +1412,11 @@ export default {
           "SELECT id, username, nickname, avatar, role FROM users WHERE id = ?"
         ).bind(comment.userId).first();
         comment.user = user;
-        
+        // 获取视频信息
+        const video = await env.DB.prepare(
+          "SELECT id, title, cover FROM videos WHERE id = ?"
+        ).bind(comment.videoId).first();
+        comment.video = video;
         // 获取回复
         const replies = await env.DB.prepare(
           "SELECT * FROM comments WHERE parentId = ? AND status = 'active' ORDER BY createTime ASC"

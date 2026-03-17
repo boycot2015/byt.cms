@@ -220,10 +220,10 @@ const Comment = forwardRef((props, ref) => {
                         title: '视频',
                         dataIndex: 'videoId',
                         key: 'videoId',
-                        render: (videoId) => {
+                        render: (videoId, record) => {
                             return (
                                 <Typography.Paragraph ellipsis={{ rows: 1 }}>
-                                    {videoId}
+                                    {record.video?.title || videoId}
                                 </Typography.Paragraph>
                             );
                         }
