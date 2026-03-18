@@ -164,12 +164,13 @@ const currentEpisodes = computed<Source[]>(() => {
 const getRecommendList = async () => {
   try {
     loading.value = true
-    let data:any = await apiService.getVideos({ category: video.value?.categoryId, recommended: true, page: 1, pageSize: 12 })
+    const recommendCount = 12
+    let data:any = await apiService.getVideos({ category: video.value?.categoryId, recommended: true, page: 1, pageSize: recommendCount })
     recommendList.value = data.list || []
-    if (!recommendList.value.length) {
-      data = await apiService.getVideos({ category: video.value?.categoryId, recommended: false, page: 1, pageSize: 13 })
+    if (!recommendList.value.length || recommendList.value.length < recommendCount) {
+      data = await apiService.getVideos({ category: video.value?.categoryId, recommended: false, page: 1, pageSize: recommendCount - recommendList.value.length + 1 })
       recommendList.value.push(...data.list || [])
-      recommendList.value = recommendList.value.filter((item: any) => item.id !== video.value?.id).slice(0, 12)
+      recommendList.value = recommendList.value.filter((item: any) => item.id !== video.value?.id).slice(0, recommendCount)
     }
     loading.value = false
   } catch (error) {
@@ -203,6 +204,7 @@ const playVideo = () => {
 onMounted(async () => {
   await getVideoDetail()
   await getRecommendList()
+  document.title = (video.value?.title || '未知') + '-影视在线'
 })
 
 watch(() => route.params.id, async (newId) => {

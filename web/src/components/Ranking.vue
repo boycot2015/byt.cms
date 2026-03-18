@@ -23,7 +23,7 @@ const props = defineProps<{
   showSuffix?: boolean
   items?: Video[]
 }>()
-const items = computed(() => props.items && props.items.length > 0 ? props.items : [...Array(6).keys()].map(() => ({ loading: true, id: '', title: '' })))
+const items = computed(() => props.items && props.items.length > 0 ? props.items : [...Array(16).keys()].map(() => ({ loading: true, id: '', title: '' })))
 </script>
 
 <script lang="ts">

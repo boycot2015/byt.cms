@@ -103,6 +103,7 @@ export const apiService = {
     userId: string
     content: string
     parentId?: string
+    currentTime?: number
   }) => {
     return api.post('/comments', data) as Promise<Comment>
   },
@@ -127,6 +128,27 @@ export const apiService = {
     nickname?: string
   }) => {
     return api.post('/users/register', data) as Promise<any>
+  },
+  
+  // 获取网站配置
+  getSiteConfig: () => {
+    return api.get('/site-config') as Promise<any>
+  },
+  
+  // 更新网站配置
+  updateSiteConfig: (data: {
+    userId: string
+    logo?: string
+    title?: string
+    bannerCount?: number
+    categoryIds?: string[]
+    categoryPerRow?: number
+    categoryRows?: number
+    rankingCategoryIds?: string[]
+    rankingCount?: number
+    links?: any[]
+  }) => {
+    return api.post('/site-config', data) as Promise<any>
   }
 }
 

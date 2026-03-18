@@ -8,6 +8,20 @@ import Player from 'xgplayer';
 import type { Comment } from '../../types'
 const videoRef = ref(null);
 // const colors = ['#ff9500', '#ff6600', '#cc3300', '#993300', '#663300']
+const defaultComment = {
+    style: {  //弹幕自定义样式
+        // color: colors[Math.floor(Math.random() * colors.length)],
+        // fontSize: '20px',
+        // border: 'solid 1px #ff9500',
+        // borderRadius: '50px',
+        // padding: '5px 11px',
+        // backgroundColor: 'rgba(255, 255, 255, 0.1)'
+    },
+    duration: 15000, //弹幕持续显示时间,毫秒(最低为5000毫秒)
+    prior: false, //该条弹幕优先显示，默认false
+    color: false, //该条弹幕为彩色弹幕，默认false
+    mode: 'scroll', //显示模式，top顶部居中，bottom底部居中，scroll滚动，默认为scroll
+}
 const playerInstance = ref<Player>(null!);
 const props = defineProps<{
     id?: string
@@ -60,34 +74,38 @@ onMounted(() => {
     }
 })
 defineExpose({
-    player: playerInstance
+    player: playerInstance,
+    getCurrentTime: () => playerInstance.value?.currentTime || 0,
+    sendComment: (comment: any) => {
+        debugger
+        playerInstance.value.danmu.sendComment({
+        ...comment,
+        ...defaultComment,
+        start: 0, //弹幕出现时间，毫秒
+        txt: comment.content, //弹幕文字内容
+    })
+    },
 })
 watch(() => props.url, (newUrl) => {
     if (playerInstance.value) {
         playerInstance.value.src = newUrl;
     }
 })
-watch(() => props.comments, (newComments) => {
+watch(() => props.comments?.length, () => {
     if (playerInstance.value) {
-        newComments?.map((comment) => {
+        const covert = (comment: Comment, prop = 'replies') => {
             playerInstance.value.danmu.sendComment({
                 ...comment,
-                duration: 15000, //弹幕持续显示时间,毫秒(最低为5000毫秒)
-                start: 3000, //弹幕出现时间，毫秒
-                prior: false, //该条弹幕优先显示，默认false
-                color: false, //该条弹幕为彩色弹幕，默认false
+                ...defaultComment,
+                start: comment.currentTime || 0, //弹幕出现时间，毫秒
                 txt: comment.content, //弹幕文字内容
-                style: {  //弹幕自定义样式
-                    // color: colors[Math.floor(Math.random() * colors.length)],
-                    // fontSize: '20px',
-                    // border: 'solid 1px #ff9500',
-                    // borderRadius: '50px',
-                    // padding: '5px 11px',
-                    // backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                },
-                mode: 'scroll' //显示模式，top顶部居中，bottom底部居中，scroll滚动，默认为scroll
             })
-        }) || [];
+            let children = (comment[prop as keyof Comment] || []) as Comment[]
+            if (children.length > 0) {
+                children.map((child) => covert(child))
+            }
+        }
+        props.comments?.map((comment) => covert(comment)) || [];
     }
 })
 </script>

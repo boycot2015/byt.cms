@@ -7,7 +7,7 @@
           <h1 class="text-xs md:text-2xl font-bold text-red-600 mr-1 md:mr-6 cursor-pointer" @click="router.push('/')">影视在线</h1>
           <nav class="hidden md:block">
             <ul class="flex space-x-4 text-sm">
-              <li v-for="route in routes" v-show="!route.meta?.hideInMenu" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :active-class="currentRoute.path==route.path?'text-red-600 border-b-2 border-red-600 pb-1':''">{{route.meta?.title||route.name}}</router-link></li>
+              <li v-for="route in routes" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :class="activeClass(route)">{{route.meta?.title||route.name}}</router-link></li>
             </ul>
           </nav>
         </div>
@@ -26,7 +26,7 @@
       </div>
       <nav class="md:hidden flex px-4 py-2 mx-auto text-white">
         <ul class="flex space-x-4 text-sm">
-          <li v-for="route in routes" v-show="!route.meta?.hideInMenu" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :active-class="currentRoute.path==route.path?'text-red-600 border-b-2 border-red-600 pb-2':''">{{route.meta?.title||route.name}}</router-link></li>
+          <li v-for="route in routes" v-show="!route.meta?.hideInMenu" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :active-class="currentRoute.path.includes(route.path)?'text-red-600 border-b-2 border-red-600 pb-2':''">{{route.meta?.title||route.name}}</router-link></li>
         </ul>
       </nav>
     </header>
@@ -55,15 +55,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Search from './components/Search.vue'
 import FloatingActions from './components/FloatingActions.vue'
 import LoginModal from './components/LoginModal.vue'
 import { useUserStore } from './store/user'
 const router = useRouter()
-const routes = router.options?.routes || []
+const routes = router.options?.routes.filter(route => !route.meta?.hideInMenu).map(route => ({
+  ...route,
+  path: route.path.replace('/:id?', '')
+})) || []
 const currentRoute = router.currentRoute
+const activeClass = computed(() => {
+  return (route:any) => {
+    let className = ''
+    let routePath = route.path.substring(1)
+    if (!routePath && currentRoute.value.path === '/') return 'text-red-600 border-b-2 border-red-600 pb-2'
+    let currentPath = currentRoute.value.path.substring(1)
+    if (currentPath.startsWith(routePath) && routePath) {
+      className = 'text-red-600 border-b-2 border-red-600 pb-2'
+    }
+    return className
+  }
+})
 
 const showLoginModal = ref(false)
 const userStore = useUserStore()

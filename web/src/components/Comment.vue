@@ -168,10 +168,12 @@ const props = defineProps<{
   episodeId?: string,
   comments?: CommentType[]
   totalComments?: number
+  currentTime?: number
 }>()
 
 const emit = defineEmits<{
-  (e: 'openLogin'): void
+  (e: 'openLogin'): void,
+  (e: 'update', comment: CommentType): void
 }>()
 
 const userStore = useUserStore()
@@ -214,12 +216,14 @@ const submitComment = async () => {
   
   submitting.value = true
   try {
-    await apiService.createComment({
+    let res = await apiService.createComment({
       videoId: props.videoId,
       episodeId: props.episodeId,
       userId: user.value.id,
+      currentTime: props.currentTime || 0,
       content: commentContent.value.trim()
     })
+    res && emit('update', res)
     commentContent.value = ''
     page.value = 1
     await fetchComments()
@@ -235,16 +239,20 @@ const submitReply = async (comment: CommentType) => {
   
   submitting.value = true
   try {
-    await apiService.createComment({
+    // console.log(props.currentTime || 0)
+    let params = {
       videoId: props.videoId,
       episodeId: props.episodeId,
       userId: user.value.id,
       content: replyContent.value.trim(),
-      parentId: comment.id
-    })
+      parentId: comment.id,
+      currentTime: comment.currentTime || 0
+    }
+   let res = await apiService.createComment(params)
     replyContent.value = ''
     replyingTo.value = null
     await fetchComments()
+    res && emit('update', res)
   } catch (error) {
     console.error('发表回复失败:', error)
   } finally {

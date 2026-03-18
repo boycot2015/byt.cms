@@ -53,14 +53,17 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { apiService } from '../services/api'
 import VideoCard from '../components/VideoCard.vue'
 import Pagination from '../components/Pagination.vue'
 import type { Category, Video } from '../types'
 
 const router = useRouter()
-const currentCategoryId = ref('')
+const route = useRoute()
+console.log(route.params, 'route.params');
+
+const currentCategoryId = ref((route.params.id || '') as string)
 const currentPage = ref(1)
 const pageSize = ref(18)
 const total = ref(0)
@@ -78,8 +81,8 @@ const fetchCategories = async (category = router.currentRoute.value.meta.categor
     categories.value = data.filter(el => category.includes(el.name)) || []
     // 设置默认分类
     if (categories.value && categories.value.length > 0) {
-      currentCategoryId.value = categories.value[0].id
-      fetchVideosByCategory(categories.value[0].id, 1)
+      currentCategoryId.value = currentCategoryId.value || categories.value[0].id
+      fetchVideosByCategory(currentCategoryId.value, 1)
     }
   } catch (error) {
     console.error('获取分类数据失败:', error)

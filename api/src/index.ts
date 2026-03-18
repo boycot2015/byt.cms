@@ -1153,9 +1153,9 @@ export default {
         "SELECT * FROM videos WHERE recommended = 1 ORDER BY updateTime DESC"
       ).all();
       let videos = recommendedVideos.results;
-      
+      const maxRecommendedCount = 10;
       // 如果没有推荐数据，返回每个分类最近更新的5条数据
-      if (videos.length === 0) {
+      if (videos.length <= maxRecommendedCount) {
         // 获取所有分类
         const categories = await env.DB.prepare(
           "SELECT DISTINCT categoryId, category FROM videos WHERE categoryId IS NOT NULL AND categoryId != ''"
@@ -1164,16 +1164,16 @@ export default {
         const categoryList = categories.results;
         const categoryVideos: any[] = [];
         
-        // 为每个分类获取最近更新的5条视频
+        // 为每个分类获取最近更新的maxRecommendedCount-videos.length条视频
         for (const category of categoryList) {
           const categoryLatestVideos = await env.DB.prepare(
-            "SELECT * FROM videos WHERE categoryId = ? ORDER BY updateTime DESC LIMIT 5"
+            `SELECT * FROM videos WHERE categoryId = ? ORDER BY updateTime DESC LIMIT ${maxRecommendedCount - videos.length}`
           ).bind(category.categoryId).all();
           
           categoryVideos.push(...categoryLatestVideos.results);
         }
         
-        videos = categoryVideos;
+        videos = [...videos, ...categoryVideos];
       }
       
       // 补充标签和来源信息
@@ -1448,7 +1448,7 @@ export default {
     // 发表评论
     if (path === "/api/comments" && request.method === "POST") {
       const body:any = await request.json();
-      const { videoId, episodeId, userId, content, parentId } = body;
+      const { videoId, episodeId, userId, content, parentId, currentTime } = body;
       
       if (!videoId || !userId || !content) {
         return new Response(JSON.stringify({ error: "视频ID、用户ID和评论内容不能为空" }), {
@@ -1506,16 +1506,17 @@ export default {
         parentId: parentId || null,
         likes: 0,
         status: "active",
+        currentTime: currentTime || 0,
         createTime: new Date().toISOString(),
         updateTime: new Date().toISOString()
       };
       
       await env.DB.prepare(`
-        INSERT INTO comments (id, videoId, episodeId, userId, content, parentId, likes, status, createTime, updateTime)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO comments (id, videoId, episodeId, userId, content, parentId, likes, status, currentTime, createTime, updateTime)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         comment.id, comment.videoId, comment.episodeId, comment.userId, comment.content, comment.parentId,
-        comment.likes, comment.status, comment.createTime, comment.updateTime
+        comment.likes, comment.status, comment.currentTime, comment.createTime, comment.updateTime
       ).run();
       
       // 返回评论信息，包含用户信息
@@ -1767,6 +1768,104 @@ export default {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
+    }
+
+    // 网站配置接口
+    if (path === "/api/site-config" && request.method === "GET") {
+      // 获取网站配置
+      const config = await env.DB.prepare(
+        "SELECT * FROM site_config ORDER BY updateTime DESC LIMIT 1"
+      ).first();
+      
+      if (config) {
+        // 解析JSON字段
+        config.categoryIds = JSON.parse((config.categoryIds as string) || "[]");
+        config.rankingCategoryIds = JSON.parse((config.rankingCategoryIds as string) || "[]");
+        config.links = JSON.parse((config.links as string) || "[]");
+      }
+      
+      return new Response(JSON.stringify(config || {}), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (path === "/api/site-config" && request.method === "POST") {
+      // 更新网站配置
+      const body:any = await request.json();
+      const { userId, logo, title, bannerCount, categoryIds, categoryCols, recommendTitle, categoryRows, rankingCategoryIds, rankingCount, links } = body;
+      
+      // 检查用户是否存在且为管理员
+      if (!userId) {
+        return new Response(JSON.stringify({ error: "用户ID不能为空" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
+      }
+      
+      const user = await env.DB.prepare(
+        "SELECT * FROM users WHERE id = ?"
+      ).bind(userId).first();
+      
+      if (!user) {
+        return new Response(JSON.stringify({ error: "用户不存在" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 404,
+        });
+      }
+      
+      if (user.role !== "admin") {
+        return new Response(JSON.stringify({ error: "只有管理员可以配置网站" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 403,
+        });
+      }
+      
+      // 检查是否已有配置
+      const existingConfig = await env.DB.prepare(
+        "SELECT * FROM site_config ORDER BY updateTime DESC LIMIT 1"
+      ).first();
+      
+      const now = new Date().toISOString();
+      
+      if (existingConfig) {
+        // 更新现有配置
+        await env.DB.prepare(`
+          UPDATE site_config SET 
+            userId = ?, logo = ?, title = ?, bannerCount = ?, 
+            categoryIds = ?, categoryCols = ?, recommendTitle = ?, categoryRows = ?, 
+            rankingCategoryIds = ?, rankingCount = ?, links = ?, 
+            updateTime = ?
+          WHERE id = ?
+        `).bind(
+          userId, logo || "", title || "", bannerCount || 6,
+          JSON.stringify(categoryIds || []), categoryCols || 4, recommendTitle || '', categoryRows || 2,
+          JSON.stringify(rankingCategoryIds || []), rankingCount || 10, JSON.stringify(links || []),
+          now, existingConfig.id
+        ).run();
+        
+        return new Response(JSON.stringify({ success: true, message: "网站配置更新成功" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      } else {
+        // 创建新配置
+        const id = `config:${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        await env.DB.prepare(`
+          INSERT INTO site_config (
+            id, userId, logo, title, bannerCount, categoryIds, 
+            categoryCols, recommendTitle, categoryRows, rankingCategoryIds, rankingCount, 
+            links, createTime, updateTime
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          id, userId, logo || "", title || "", bannerCount || 6,
+          JSON.stringify(categoryIds || []), categoryCols || 4, recommendTitle || '', categoryRows || 2,
+          JSON.stringify(rankingCategoryIds || []), rankingCount || 10, JSON.stringify(links || []),
+          now, now
+        ).run();
+        
+        return new Response(JSON.stringify({ success: true, message: "网站配置创建成功" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
     return new Response(JSON.stringify({ error: "Not Found" }), {

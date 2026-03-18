@@ -143,8 +143,10 @@
           :comments="comments"
           class="!bg-gray-900 rounded-lg p-4"
           :totalComments="totalComments"
+          :currentTime="currentTime||0"
           :episodeId="episodes.length > 1 ? activeEpisode || '' : ''" 
           @openLogin="showLoginModal = true"
+          @update="(comment) => playerRef.value?.sendComment(comment)"
         />
       </div>
       
@@ -178,7 +180,8 @@ const activeSource = ref('')
 const showLoginModal = ref(false)
 const comments = ref<CommentType[]>([])
 const totalComments = ref(0)
-
+const playerRef = ref<any>(null)
+const currentTime = ref(0)
 const getVideoDetail = async () => {
   try {
     const data: any = await apiService.getVideoById(route.params.id as string)
@@ -249,11 +252,13 @@ const getVideoDetail = async () => {
 
 const getRelatedVideos = async () => {
   try {
-    let data: any = await apiService.getVideos({ category: video.value?.categoryId, recommended: true, page: 1, pageSize: 12 })
+    const recommendCount = 6
+    let data:any = await apiService.getVideos({ category: video.value?.categoryId, recommended: true, page: 1, pageSize: recommendCount })
     relatedVideos.value = data.list || []
-    if (!relatedVideos.value.length) {
-      data = await apiService.getVideos({ category: video.value?.categoryId, recommended: false, page: 1, pageSize: 12 })
-      relatedVideos.value = data.list || []
+    if (!relatedVideos.value.length || relatedVideos.value.length < recommendCount) {
+      data = await apiService.getVideos({ category: video.value?.categoryId, recommended: false, page: 1, pageSize: recommendCount - relatedVideos.value.length + 1 })
+      relatedVideos.value.push(...data.list || [])
+      relatedVideos.value = relatedVideos.value.filter((item: any) => item.id !== video.value?.id).slice(0, recommendCount)
     }
   } catch (error) {
     console.error('获取相关视频失败:', error)
@@ -311,6 +316,10 @@ const fetchComments = async () => {
     console.error('获取评论失败:', error)
   }
 }
+
+const setWebTitle = () => {
+  document.title = `${video.value?.title || '未知'} - ${route.params.source || '未知'} - ${route.params.episode || '未知'} - 影视在线`
+}
 // 监听路由参数变化
 watch(() => route.params.source, async (newsource) => {
   if (newsource && video.value) {
@@ -318,8 +327,7 @@ watch(() => route.params.source, async (newsource) => {
     let episode = source?.urls?.find(item => item.label === route.params.episode)?.url || source?.urls?.[0]?.url || ''
     activeSource.value = source?.id || ''
     activeEpisode.value = episode
-    console.log(episode,activeEpisode.value, '2123');
-    // await getVideoDetail()
+    setWebTitle()
   }
 })
 watch(() => route.params.episode, async (newepisode) => {
@@ -327,10 +335,9 @@ watch(() => route.params.episode, async (newepisode) => {
      let source = video.value?.sources?.find(s => s.id === activeSource.value)
     let episode = source?.urls?.find(item => item.label === newepisode)?.url || ''
     activeEpisode.value = episode
-    // await getVideoDetail()
+    setWebTitle()
   }
 })
-
 onMounted(async () => {
   await getVideoDetail()
   await getRelatedVideos()
@@ -342,6 +349,11 @@ onMounted(async () => {
   //     document.exitPictureInPicture();
   //   }
   // })
+  setWebTitle()
+  playerRef.value?.player.on('timeupdate', function () {
+    //事件名称可以在上述查询
+    currentTime.value = Number((playerRef.value.player.currentTime * 1000).toFixed(0)) || 0
+  })
 })
 </script>
 

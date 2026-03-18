@@ -24,7 +24,7 @@ const routes = [
         component: () => import('../views/HomeView.vue')
     },
     {
-        path: '/anime',
+        path: '/anime/:id?',
         name: 'Anime',
         meta: {
             title: '动漫',
@@ -35,7 +35,7 @@ const routes = [
         component: () => import('../views/MovieView.vue')
     },
     {
-        path: '/movie',
+        path: '/movie/:id?',
         name: 'Movie',
         meta: {
             title: '电影',
@@ -46,7 +46,7 @@ const routes = [
         component: () => import('../views/MovieView.vue')
     },
     {
-        path: '/tv',
+        path: '/tv/:id?',
         name: 'TV',
         meta: {
             title: '电视剧',
@@ -57,7 +57,7 @@ const routes = [
         component: () => import('../views/MovieView.vue')
     },
     {
-        path: '/variety',
+        path: '/variety/:id?',
         name: 'Variety',
         meta: {
             title: '综艺',
@@ -68,7 +68,7 @@ const routes = [
         component: () => import('../views/MovieView.vue')
     },
     {
-        path: '/trailer',
+        path: '/trailer/:id?',
         name: 'Trailer',
         meta: {
             title: '预告片',
@@ -108,5 +108,8 @@ const router = createRouter({
   },
   routes
 })
-
+router.beforeEach((to) => {
+  document.title = (to.meta.title + '-影视在线') as string
+//   return next()
+})
 export default router

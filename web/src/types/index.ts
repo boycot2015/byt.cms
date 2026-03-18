@@ -42,6 +42,7 @@ export type Comment = {
     status: string,
     createTime: string,
     updateTime: string,
+    currentTime?: number,
     user?: User,
     replies?: Comment[]
 }

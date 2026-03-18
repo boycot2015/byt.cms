@@ -65,7 +65,8 @@ let interval: number
 
 // 从store获取推荐视频数据
 const recommendedVideos = computed(() => {
-  return videoStore.getBannerVideos
+  const bannerCount = videoStore.siteConfig?.bannerCount || 6
+  return videoStore.getBannerVideos.slice(0, bannerCount)
 })
 
 // 从store获取热播榜数据

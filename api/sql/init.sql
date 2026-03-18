@@ -117,9 +117,29 @@ CREATE TABLE IF NOT EXISTS comments (
   status TEXT DEFAULT 'active',
   createTime TEXT NOT NULL,
   updateTime TEXT NOT NULL,
+  currentTime INTEGER DEFAULT 0,
   FOREIGN KEY (videoId) REFERENCES videos(id),
   FOREIGN KEY (userId) REFERENCES users(id),
   FOREIGN KEY (parentId) REFERENCES comments(id)
+);
+
+-- 网站配置表
+CREATE TABLE IF NOT EXISTS site_config (  
+  id TEXT PRIMARY KEY,
+  userId TEXT NOT NULL,  -- 关联管理员用户
+  logo TEXT DEFAULT '',  -- 网站logo
+  title TEXT DEFAULT '',  -- 网站标题
+  bannerCount INTEGER DEFAULT 6,  -- 首页banner展示数量（最多6个）
+  categoryIds TEXT DEFAULT '[]',  -- 首页分类列表展示的分类id（JSON数组）
+  categoryCols INTEGER DEFAULT 5,  -- 首页分类一行展示几个
+  categoryRows INTEGER DEFAULT 1,  -- 首页分类展示几行
+  recommendTitle TEXT DEFAULT '',  -- 首页推荐标题
+  rankingCategoryIds TEXT DEFAULT '[]',  -- 首页排行展示的分类id（JSON数组）
+  rankingCount INTEGER DEFAULT 8,  -- 首页排行每个分类展示几个
+  links TEXT DEFAULT '[]',  -- 网站底部友情链接（JSON数组）
+  createTime TEXT NOT NULL,
+  updateTime TEXT NOT NULL,
+  FOREIGN KEY (userId) REFERENCES users(id)
 );
 
 -- 创建索引提升查询性能
@@ -133,3 +153,4 @@ CREATE INDEX IF NOT EXISTS idx_comments_videoId ON comments(videoId);
 CREATE INDEX IF NOT EXISTS idx_comments_episodeId ON comments(episodeId);
 CREATE INDEX IF NOT EXISTS idx_comments_userId ON comments(userId);
 CREATE INDEX IF NOT EXISTS idx_comments_parentId ON comments(parentId);
+CREATE INDEX IF NOT EXISTS idx_site_config_userId ON site_config(userId);

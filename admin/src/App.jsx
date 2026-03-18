@@ -11,10 +11,12 @@ import Article from './components/Article';
 import TagComponent from './components/Tag';
 import User from './components/User';
 import Comment from './components/Comment';
+import SiteConfig from './components/SiteConfig';
 import LoginModal from './components/Auth/LoginModal';
 import { LogoutOutlined, MoonOutlined, SunOutlined, SettingOutlined } from '@ant-design/icons';
 import zhCN from 'antd/locale/zh_CN';
 import { useUser } from './context/UserContext.jsx';
+import { usePermission } from './hooks/usePermission';
 import useThemeMode from './hooks/useThemeMode.jsx';
 const { Header, Content, Footer } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -30,6 +32,7 @@ function Index() {
   const articleRef = React.useRef(null);
   const userRef = React.useRef(null);
   const commentRef = React.useRef(null);
+  const siteConfigRef = React.useRef(null);
  
   const { user, updateUser, logout } = useUser();
   const [activeTab, setActiveTab] = useState('1');
@@ -44,7 +47,7 @@ function Index() {
   const [tagModalVisible, setTagModalVisible] = useState(false);
   const [editingTag, setEditingTag] = useState(null);
   const [tagForm] = Form.useForm();
-  
+ const { isAdmin } = usePermission();
   // 登录成功处理
   const handleLoginSuccess = (userInfo) => {
     updateUser(userInfo);
@@ -77,6 +80,9 @@ function Index() {
         break;
       case '6': // 评论管理
         commentRef.current?.fetchComments?.();
+        break;
+      case '7': // 网站配置
+        siteConfigRef.current?.fetchConfig?.();
         break;
       default:
         break;
@@ -294,8 +300,14 @@ function Index() {
                   label: '评论管理',
                   key: '6',
                   children:  <Comment ref={commentRef} />
+                },
+                {
+                  label: '网站配置',
+                  key: '7',
+                  hidden: !isAdmin,
+                  children:  <SiteConfig ref={siteConfigRef} />
                 }
-              ]}>
+              ].filter(item => !item.hidden)}>
               </Tabs>
             </Card>
           </Content>

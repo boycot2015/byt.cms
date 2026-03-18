@@ -7,6 +7,7 @@ export const useVideoStore = defineStore('video', {
     videos: [] as Video[],
     total: 0, 
     categories: [] as Category[],
+    siteConfig: null as any,
     loading: false,
     error: null as string | null
   }),
@@ -66,9 +67,9 @@ export const useVideoStore = defineStore('video', {
     async fetchVideosByParams({ categoryIds = '', recommended = undefined}:{categoryIds: string, recommended?: boolean|undefined}) {
       try {
         this.loading = true
-        const promises = categoryIds.split(',').map(category => this.fetchVideos({ category: category, recommended, page: 1, pageSize: 10 }))
+        const promises = categoryIds.split(',').map(category => this.fetchVideos({ category: category, recommended, page: 1, pageSize: 16 }))
         const results = await Promise.all(promises)
-        return results.flat().slice(0, 10)
+        return results.flat().slice(0, 16)
       } catch (error) {
         console.error('获取分类视频失败:', error)
         this.error = '获取分类视频失败'
@@ -81,10 +82,11 @@ export const useVideoStore = defineStore('video', {
     async fetchCategoryRankings(categoryIds: string[]) {
       try {
         this.loading = true
-        const promises = categoryIds.map(id => this.fetchVideos({ category: id, recommended: true, page: 1, pageSize: 10 }))
+        const promises = categoryIds.map(id => this.fetchVideos({ category: id, recommended: true, page: 1, pageSize: 16 }))
         const results = await Promise.all(promises)
-        const rankings = results.flat().slice(0, 10)
-        return rankings.length > 0 ? rankings : this.fetchVideosByParams({ categoryIds: categoryIds.join(',') })
+        const rankings = results.flat().slice(0, 16)
+        const recommendeds = await this.fetchVideosByParams({ categoryIds: categoryIds.join(',') })
+        return rankings.length >= 16 ? rankings : [...rankings, ...recommendeds].filter((el, index, arr) => arr.findIndex(t => t.id === el.id) === index).slice(0, 16)
       } catch (error) {
         console.error('获取分类排行榜失败:', error)
         this.error = '获取分类排行榜失败'
@@ -113,6 +115,21 @@ export const useVideoStore = defineStore('video', {
         console.error('获取推荐视频失败:', error)
         this.error = '获取推荐视频失败'
         return []
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async fetchSiteConfig() {
+      try {
+        this.loading = true
+        const data = await apiService.getSiteConfig()
+        this.siteConfig = data || null
+        return data
+      } catch (error) {
+        console.error('获取网站配置失败:', error)
+        this.error = '获取网站配置失败'
+        return null
       } finally {
         this.loading = false
       }
