@@ -230,6 +230,7 @@ const SiteConfig = forwardRef((props, ref) => {
                       <Select 
                         placeholder="选择展示行数" 
                         style={{ width: '100%' }}
+                        onChange={(value) => form.setFieldValue('rankingCount', value * 8)}
                         options={[
                           { label: '1行', value: 1 },
                           { label: '2行', value: 2 }

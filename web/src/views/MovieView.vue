@@ -116,6 +116,12 @@ const handleCategoryChange = (categoryId: string) => {
   currentCategoryId.value = categoryId
   currentPage.value = 1
   fetchVideosByCategory(categoryId, 1)
+  router.push({
+    name: router.currentRoute.value.name,
+    params: {
+      id: categoryId
+    }
+  })
 }
 
 // 处理分页
