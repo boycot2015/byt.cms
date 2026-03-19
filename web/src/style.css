@@ -1,6 +1,7 @@
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities; */
+/* @config "../tailwind.config.js"; */
 @import "tailwindcss";
 
 button,select {
@@ -39,4 +40,9 @@ html.dark .text-gray-600 {
 }
 html.dark .text-gray-500 {
   color: rgb(255, 255, 255, 0.5) !important;
+}
+.md\:grid-cols-5 {
+  @media (width >= 48rem) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }

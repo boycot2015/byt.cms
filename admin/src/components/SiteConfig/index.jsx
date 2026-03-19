@@ -41,6 +41,7 @@ const SiteConfig = forwardRef((props, ref) => {
           categoryRows: res.data.categoryRows,
           rankingCategoryIds: res.data.rankingCategoryIds,
           rankingCount: res.data.rankingCount,
+          recommendTitle: res.data.recommendTitle,
           links: res.data.links || []
         });
       }
@@ -123,11 +124,12 @@ const SiteConfig = forwardRef((props, ref) => {
                       name="file"
                       listType="picture"
                       maxCount={1}
+                      key={form.getFieldValue('logo')}
                       customRequest={async ({ file, onSuccess, onError }) => {
                         try {
                           const url = await handleUpload(file);
                           onSuccess(url);
-                          form.setFieldsValue({ logo: url });
+                          form.setFieldsValue({ logo: url });                          
                         } catch (error) {
                           onError(error);
                         }
@@ -142,7 +144,7 @@ const SiteConfig = forwardRef((props, ref) => {
                         form.setFieldsValue({ logo: '' });
                       }}
                     >
-                      <Button icon={<UploadOutlined />}>上传Logo</Button>
+                      <Button icon={<UploadOutlined />}>{form.getFieldValue('logo') ? form.getFieldValue('logo') : '上传Logo'}</Button>
                     </Upload>
                   </Form.Item>
                 </Col>
