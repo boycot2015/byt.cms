@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'OPPO';
+    src: url('./OPPOSans-Regular.woff') format('woff');
+}
+@font-face {
+    font-family: 'Black';
+    src: url('./black.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: 'Song';
+    src: url('./Song.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'KaiTi';
+    src: url('./KaiTi.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'CangErYuYang';
+    src: url('./CangErYuYang.ttf') format('truetype');
+}

@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <!-- 头部导航栏 -->
-    <header class="header bg-black rounded-t-2xl">
+    <header class="header bg-black">
       <div class="container p-4 border-b md:border-0 border-gray-800 mx-auto flex justify-between items-center">
         <div class="flex items-center text-white ">
           <h1 class="text-xl md:text-2xl font-bold text-red-600 mr-1 md:mr-6 cursor-pointer" @click="router.push('/')">影视在线</h1>
@@ -31,10 +31,12 @@
       </nav>
     </header>
     <!-- 路由视图 -->
-    <router-view />
+     <div class="content">
+       <router-view />
+     </div>
 
     <!-- 页脚 -->
-    <footer class="footer bg-gray-800 text-white py-6 px-4">
+    <footer class="footer bg-gray-800 text-white py-6 px-4 rounded-b-2xl">
       <div class="container mx-auto">
         <!-- <div class="flex justify-center mb-4">
           <ul class="flex space-x-2 md:space-x-6 text-sm">
@@ -101,7 +103,6 @@ const handleLogout = () => {
   z-index: 99999;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .footer {
   margin-top: auto;
 }

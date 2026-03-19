@@ -1,16 +1,17 @@
 <template>
-  <div class="banner relative h-[200px] md:h-[400px] overflow-hidden">
+  <div class="banner relative bg-gray-200 h-[200px] md:h-[400px] overflow-hidden">
     <div 
       v-for="(video, index) in recommendedVideos" 
       :key="video.id"
       class="banner-item absolute inset-0 transition-opacity duration-1000 ease-in-out"
       :class="{ 'opacity-100': currentIndex === index, 'opacity-0': currentIndex !== index }"
     >
-    <span v-if="video.loading">加载中...</span>
-      <img 
+    <div class="w-full h-full object-cover bg-gray-200" v-if="video.loading"></div>
+      <img
         v-else
         :src="video.banner || video.cover" 
         :alt="video.title"
+        loading="lazy"
         class="w-full h-full object-cover"
       />
       <div

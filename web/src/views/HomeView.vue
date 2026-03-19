@@ -105,7 +105,7 @@ const fetchRecommendedVideos = async () => {
 const getInitData = async () => {
   // 先获取网站配置
   await videoStore.fetchSiteConfig()
-  const count = (videoStore.siteConfig?.categoryCols || 5) * (videoStore.siteConfig?.categoryRows || 2)
+  const count = (videoStore.siteConfig?.categoryCols || 5) * (videoStore.siteConfig?.categoryRows || 1)
   categories.value = router.options?.routes?.filter((item: any) => item.meta?.showInHome).map(el => ({
       id: el.name as string,
       path: el.path as string,

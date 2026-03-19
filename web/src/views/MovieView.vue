@@ -57,7 +57,7 @@ import type { Category, Video } from '../types'
 
 const router = useRouter()
 const route = useRoute()
-console.log(route.params, 'route.params');
+// console.log(route.params, 'route.params');
 
 const currentCategoryId = ref((route.params.id || '') as string)
 const currentPage = ref(1)
