@@ -4,7 +4,7 @@ import type { Video, Category } from '../types'
 
 export const useVideoStore = defineStore('video', {
   state: () => ({
-    videos: [] as Video[],
+    videos: [...Array(6).keys()].map(() => ({loading: true})) as Video[],
     total: 0, 
     categories: [] as Category[],
     siteConfig: null as any,

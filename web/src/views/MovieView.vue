@@ -5,23 +5,19 @@
         <span v-if="router.currentRoute.value.meta.icon">{{ router.currentRoute.value.meta.icon }}</span>
         {{router.currentRoute.value.meta.title}}</h1>
       <!-- 分类导航 -->
-      <div v-if="categories.length > 1" class="category-nav p-4 pb-2 md:py-2 md:px-0 border-b border-gray-200 mb-3 md:mb-4">
-        <div class="container mx-auto">
-          <ul class="flex space-x-6 text-sm">
-            <li v-for="item in categories" :key="item.id">
-              <a 
-                href="#" 
-                class="text-gray-600 hover:text-red-600" 
-                :class="{'text-red-600 border-b-2 border-red-600 pb-2': item.id == currentCategoryId}" 
-                @click="handleCategoryChange(item.id)"
-              >
-                {{ item.name }}
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="p-4 pt-1 md:p-0 min-h-[72vh]">
+      <ul v-if="categories.length > 1" class="flex p-4 pb-2 category-nav border-b border-gray-200 mb-3 md:mb-4 md:py-2 md:px-0 space-x-6 text-sm max-w-full overflow-hidden overflow-x-auto">
+        <li v-for="item in categories" :key="item.id" class="shrink-0">
+          <a 
+            href="#" 
+            class="text-gray-600 hover:text-red-600" 
+            :class="{'text-red-600 border-b-2 border-red-600 pb-2': item.id == currentCategoryId}" 
+            @click="handleCategoryChange(item.id)"
+          >
+            {{ item.name }}
+          </a>
+        </li>
+      </ul>
+      <div class="p-4 pt-1 mt-2 md:p-0 min-h-[72vh]">
         <!-- 视频列表 -->
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <VideoCard 
@@ -81,7 +77,7 @@ const fetchCategories = async (category = router.currentRoute.value.meta.categor
     categories.value = data.filter(el => category.includes(el.name)) || []
     // 设置默认分类
     if (categories.value && categories.value.length > 0) {
-      currentCategoryId.value = currentCategoryId.value || categories.value[0].id
+      currentCategoryId.value = (route.params.id || categories.value[0].id) as string
       fetchVideosByCategory(currentCategoryId.value, 1)
     }
   } catch (error) {

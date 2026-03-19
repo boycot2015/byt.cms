@@ -142,11 +142,12 @@ export const apiService = {
     title?: string
     bannerCount?: number
     categoryIds?: string[]
-    categoryPerRow?: number
+    categoryCols?: number
     categoryRows?: number
     rankingCategoryIds?: string[]
     rankingCount?: number
     links?: any[]
+    recommendTitle?: string
   }) => {
     return api.post('/site-config', data) as Promise<any>
   }

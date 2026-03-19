@@ -15,7 +15,7 @@
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold text-gray-800 flex items-center">
               <span class="text-red-600 mr-2">●</span>
-              {{videoStore.siteConfig?.recommendTitle || '热门推荐'}}
+              {{videoStore.siteConfig?.recommendTitle || (recommendedVideos.length > 0 ? '热门推荐' : '')}}
             </h2>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
@@ -38,7 +38,7 @@
           <div class="grid lg:grid-cols-6 gap-4">
             <!-- 视频列表 -->
             <div class="col-span-12 md:col-span-5">
-              <div :class="gridClass">
+              <div class="grid gap-3" :class="gridClass">
                 <div v-for="item in category.videos" :key="item.id">
                   <VideoCard :video="item" />
                 </div>
@@ -68,12 +68,12 @@ const router = useRouter()
 const videoStore = useVideoStore()
 const defaultList = [...Array(18).keys()].map(() => ({loading:true})) as Video[]
 const categories = ref<Array<{id: string, name: string, path: string, videos: Video[], rankings: Video[],loading?: boolean}>>([])
-const recommendedVideos = ref<Video[]>([])
+const recommendedVideos = ref<Video[]>([...defaultList.slice(0, 6)])
 
 // 根据配置计算网格类名
 const gridClass = computed(() => {
   const categoryCols = videoStore.siteConfig?.categoryCols || 5
-  return `grid grid-cols-2 sm:grid-cols-3 md:grid-cols-${categoryCols} gap-3`
+  return `grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-${categoryCols} `
 })
 
 // 获取推荐视频
@@ -102,9 +102,7 @@ const fetchRecommendedVideos = async () => {
   )
   return uniqueVideos.slice(0, 6)
 }
-
-// 页面加载时获取数据
-onMounted(async () => {
+const getInitData = async () => {
   // 先获取网站配置
   await videoStore.fetchSiteConfig()
   const count = (videoStore.siteConfig?.categoryCols || 5) * (videoStore.siteConfig?.categoryRows || 2)
@@ -150,6 +148,10 @@ onMounted(async () => {
   
   // 获取推荐视频
   recommendedVideos.value = await fetchRecommendedVideos()
+}
+onMounted(async () => {
+  // 页面加载时获取数据
+  await getInitData()
 })
 </script>
 

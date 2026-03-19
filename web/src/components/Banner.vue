@@ -1,12 +1,14 @@
 <template>
-  <div class="banner relative h-[200px] md:h-[400px] overflow-hidden" v-if="recommendedVideos.length">
+  <div class="banner relative h-[200px] md:h-[400px] overflow-hidden">
     <div 
       v-for="(video, index) in recommendedVideos" 
       :key="video.id"
       class="banner-item absolute inset-0 transition-opacity duration-1000 ease-in-out"
       :class="{ 'opacity-100': currentIndex === index, 'opacity-0': currentIndex !== index }"
     >
+    <span v-if="video.loading">加载中...</span>
       <img 
+        v-else
         :src="video.banner || video.cover" 
         :alt="video.title"
         class="w-full h-full object-cover"

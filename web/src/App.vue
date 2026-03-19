@@ -4,7 +4,7 @@
     <header class="header bg-black rounded-t-2xl">
       <div class="container p-4 border-b md:border-0 border-gray-800 mx-auto flex justify-between items-center">
         <div class="flex items-center text-white ">
-          <h1 class="text-xs md:text-2xl font-bold text-red-600 mr-1 md:mr-6 cursor-pointer" @click="router.push('/')">影视在线</h1>
+          <h1 class="text-xl md:text-2xl font-bold text-red-600 mr-1 md:mr-6 cursor-pointer" @click="router.push('/')">影视在线</h1>
           <nav class="hidden md:block">
             <ul class="flex space-x-4 text-sm">
               <li v-for="route in routes" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :class="activeClass(route)">{{route.meta?.title||route.name}}</router-link></li>
@@ -14,7 +14,7 @@
         <div class="flex items-center space-x-3 text-white">
           <Search />
           <div v-if="userStore.isLoggedIn" class="flex items-center space-x-3">
-            <span class="text-sm text-white-700">{{ userStore.user?.username }}</span>
+            <span class="text-sm text-white-700 hidden md:block">{{ userStore.user?.username }}</span>
             <button @click="handleLogout" class="text-sm text-white-600 hover:text-red-500">退出</button>
           </div>
           <button v-else @click="showLoginModal = true" class="bg-red-600 text-white px-3 py-1.5 rounded-full hover:bg-red-700 text-sm">登录</button>
@@ -26,7 +26,7 @@
       </div>
       <nav class="md:hidden flex px-4 py-2 mx-auto text-white">
         <ul class="flex space-x-4 text-sm">
-          <li v-for="route in routes" v-show="!route.meta?.hideInMenu" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :active-class="currentRoute.path.includes(route.path)?'text-red-600 border-b-2 border-red-600 pb-2':''">{{route.meta?.title||route.name}}</router-link></li>
+          <li v-for="route in routes" v-show="!route.meta?.hideInMenu" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :class="activeClass(route)">{{route.meta?.title||route.name}}</router-link></li>
         </ul>
       </nav>
     </header>
