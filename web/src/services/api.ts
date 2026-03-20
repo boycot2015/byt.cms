@@ -51,6 +51,16 @@ export const apiService = {
   getRecommendedVideos: () => {
     return api.get('/videos/recommended') as Promise<Video[]>
   },
+  // 获取分类映射
+  getCateMap: () => {
+    return {
+      anime: '国产动漫,日韩动漫',
+      tv: '国产剧,韩国剧,欧美剧,香港剧,台湾剧,泰国剧,泰剧,日剧,港剧,日本剧,短剧,擦边短剧',
+      movie: '科幻片,喜剧片,剧情片,爱情片,动作片,战争片,动画片,历史片,犯罪片,悬疑片,恐怖片,福利,伦理片,伦理,倫理,三级',
+      variety: '大陆综艺,日韩综艺,港台综艺,欧美综艺',
+      trailer: '预告片'
+    }
+  },
     // 获取分类
   getCates: (params?: {
     page?: number

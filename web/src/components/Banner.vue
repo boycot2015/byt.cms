@@ -88,9 +88,7 @@ const startAutoPlay = () => {
 
 onMounted(async () => {
   // 确保获取推荐视频数据
-  if (videoStore.videos.length === 0) {
-    await videoStore.fetchRecommendedVideos()
-  }
+  await videoStore.fetchRecommendedVideos()
   startAutoPlay()
 })
 

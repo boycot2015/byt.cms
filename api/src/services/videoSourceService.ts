@@ -1,7 +1,7 @@
 import { withRetry } from '../utils/withRetry';
 import { AliyunDriveClient } from '../clients/AliyunDriveClient';
 import { JianguoYunWebDAV } from '../clients/JianguoYunWebDAV';
-import { hasSensitiveWords } from '../utils/index';
+import { hasSensitiveWords, randomImage } from '../utils/index';
 
 // 夸克网盘API对接函数
 export async function fetchQuarkVideo(sourceConfig: any, env: any) {
@@ -107,7 +107,7 @@ export async function fetchCmsVideo(sourceConfig: any, env: any) {
     actors: file.vod_actor?.split('/').map((actor: string) => actor.trim()).filter((actor: string) => actor && actor !== '暂无') || [],
     director: file.vod_director || "",
     writer: file.vod_writer || "",
-    cover: hasSensitiveWords(file.vod_name + file.type_name) ? "https://dummyimage.com/200x300&text=image" : file.vod_pic || "",
+    cover: hasSensitiveWords(file.vod_name + file.type_name) ? randomImage() : file.vod_pic || "",
     size: file.vod_total || 0,
     source: file.vod_play_from.split('$$$')?.[0] || sourceConfig.type || "默认源",
     category: file.type_name || "默认分类",

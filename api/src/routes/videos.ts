@@ -1,5 +1,7 @@
 // import type { Request } from 'cloudflare-workers-types';
 
+import { hasSensitiveWords, randomImage } from "../utils";
+
 interface Env {
   DB: D1Database;
 }
@@ -23,7 +25,7 @@ export async function handleVideos(request: Request, env: Env, corsHeaders: Reco
     // 如果提供了id参数，直接根据id查询单个视频
     if (id) {
       const videoId = id.startsWith("video:") ? id : `video:${id}`;
-      const video = await env.DB.prepare("SELECT * FROM videos WHERE id = ?").bind(videoId).first();
+      const video: any = await env.DB.prepare("SELECT * FROM videos WHERE id = ?").bind(videoId).first();
       
       if (!video) {
         return new Response(JSON.stringify({ error: "视频不存在" }), {
@@ -51,7 +53,9 @@ export async function handleVideos(request: Request, env: Env, corsHeaders: Reco
         source.urls = JSON.parse(source.urls || "[]");
         return source;
       });
-      
+      if (hasSensitiveWords(video.title + video.category)) {
+        video.cover = randomImage();
+      }
       return new Response(JSON.stringify(video), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -141,7 +145,9 @@ export async function handleVideos(request: Request, env: Env, corsHeaders: Reco
         source.urls = JSON.parse(source.urls || "[]");
         return source;
       });
-      
+      if (hasSensitiveWords(video.title + video.category)) {
+        video.cover = randomImage();
+      }
       return video;
     }));
     

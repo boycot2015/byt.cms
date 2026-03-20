@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
-const routes = [
+import { apiService } from '../services/api'
+let routes = [
     {
         path: '/',
         name: 'Home',
@@ -18,7 +18,6 @@ const routes = [
             affix: true,
             showInHome: true,
             recommended: true,
-            // category: '国产动漫,科幻片,预告片',
             hideInMenu: true
         },
         component: () => import('../views/HomeView.vue')
@@ -29,7 +28,6 @@ const routes = [
         meta: {
             title: '动漫',
             showInHome: true,
-            category: '国产动漫,日韩动漫',
             hideInMenu: false
         },
         component: () => import('../views/MovieView.vue')
@@ -40,7 +38,6 @@ const routes = [
         meta: {
             title: '电影',
             showInHome: true,
-            category: '科幻片,喜剧片,剧情片,爱情片,动作片,战争片,动画片',
             hideInMenu: false
         },
         component: () => import('../views/MovieView.vue')
@@ -51,7 +48,6 @@ const routes = [
         meta: {
             title: '电视剧',
             showInHome: true,
-            category: '国产剧,韩国剧,欧美剧,香港剧,台湾剧,日本剧',
             hideInMenu: false
         },
         component: () => import('../views/MovieView.vue')
@@ -62,7 +58,6 @@ const routes = [
         meta: {
             title: '综艺',
             showInHome: true,
-            category: '大陆综艺,日韩综艺,港台综艺,欧美综艺',
             hideInMenu: false
         },
         component: () => import('../views/MovieView.vue')
@@ -72,7 +67,6 @@ const routes = [
         name: 'Trailer',
         meta: {
             title: '预告片',
-            category: '预告片',
             hideInMenu: false
         },
         component: () => import('../views/MovieView.vue')
@@ -96,7 +90,12 @@ const routes = [
         component: () => import('../views/detail/Player.vue')
     },
 ]
-
+routes = routes.map((route) => {
+  const cateMap = apiService.getCateMap()
+  const category = route.name ? cateMap[route.name.toLowerCase() as keyof typeof cateMap] : undefined
+  ;(route.meta as any).category = category || ''
+  return route
+})
 const router = createRouter({
   history: createWebHistory(),
   scrollBehavior (to, from, savedPosition) {

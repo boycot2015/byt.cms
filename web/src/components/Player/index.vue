@@ -77,11 +77,9 @@ defineExpose({
     player: playerInstance,
     getCurrentTime: () => playerInstance.value?.currentTime || 0,
     sendComment: (comment: any) => {
-        debugger
         playerInstance.value.danmu.sendComment({
-        ...comment,
         ...defaultComment,
-        start: 0, //弹幕出现时间，毫秒
+        ...comment,
         txt: comment.content, //弹幕文字内容
     })
     },

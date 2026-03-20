@@ -38,15 +38,13 @@
     <!-- 页脚 -->
     <footer class="footer bg-gray-800 text-white py-6 px-4 rounded-b-2xl">
       <div class="container mx-auto">
-        <!-- <div class="flex justify-center mb-4">
-          <ul class="flex space-x-2 md:space-x-6 text-sm">
-            <li><a href="#" class="hover:text-red-600">关于我们</a></li>
-            <li><a href="#" class="hover:text-red-600">联系方式</a></li>
-            <li><a href="#" class="hover:text-red-600">隐私政策</a></li>
-            <li><a href="#" class="hover:text-red-600">用户协议</a></li>
-            <li><a href="#" class="hover:text-red-600">网站地图</a></li>
+        <div v-if="links.length > 0" class="flex justify-center mb-4">
+          <ul class="flex flex-wrap justify-center space-x-2 md:space-x-6 text-sm">
+            <li v-for="(link, index) in links" :key="index">
+              <a :href="link.url" target="_blank" rel="noopener noreferrer" class="hover:text-red-600">{{ link.name }}</a>
+            </li>
           </ul>
-        </div> -->
+        </div>
         <div class="text-center text-sm text-gray-400">
           <p>© 2026 影视在线 版权所有</p>
         </div>
@@ -63,6 +61,7 @@ import Search from './components/Search.vue'
 import FloatingActions from './components/FloatingActions.vue'
 import LoginModal from './components/LoginModal.vue'
 import { useUserStore } from './store/user'
+import { apiService } from './services/api'
 const router = useRouter()
 const routes = router.options?.routes.filter(route => !route.meta?.hideInMenu).map(route => ({
   ...route,
@@ -84,10 +83,20 @@ const activeClass = computed(() => {
 
 const showLoginModal = ref(false)
 const userStore = useUserStore()
+const links = ref<{name: string, url: string}[]>([])
 
 // 从本地存储加载用户信息
-onMounted(() => {
+onMounted(async () => {
   userStore.loadFromLocalStorage()
+  // 获取网站配置
+  try {
+    const config = await apiService.getSiteConfig()
+    if (config?.links) {
+      links.value = config.links
+    }
+  } catch (error) {
+    console.error('获取网站配置失败:', error)
+  }
 })
 
 const handleLogout = () => {
