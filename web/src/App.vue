@@ -4,7 +4,10 @@
     <header class="header bg-black">
       <div class="container p-4 border-b md:border-0 border-gray-800 mx-auto flex justify-between items-center">
         <div class="flex items-center text-white ">
-          <h1 class="text-xl md:text-2xl font-bold text-red-600 mr-1 md:mr-6 cursor-pointer" @click="router.push('/')">影视在线</h1>
+          <h1 class="flex items-center gap-1 text-xl md:text-2xl font-bold text-red-600 mr-1 md:mr-6 cursor-pointer" @click="router.push('/')">
+            <img :src="logo" v-if="logo" alt="logo" class="hidden lg:block w-6 h-6 mr-2">
+            <span>{{ siteName || '影视在线' }}</span>
+          </h1>
           <nav class="hidden md:block">
             <ul class="flex space-x-4 text-sm">
               <li v-for="route in routes" :key="route.path"><router-link :to="route.path" class="hover:text-red-600" :class="activeClass(route)">{{route.meta?.title||route.name}}</router-link></li>
@@ -84,7 +87,8 @@ const activeClass = computed(() => {
 const showLoginModal = ref(false)
 const userStore = useUserStore()
 const links = ref<{name: string, url: string}[]>([])
-
+const siteName = ref('')
+const logo = ref('')
 // 从本地存储加载用户信息
 onMounted(async () => {
   userStore.loadFromLocalStorage()
@@ -94,6 +98,8 @@ onMounted(async () => {
     if (config?.links) {
       links.value = config.links
     }
+    siteName.value = config?.title || '影视在线'
+    logo.value = config?.logo || ''
   } catch (error) {
     console.error('获取网站配置失败:', error)
   }

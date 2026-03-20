@@ -2,6 +2,7 @@
 
 interface Env {
   UPLOAD_BUCKET: R2Bucket;
+  FILE_URL?: string;
 }
 
 export async function handleUpload(request: Request, env: Env, corsHeaders: Record<string, string>) {
@@ -32,10 +33,10 @@ export async function handleUpload(request: Request, env: Env, corsHeaders: Reco
     
     // 生成访问URL（假设使用Cloudflare R2的公共访问URL）
     // 使用环境变量或硬编码的桶名称构建URL
-    const bucketName = (env.UPLOAD_BUCKET as any).name || "your-bucket-name";
-    const url = `https://${bucketName}.r2.cloudflarestorage.com/${fileName}`;
+    const bucketName = (env.UPLOAD_BUCKET as any).name || "file";
+    const bucketUrl = `${env.FILE_URL}/${fileName}`;
     
-    return new Response(JSON.stringify({ success: true, data: { url } }), {
+    return new Response(JSON.stringify({ success: true, data: { url: bucketUrl } }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

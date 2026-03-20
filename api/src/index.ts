@@ -24,6 +24,7 @@ export default {
       ALIYUN_CLIENT_SECRET: string;
       JIANGUOYUN_USERNAME: string;
       JIANGUOYUN_APP_PASSWORD: string;
+      FILE_URL: string;
     },
     ctx: ExecutionContext
   ): Promise<Response> {

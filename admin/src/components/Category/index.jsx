@@ -283,8 +283,8 @@ const Category = forwardRef((props, ref) => {
                 dataSource={categories}
                 rowKey="id"
                 loading={categoryLoading}
-                scroll={{ y: 'calc(100vh - 400px)' }}
-                pagination={{ total, pageSize, current: page, onChange: (page, pageSize) => {
+                scroll={{ y: 'calc(100vh - 380px)' }}
+                pagination={{ total, pageSize, current: page, showTotal: () => `共 ${total} 条`, onChange: (page, pageSize) => {
                     setPage(page);
                     setPageSize(pageSize);
                 } }}

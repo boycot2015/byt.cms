@@ -180,7 +180,7 @@ const Comment = forwardRef((props, ref) => {
 
             {/* 评论列表 */}
             <Table
-                scroll={{ y:'calc(100vh - 300px)' }}
+                scroll={{ y:'calc(100vh - 380px)' }}
                 columns={[
                     {
                         title: '评论内容',

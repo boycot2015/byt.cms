@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment, forwardRef } from 'react';
 import { 
   message, Table, Button, Modal, Form, Input, Typography, Space, 
   App, Card, Row, Col, Tabs, Switch, Tag,
-  Image, Drawer, Divider, ConfigProvider, Popconfirm
+  Image, Drawer, Divider, ConfigProvider, Popconfirm, Pagination
 } from 'antd';
 import axios from 'axios';
 import { 
@@ -21,6 +21,9 @@ const TagComponent = forwardRef((props, ref) => {
     const [tags, setTags] = useState([]);
     const [tagLoading, setTagLoading] = useState(false);
     const [tagSearch, setTagSearch] = useState('');
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [total, setTotal] = useState(0);
     // ========== 标签列配置 ==========
     const tagColumns = [
         {
@@ -32,6 +35,7 @@ const TagComponent = forwardRef((props, ref) => {
         title: '创建时间',
         dataIndex: 'createTime',
         key: 'createTime',
+         width: 200,
         render: (time) => time ? new Date(time).toLocaleString() : '-'
         },
         {
@@ -84,13 +88,7 @@ const TagComponent = forwardRef((props, ref) => {
             console.error(err);
         }
     };
-    // 筛选标签列表
-    const getFilteredTags = () => {
-        if (!tagSearch) return tags;
-        return tags.filter(t => 
-        t.name.toLowerCase().includes(tagSearch.toLowerCase())
-        );
-    };
+
     // 批量删除标签
     const batchDeleteTags = async () => {
         if (selectedTags.length === 0) {
@@ -115,8 +113,15 @@ const TagComponent = forwardRef((props, ref) => {
     const fetchTags = async () => {
         setTagLoading(true);
         try {
-            const res = await axios.get(`${API_BASE}/api/tags`);
-            setTags(res.data);
+            const res = await axios.get(`${API_BASE}/api/tags/page`, {
+                params: {
+                    page,
+                    pageSize,
+                    search: tagSearch
+                }
+            });
+            setTags(res.data.list || []);
+            setTotal(res.data.total || 0);
         } catch (err) {
             message.error('获取标签失败');
             console.error(err);
@@ -134,7 +139,8 @@ const TagComponent = forwardRef((props, ref) => {
     // ========== 初始化 ==========
     useEffect(() => {
         fetchTags();
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, pageSize, tagSearch]);
     React.useImperativeHandle(ref, () => ({
         fetchTags
     }));
@@ -165,7 +171,11 @@ const TagComponent = forwardRef((props, ref) => {
                             placeholder="搜索标签名称"
                             value={tagSearch}
                             allowClear
-                            onChange={(e) => setTagSearch(e.target.value)}
+                            onChange={(e) => {
+                                setTagSearch(e.target.value);
+                                setPage(1);
+                                fetchTags();
+                            }}
                             prefix={<SearchOutlined />}
                         />
                         <Button
@@ -181,11 +191,21 @@ const TagComponent = forwardRef((props, ref) => {
             
             <Table
                 columns={tagColumns}
-                dataSource={getFilteredTags()}
+                dataSource={tags}
                 rowKey="id"
                 loading={tagLoading}
-                scroll={{ y: 'calc(100vh - 400px)' }}
-                pagination={{ pageSize: 10 }}
+                scroll={{ y: 'calc(100vh - 380px)' }}
+                pagination={{
+                    current: page,
+                    pageSize,
+                    total,
+                    showTotal: () => `共 ${total} 条`,
+                    onChange: (current, size) => {
+                        setPage(current);
+                        setPageSize(size);
+                        fetchTags();
+                    },
+                }}
                 rowSelection={{
                 type: 'checkbox',
                 selectedRowKeys: selectedTags.map(t => t.id),

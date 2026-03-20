@@ -8,7 +8,35 @@ interface Env {
 export async function handleTags(request: Request, env: Env, corsHeaders: Record<string, string>) {
   const url = new URL(request.url);
   const path = url.pathname;
-
+    // 获取标签列表
+  if (path === "/api/tags/page" && request.method === "GET") {
+    const page = parseInt(url.searchParams.get("page") || "1");
+    const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
+    const search = url.searchParams.get("search") || "";
+    
+    let query = "SELECT * FROM tags";
+    let countQuery = "SELECT COUNT(*) FROM tags";
+    const params: any[] = [];
+    
+    // WHERE 子句
+    if (search) {
+      query += " WHERE name LIKE ?";
+      countQuery += " WHERE name LIKE ?";
+      params.push(`%${search}%`);
+    }
+    
+    // 排序和分页
+    query += " ORDER BY createTime DESC LIMIT ? OFFSET ?";
+    params.push(pageSize, (page - 1) * pageSize);
+    
+    // 执行查询
+    const tags = await env.DB.prepare(query).bind(...params).all();
+    const countResult = await env.DB.prepare(countQuery).bind(...params.slice(0, -2)).first();
+    
+    return new Response(JSON.stringify({ list: tags.results, total: countResult?.['COUNT(*)'] || 0 }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
   // 获取标签列表
   if (path === "/api/tags" && request.method === "GET") {
     const tags = await env.DB.prepare(

@@ -178,7 +178,8 @@ const User = forwardRef((props, ref) => {
         dataSource={users}
         columns={columns}
         rowKey="id"
-        pagination={{ pageSize: 10 }}
+        scroll={{ y:'calc(100vh - 380px)' }}
+        pagination={{ showTotal: () => `共 ${users.length} 条` }}
       />
 
       <Modal

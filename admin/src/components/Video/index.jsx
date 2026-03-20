@@ -491,7 +491,7 @@ const Video = forwardRef((props, ref) => {
 
             {/* 视频列表（带预览） */}
             <Table
-                scroll={{ y:'calc(100vh - 400px)' }}
+                scroll={{ y:'calc(100vh - 380px)' }}
                 columns={[
                     {
                         title: '封面',
