@@ -22,6 +22,9 @@ const Category = forwardRef((props, ref) => {
     const { isAdmin } = usePermission();
     // ========== 分类/标签状态 ==========
     const [categories, setCategories] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const [categoryLoading, setCategoryLoading] = useState(false);
     // 批量操作状态
     const [selectedCategories, setSelectedCategories] = useState([]);
@@ -45,6 +48,21 @@ const Category = forwardRef((props, ref) => {
       wait: 1000,
     },
   );
+
+    // 处理分类状态切换
+    const handleStatusChange = async (checked, record) => {
+        try {
+            const id = record.id.replace('category:', '');
+            await axios.put(`${API_BASE}/api/categories/${id}/status`, {
+                status: checked ? 'active' : 'inactive'
+            });
+            message.success('状态更新成功');
+            fetchCategories();
+        } catch (err) {
+            message.error('状态更新失败');
+            console.error(err);
+        }
+    };
 
     const categoryColumns = [
     {
@@ -80,6 +98,26 @@ const Category = forwardRef((props, ref) => {
         >
             {desc || '无描述'}
         </Paragraph>
+        )
+    },
+    {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        width: 120,
+        render: (status, record) => (
+            <div>
+                {isAdmin && (
+                    <div style={{ marginTop: 8 }}>
+                        <Switch
+                            checked={status === 'active'}
+                            checkedChildren="启用"
+                            unCheckedChildren="禁用"
+                            onChange={(checked) => handleStatusChange(checked, record)}
+                        />
+                    </div>
+                )}
+            </div>
         )
     },
     {
@@ -129,17 +167,12 @@ const Category = forwardRef((props, ref) => {
     ];
     // ========== 分类管理方法 ==========
     // 筛选分类列表
-    const getFilteredCategories = () => {
-        if (!categorySearch) return categories;
-        return categories.filter(c => 
-        c.name.toLowerCase().includes(categorySearch.toLowerCase())
-        );
-    };
     const fetchCategories = async () => {
         setCategoryLoading(true);
         try {
-            const res = await axios.get(`${API_BASE}/api/categories`);
-            setCategories(res.data);
+            const res = await axios.get(`${API_BASE}/api/categories/page?page=${page}&pageSize=${pageSize}&search=${categorySearch||''}`);
+            setCategories(res.data.list || []);
+            setTotal(res.data.total || 0);
         } catch (err) {
             message.error('获取分类失败');
             console.error(err);
@@ -194,7 +227,8 @@ const Category = forwardRef((props, ref) => {
     // ========== 初始化 ==========
     useEffect(() => {
         fetchCategories();
-    }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, pageSize, categorySearch]);
     React.useImperativeHandle(ref, () => ({
         fetchCategories
     }));
@@ -246,11 +280,14 @@ const Category = forwardRef((props, ref) => {
             
             <Table
                 columns={categoryColumns}
-                dataSource={getFilteredCategories()}
+                dataSource={categories}
                 rowKey="id"
                 loading={categoryLoading}
                 scroll={{ y: 'calc(100vh - 400px)' }}
-                pagination={{ pageSize: 10 }}
+                pagination={{ total, pageSize, current: page, onChange: (page, pageSize) => {
+                    setPage(page);
+                    setPageSize(pageSize);
+                } }}
                 rowSelection={{
                     type: 'checkbox',
                     selectedRowKeys: selectedCategories.map(c => c.id),

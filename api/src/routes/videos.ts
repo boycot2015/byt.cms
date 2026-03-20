@@ -58,8 +58,8 @@ export async function handleVideos(request: Request, env: Env, corsHeaders: Reco
     }
     
     // 构建查询条件
-    let query = "SELECT DISTINCT v.* FROM videos v";
-    let countQuery = "SELECT COUNT(DISTINCT v.id) as total FROM videos v";
+    let query = "SELECT DISTINCT v.* FROM videos v JOIN categories c ON v.categoryId = c.id";
+    let countQuery = "SELECT COUNT(DISTINCT v.id) as total FROM videos v JOIN categories c ON v.categoryId = c.id";
     const params: any[] = [];
     
     // 标签筛选
@@ -75,8 +75,8 @@ export async function handleVideos(request: Request, env: Env, corsHeaders: Reco
     }
     
     //  WHERE 子句
-    query += " WHERE 1=1";
-    countQuery += " WHERE 1=1";
+    query += " WHERE c.status = 'active'";
+    countQuery += " WHERE c.status = 'active'";
     
     if (category) {
       query += " AND v.categoryId = ?";
@@ -199,17 +199,17 @@ export async function handleVideos(request: Request, env: Env, corsHeaders: Reco
 
   // 获取推荐视频
   if (path === "/api/videos/recommended" && request.method === "GET") {
-    // 首先查询推荐的视频
+    // 首先查询推荐的视频（只查询启用分类的视频）
     const recommendedVideos = await env.DB.prepare(
-      "SELECT * FROM videos WHERE recommended = 1 ORDER BY updateTime DESC"
+      "SELECT v.* FROM videos v JOIN categories c ON v.categoryId = c.id WHERE v.recommended = 1 AND c.status = 'active' ORDER BY v.updateTime DESC"
     ).all();
     let videos = recommendedVideos.results;
     const maxRecommendedCount = 10;
     // 如果没有推荐数据，返回每个分类最近更新的5条数据
     if (videos.length <= maxRecommendedCount) {
-      // 获取所有分类
+      // 获取所有启用的分类
       const categories = await env.DB.prepare(
-        "SELECT DISTINCT categoryId, category FROM videos WHERE categoryId IS NOT NULL AND categoryId != ''"
+        "SELECT id, name FROM categories WHERE status = 'active'"
       ).all();
       
       const categoryList = categories.results;
@@ -217,8 +217,8 @@ export async function handleVideos(request: Request, env: Env, corsHeaders: Reco
       // 为每个分类获取最近更新的视频
       for (const category of categoryList) {
         const categoryVideos = await env.DB.prepare(
-          "SELECT * FROM videos WHERE categoryId = ? ORDER BY updateTime DESC LIMIT 5"
-        ).bind(category.categoryId).all();
+          "SELECT v.* FROM videos v WHERE v.categoryId = ? ORDER BY v.updateTime DESC LIMIT 5"
+        ).bind(category.id).all();
         
         videos = [...videos, ...categoryVideos.results];
         

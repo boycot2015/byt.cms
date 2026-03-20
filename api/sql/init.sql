@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS categories (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
   desc TEXT DEFAULT '',
+  status TEXT DEFAULT 'active',
   `order` INTEGER DEFAULT 0,
   createTime TEXT NOT NULL
 );

@@ -9,6 +9,8 @@ import { handleSiteConfig } from './routes/siteConfig';
 import { handleUpload } from './routes/upload';
 import { handleVideoSources } from './routes/videoSources';
 import { apiDocs } from './utils/apiDocs';
+import { isTimeToFetch } from './services/videoSourceService';
+import { fetchVideoRecommend, setVideoList } from './services/dbService';
 
 export default {
   async fetch(
@@ -124,5 +126,49 @@ export default {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 404,
     });
-  }
+  },
+  async scheduled(
+    event: ScheduledEvent,
+    env: {
+      DB: D1Database; // 替换 KV 为 D1
+      ALIYUN_REFRESH_TOKEN: string;
+      ALIYUN_CLIENT_ID: string;
+      ALIYUN_CLIENT_SECRET: string;
+      JIANGUOYUN_USERNAME: string;
+      JIANGUOYUN_APP_PASSWORD: string;
+      QUARK_API_KEY: string;
+    },
+    ctx: ExecutionContext
+  ): Promise<void> {
+    console.log("定时调度任务执行:", new Date().toLocaleString());
+    
+    // 获取所有视频源配置
+    const sources:any = await env.DB.prepare("SELECT * FROM video_sources WHERE enabled = 1").all();
+    
+    if (sources.results.length === 0) {
+      console.log("无启用的视频源配置");
+    } else {
+      for (const source of sources.results) {
+        // 解析JSON字段
+        source.tags = JSON.parse(source.tags || "[]");
+        
+        // 检查是否到抓取时间
+        if (!isTimeToFetch(source)) {
+          console.log(`源[${source.name}]未到抓取时间，跳过`);
+          continue;
+        }
+        
+        try {
+          await setVideoList(source, env);
+          console.log(`源[${source.name}]抓取完成`);
+        } catch (error) {
+          console.error(`源[${source.name}]抓取失败:`, error);
+          continue;
+        }
+      }
+    }
+    
+    // 调用推荐API更新推荐数据
+    await fetchVideoRecommend(env);
+  },
 };

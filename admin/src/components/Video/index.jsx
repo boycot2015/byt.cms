@@ -166,7 +166,7 @@ const Video = forwardRef((props, ref) => {
     const fetchVideoRecommend = async () => {
         setRecommendLoading(true);
         try {
-            const res = await axios.get(`${API_BASE}/api/videos/recommended/async`);
+            const res = await axios.get(`${API_BASE}/api/video-fetch-recommend`);
             message.success(res.data.message || '推荐数据更新完成');
             fetchVideos();
         } catch (err) {
@@ -178,7 +178,10 @@ const Video = forwardRef((props, ref) => {
     };
     const saveVideoSources = async () => {
         try {
-        await axios.post(`${API_BASE}/api/video-sources`, videoSources);
+        await axios.post(`${API_BASE}/api/video-sources`, videoSources.map(item => ({
+            ...item,
+            category: item.category ? Number(item.category) : ''
+        })));
         message.success('视频源配置保存成功');
         setSourceConfigDrawer({ visible: false });
         } catch (err) {
@@ -528,7 +531,7 @@ const Video = forwardRef((props, ref) => {
                                 >
                                 </Rate>
                             )}
-                            <p style={{margin: '5px 0'}}>导演：{record?.director || '--'}</p>
+                            <Typography.Paragraph style={{margin: '5px 0'}} ellipsis={{ rows: 2, expandable: true, symbol: '展开' }}>导演：{record?.director || '--'}</Typography.Paragraph>
                             <Typography.Paragraph ellipsis={{ rows: 2, expandable: true, symbol: '展开' }}>
                                 主演：{record.actors?.join(', ') || '无'}
                             </Typography.Paragraph>

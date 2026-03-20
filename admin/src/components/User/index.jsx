@@ -215,7 +215,7 @@ const User = forwardRef((props, ref) => {
             label="角色"
             rules={[{ required: true, message: '请选择角色' }]}
           >
-            <Select disabled={editingUser?.id === currentUser?.id||editingUser?.role=='admin'} placeholder="请选择角色">
+            <Select disabled={(editingUser?.id === currentUser?.id||editingUser?.role=='admin')&&currentUser?.role!='admin'} placeholder="请选择角色">
               <Select.Option value="user">普通用户</Select.Option>
               <Select.Option value="admin">管理员</Select.Option>
             </Select>

@@ -8,19 +8,19 @@ export const apiDocs = {
   },
   servers: [
     {
-      url: "http://localhost:8787/api",
-      description: "本地开发环境"
-    },
-    {
       url: "https://cms-api.boycot.dpdns.org/api",
       description: "生产环境"
     },
+    {
+      url: "http://localhost:8787/api",
+      description: "本地开发环境"
+    }
   ],
   paths: {
     "/categories": {
       get: {
         summary: "获取所有分类",
-        description: "获取系统中所有分类的列表",
+        description: "获取系统中所有分类的列表，支持排序和状态筛选",
         parameters: [
           {
             in: "query",
@@ -41,6 +41,15 @@ export const apiDocs = {
               default: "desc"
             },
             description: "排序方向"
+          },
+          {
+            in: "query",
+            name: "status",
+            schema: {
+              type: "string",
+              enum: ["active", "inactive"]
+            },
+            description: "分类状态筛选"
           }
         ],
         responses: {
@@ -57,6 +66,7 @@ export const apiDocs = {
                       name: { type: "string" },
                       desc: { type: "string" },
                       order: { type: "number" },
+                      status: { type: "string", enum: ["active", "inactive"] },
                       createTime: { type: "string" }
                     }
                   }
@@ -87,6 +97,12 @@ export const apiDocs = {
                   order: {
                     type: "number",
                     description: "分类排序"
+                  },
+                  status: {
+                    type: "string",
+                    enum: ["active", "inactive"],
+                    default: "active",
+                    description: "分类状态"
                   }
                 },
                 required: ["name"]
@@ -106,6 +122,7 @@ export const apiDocs = {
                     name: { type: "string" },
                     desc: { type: "string" },
                     order: { type: "number" },
+                    status: { type: "string", enum: ["active", "inactive"] },
                     createTime: { type: "string" }
                   }
                 }
@@ -133,6 +150,58 @@ export const apiDocs = {
         responses: {
           "200": {
             description: "删除成功",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: {
+                      type: "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}/status": {
+      put: {
+        summary: "更新分类状态",
+        description: "根据ID更新分类的启用/禁用状态",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            required: true,
+            schema: {
+              type: "string"
+            },
+            description: "分类ID"
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  status: {
+                    type: "string",
+                    enum: ["active", "inactive"],
+                    description: "分类状态"
+                  }
+                },
+                required: ["status"]
+              }
+            }
+          }
+        },
+        responses: {
+          "200": {
+            description: "更新成功",
             content: {
               "application/json": {
                 schema: {
@@ -250,7 +319,7 @@ export const apiDocs = {
     "/videos": {
       get: {
         summary: "获取视频列表",
-        description: "获取视频列表，支持分页和筛选",
+        description: "获取视频列表，支持分页和筛选，只查询启用分类的视频",
         parameters: [
           {
             in: "query",
@@ -325,42 +394,110 @@ export const apiDocs = {
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  properties: {
-                    list: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          id: { type: "string" },
-                          title: { type: "string" },
-                          subTitle: { type: "string" },
-                          desc: { type: "string" },
-                          cover: { type: "string" },
-                          banner: { type: "string" },
-                          category: { type: "string" },
-                          categoryId: { type: "string" },
-                          actors: { type: "array", items: { type: "string" } },
-                          director: { type: "string" },
-                          writer: { type: "string" },
-                          recommended: { type: "boolean" },
-                          sources: {
-                            type: "array",
-                            items: {
-                              type: "object",
-                              properties: {
-                                id: { type: "string" },
-                                videoId: { type: "string" },
-                                source: { type: "string" },
-                                url: { type: "string" },
-                                urls: {
-                                  type: "array",
-                                  items: {
-                                    type: "object",
-                                    properties: {
-                                      label: { type: "string" },
-                                      url: { type: "string" }
+                  oneOf: [
+                    {
+                      type: "object",
+                      properties: {
+                        list: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              id: { type: "string" },
+                              title: { type: "string" },
+                              subTitle: { type: "string" },
+                              desc: { type: "string" },
+                              cover: { type: "string" },
+                              banner: { type: "string" },
+                              category: { type: "string" },
+                              categoryId: { type: "string" },
+                              actors: { type: "array", items: { type: "string" } },
+                              director: { type: "string" },
+                              writer: { type: "string" },
+                              recommended: { type: "boolean" },
+                              tags: {
+                                type: "array",
+                                items: {
+                                  type: "object",
+                                  properties: {
+                                    id: { type: "string" },
+                                    name: { type: "string" },
+                                    createTime: { type: "string" }
+                                  }
+                                }
+                              },
+                              sources: {
+                                type: "array",
+                                items: {
+                                  type: "object",
+                                  properties: {
+                                    id: { type: "string" },
+                                    videoId: { type: "string" },
+                                    source: { type: "string" },
+                                    url: { type: "string" },
+                                    urls: {
+                                      type: "array",
+                                      items: {
+                                        type: "object",
+                                        properties: {
+                                          label: { type: "string" },
+                                          url: { type: "string" }
+                                        }
+                                      }
                                     }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        total: { type: "number" },
+                        page: { type: "number" },
+                        pageSize: { type: "number" }
+                      }
+                    },
+                    {
+                      type: "object",
+                      properties: {
+                        id: { type: "string" },
+                        title: { type: "string" },
+                        subTitle: { type: "string" },
+                        desc: { type: "string" },
+                        cover: { type: "string" },
+                        banner: { type: "string" },
+                        category: { type: "string" },
+                        categoryId: { type: "string" },
+                        actors: { type: "array", items: { type: "string" } },
+                        director: { type: "string" },
+                        writer: { type: "string" },
+                        recommended: { type: "boolean" },
+                        tags: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              id: { type: "string" },
+                              name: { type: "string" },
+                              createTime: { type: "string" }
+                            }
+                          }
+                        },
+                        sources: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              id: { type: "string" },
+                              videoId: { type: "string" },
+                              source: { type: "string" },
+                              url: { type: "string" },
+                              urls: {
+                                type: "array",
+                                items: {
+                                  type: "object",
+                                  properties: {
+                                    label: { type: "string" },
+                                    url: { type: "string" }
                                   }
                                 }
                               }
@@ -368,11 +505,8 @@ export const apiDocs = {
                           }
                         }
                       }
-                    },
-                    total: { type: "number" },
-                    page: { type: "number" },
-                    pageSize: { type: "number" }
-                  }
+                    }
+                  ]
                 }
               }
             }
@@ -417,7 +551,7 @@ export const apiDocs = {
     "/videos/recommended": {
       get: {
         summary: "获取推荐视频",
-        description: "获取推荐视频列表",
+        description: "获取推荐视频列表，只查询启用分类的视频",
         responses: {
           "200": {
             description: "成功",
@@ -440,6 +574,17 @@ export const apiDocs = {
                       director: { type: "string" },
                       writer: { type: "string" },
                       recommended: { type: "boolean" },
+                      tags: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            id: { type: "string" },
+                            name: { type: "string" },
+                            createTime: { type: "string" }
+                          }
+                        }
+                      },
                       sources: {
                         type: "array",
                         items: {
@@ -722,7 +867,7 @@ export const apiDocs = {
     "/comments/{id}": {
       delete: {
         summary: "删除评论",
-        description: "根据ID删除评论",
+        description: "根据ID删除评论（软删除）",
         parameters: [
           {
             in: "path",
@@ -856,6 +1001,140 @@ export const apiDocs = {
                     status: { type: "string" },
                     createTime: { type: "string" },
                     updateTime: { type: "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      get: {
+        summary: "获取用户列表",
+        description: "获取系统中所有用户的列表",
+        responses: {
+          "200": {
+            description: "成功",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string" },
+                      username: { type: "string" },
+                      nickname: { type: "string" },
+                      avatar: { type: "string" },
+                      role: { type: "string" },
+                      status: { type: "string" },
+                      createTime: { type: "string" },
+                      updateTime: { type: "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      post: {
+        summary: "更新用户",
+        description: "根据ID更新用户信息",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            required: true,
+            schema: {
+              type: "string"
+            },
+            description: "用户ID"
+          }
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  nickname: {
+                    type: "string",
+                    description: "昵称"
+                  },
+                  avatar: {
+                    type: "string",
+                    description: "头像"
+                  },
+                  role: {
+                    type: "string",
+                    description: "角色"
+                  },
+                  status: {
+                    type: "string",
+                    description: "状态"
+                  },
+                  password: {
+                    type: "string",
+                    description: "密码"
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          "200": {
+            description: "更新成功",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    username: { type: "string" },
+                    nickname: { type: "string" },
+                    avatar: { type: "string" },
+                    role: { type: "string" },
+                    status: { type: "string" },
+                    createTime: { type: "string" },
+                    updateTime: { type: "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      delete: {
+        summary: "删除用户",
+        description: "根据ID删除用户",
+        parameters: [
+          {
+            in: "path",
+            name: "id",
+            required: true,
+            schema: {
+              type: "string"
+            },
+            description: "用户ID"
+          }
+        ],
+        responses: {
+          "200": {
+            description: "删除成功",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: {
+                      type: "boolean"
+                    }
                   }
                 }
               }
@@ -1050,13 +1329,69 @@ export const apiDocs = {
         }
       }
     },
-    "/video-fetch-sources-data": {
+    "/video-sources": {
       get: {
-        summary: "自动抓取视频源",
-        description: "自动抓取所有视频源的数据",
+        summary: "获取视频源配置",
+        description: "获取所有视频源配置",
         responses: {
           "200": {
-            description: "抓取成功",
+            description: "成功",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string" },
+                      name: { type: "string" },
+                      type: { type: "string" },
+                      cron: { type: "string" },
+                      enabled: { type: "boolean" },
+                      path: { type: "string" },
+                      categoryId: { type: "string" },
+                      category: { type: "number" },
+                      tags: { type: "array", items: { type: "string" } },
+                      action: { type: "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      post: {
+        summary: "视频源配置管理",
+        description: "更新视频源配置",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    name: { type: "string" },
+                    type: { type: "string" },
+                    cron: { type: "string" },
+                    enabled: { type: "boolean" },
+                    path: { type: "string" },
+                    categoryId: { type: "string" },
+                    category: { type: "number" },
+                    tags: { type: "array", items: { type: "string" } },
+                    action: { type: "string" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        responses: {
+          "200": {
+            description: "更新成功",
             content: {
               "application/json": {
                 schema: {
@@ -1064,26 +1399,6 @@ export const apiDocs = {
                   properties: {
                     success: {
                       type: "boolean"
-                    },
-                    results: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          source: {
-                            type: "string"
-                          },
-                          success: {
-                            type: "boolean"
-                          },
-                          data: {
-                            type: "object"
-                          },
-                          error: {
-                            type: "string"
-                          }
-                        }
-                      }
                     }
                   }
                 }
@@ -1093,19 +1408,35 @@ export const apiDocs = {
         }
       }
     },
-    "/video-fetch-sources-data/{sourceName}": {
+    "/video-source-data/{type}": {
       get: {
-        summary: "手动抓取视频源",
+        summary: "手动抓取视频源数据",
         description: "手动抓取指定视频源的数据",
         parameters: [
           {
             in: "path",
-            name: "sourceName",
+            name: "type",
             required: true,
             schema: {
               type: "string"
             },
-            description: "视频源名称"
+            description: "视频源类型"
+          },
+          {
+            in: "query",
+            name: "action",
+            schema: {
+              type: "string"
+            },
+            description: "操作类型"
+          },
+          {
+            in: "query",
+            name: "cid",
+            schema: {
+              type: "string"
+            },
+            description: "分类ID"
           }
         ],
         responses: {
@@ -1118,6 +1449,15 @@ export const apiDocs = {
                   properties: {
                     success: {
                       type: "boolean"
+                    },
+                    code: {
+                      type: "number"
+                    },
+                    count: {
+                      type: "number"
+                    },
+                    page: {
+                      type: "number"
                     },
                     data: {
                       type: "object"

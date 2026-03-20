@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Layout, message, Button, Modal, Form, Input, Typography, Space, 
+  Layout, message, Button, Modal, Form, Input, InputNumber,Typography, Space, 
   Card, Row, Col, Tabs, Select, Dropdown, Menu, Badge,
   theme, Drawer, Divider, ConfigProvider, App
 } from 'antd';
@@ -101,6 +101,7 @@ function Index() {
       name: category?.name || '',
       desc: category?.desc || '',
       order: category?.order || 0,
+      status: category?.status || 'active',
     });
     setCategoryModalVisible(true);
   };
@@ -339,11 +340,21 @@ function Index() {
                 label="排序值"
                 rules={[{ required: true, message: '请输入排序值' }, { type: 'number', message: '排序值必须是数字' }]}
               >
-                <Input.Number 
+                <InputNumber 
                   placeholder="数字越小，排序越靠前" 
                   min={0}
                   style={{ width: '100%' }}
                 />
+              </Form.Item>
+              <Form.Item
+                name="status"
+                label="状态"
+                rules={[{ required: true, message: '请选择状态' }]}
+              >
+                <Select placeholder="请选择状态">
+                  <Select.Option value="active">启用</Select.Option>
+                  <Select.Option value="inactive">禁用</Select.Option>
+                </Select>
               </Form.Item>
               <Form.Item
                 name="desc"

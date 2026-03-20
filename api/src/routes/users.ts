@@ -94,6 +94,77 @@ export async function handleUsers(request: Request, env: Env, corsHeaders: Recor
       status: 201,
     });
   }
+  // 用户管理
+  if (path === "/api/users" && request.method === "GET") {
+    const users = await env.DB.prepare(
+      "SELECT id, username, nickname, avatar, role, status, createTime, updateTime FROM users ORDER BY createTime DESC"
+    ).all();
+    
+    return new Response(JSON.stringify(users.results), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+  if (path.startsWith("/api/users/") && request.method === "POST") {
+    const id = path.replace("/api/users/", "");
+    const userId = `user:${id}`;
+    const body:any = await request.json();
+    
+    // 检查用户是否存在
+    const oldUser = await env.DB.prepare(
+      "SELECT * FROM users WHERE id = ?"
+    ).bind(userId).first();
+    
+    if (!oldUser) {
+      return new Response(JSON.stringify({ error: "用户不存在" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 404,
+      });
+    }
+    
+    // 更新用户
+    const now = new Date().toISOString();
+    const newUser:any = {
+      ...oldUser,
+      nickname: body.nickname || oldUser.nickname,
+      avatar: body.avatar || oldUser.avatar,
+      role: body.role || oldUser.role,
+      status: body.status || oldUser.status,
+      updateTime: now
+    };
+    
+    if (body.password) {
+      newUser.password = body.password;
+    }
+    
+    await env.DB.prepare(`
+      UPDATE users 
+      SET nickname = ?, avatar = ?, role = ?, status = ?, password = ?, updateTime = ?
+      WHERE id = ?
+    `).bind(
+      newUser.nickname, newUser.avatar, newUser.role, newUser.status,
+      newUser.password, newUser.updateTime, userId
+    ).run();
+    
+    // 不返回密码
+    const { password: _, ...userWithoutPassword } = newUser as any;
+    return new Response(JSON.stringify(userWithoutPassword), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
+  if (path.startsWith("/api/users/") && request.method === "DELETE") {
+    const id = path.replace("/api/users/", "");
+    const userId = `user:${id}`;
+    
+    // 删除用户
+    await env.DB.prepare(
+      "DELETE FROM users WHERE id = ?"
+    ).bind(userId).run();
+    
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
+  }
   return null;
 }
