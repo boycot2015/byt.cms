@@ -98,6 +98,7 @@ onMounted(async () => {
     if (config?.links) {
       links.value = config.links
     }
+    console.log(config, links.value, 'config')
     siteName.value = config?.title || '影视在线'
     logo.value = config?.logo || ''
   } catch (error) {
