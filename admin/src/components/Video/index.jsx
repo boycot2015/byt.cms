@@ -146,15 +146,20 @@ const Video = forwardRef((props, ref) => {
             setVideoSourceLoading(true);
             const res = await axios.get(`${API_BASE}/api/video-sources`);
             let results = await Promise.all(res.data.map(async (item, index) => {
-                item.categories = categories
-                let data = await fetchVideoBySource(sourceConfig[item.type], index, true);
-                if (data && data.categories && data.categories.length) {
-                    item.categories = data.categories
+                item.categories = categories;
+                if (item.type && item.path) {
+                    try {
+                        let data = await fetchVideoBySource(item, index, true);
+                        if (data && data.categories && data.categories.length) {
+                            item.categories = data.categories;
+                        }
+                    } catch (e) {
+                        console.warn(`拉取源[${item.name || item.type}] categories 失败:`, e.message || e);
+                    }
                 }
-                item.id = Date.now() + '_' + index;
+                item.id = (item.id || `${Date.now()}_${index}`).replace('local:', '');
                 return item;
             }));
-            // console.log(results, 'results');
             setVideoSources(results || []);
             setVideoSourceLoading(false);
         } catch (err) {
@@ -196,28 +201,26 @@ const Video = forwardRef((props, ref) => {
             message.warning('请先配置有效的视频源类型');
             return;
         }
-        
+        const cid = source.path?.match(/t=([^&]+)/)?.[1] || '';
+        const pathParam = source.path ? encodeURIComponent(source.path) : '';
         setFetchingSource(index);
         try {
-        // 发送拉取视频请求，携带源类型等参数
-        const res = await axios.get(`${API_BASE}/api/video-source-data/${source.type}?action=${queryOnly ? 'get' : 'put'}&cid=${source.path.match(/t=([^&]+)/)?.[1] || ''}`);
+        const res = await axios.get(`${API_BASE}/api/video-source-data/${source.type}?action=${queryOnly ? 'get' : 'put'}&cid=${cid}&path=${pathParam}`);
         
         if (res.data.success) {
             if (queryOnly) {
-                return res.data.data
+                return res.data.data;
             }
-            message.success(`成功拉取 ${res.data.data?.list.length || 0} 个视频`);
-            // 拉取成功后刷新视频列表
+            message.success(`成功拉取 ${res.data.data?.list?.length || 0} 个视频`);
             fetchVideos();
-            // 刷新分类和标签
             fetchCategories();
             setCurrentPage(1);
             fetchTags();
         } else {
-            message.error(`拉取失败：${res.data.message || '未知错误'}`);
+            message.error(`拉取失败：${res.data.error || res.data.message || '未知错误'}`);
         }
         } catch (err) {
-            message.error(`拉取视频失败：${err.message || '网络错误'}`);
+            message.error(`拉取视频失败：${err.response?.data?.error || err.message || '网络错误'}`);
             console.error('手动拉取视频失败：', err);
         } finally {
             setFetchingSource(-1);
@@ -289,26 +292,36 @@ const Video = forwardRef((props, ref) => {
 
     const updateVideoSource = async (index, key, value) => {
         const newSources = [...videoSources];
-        newSources[index][key] = value;
-        if(!newSources[index].path && !sourceConfig[value].path) {
-            setVideoSources(newSources)
-            return
-        }
-        if (key === 'category' && value) {
-            newSources[index].path = newSources[index].path.replace(/&t=[^&]*/, '');
-            newSources[index].path+= `&t=${value}`;
-        }
+        const oldSource = newSources[index];
+        newSources[index] = { ...oldSource, [key]: value };
+
         if (key === 'type' && value) {
-            newSources[index].path = sourceConfig[value].path;
-            newSources[index].playUrl = sourceConfig[value].playUrl;
-            newSources[index].categories = categories
-            let data = await fetchVideoBySource(sourceConfig[value], index, true);
-            if (data.categories && data.categories.length) {
-                newSources[index].categories = data.categories;
-                // console.log(newSources[index], data, 'newSources');
-                newSources[index].category = ''
+            const oldDefaultPath = sourceConfig[oldSource.type]?.path;
+            const newDefaultPath = sourceConfig[value]?.path;
+            const isPathEmptyOrOldDefault = !oldSource.path || oldSource.path === oldDefaultPath;
+            if (isPathEmptyOrOldDefault && newDefaultPath) {
+                newSources[index].path = newDefaultPath;
+                newSources[index].playUrl = sourceConfig[value].playUrl || '';
+            }
+            newSources[index].categories = categories;
+            if (newSources[index].path) {
+                try {
+                    let data = await fetchVideoBySource(newSources[index], index, true);
+                    if (data && data.categories && data.categories.length) {
+                        newSources[index].categories = data.categories;
+                        newSources[index].category = '';
+                    }
+                } catch (e) {
+                    console.warn(`拉取源 categories 失败:`, e.message || e);
+                }
             }
         }
+
+        if (key === 'category' && value) {
+            newSources[index].path = newSources[index].path.replace(/&t=[^&]*/, '');
+            newSources[index].path += `&t=${value}`;
+        }
+
         setVideoSources(newSources);
     };
 
@@ -446,8 +459,8 @@ const Video = forwardRef((props, ref) => {
                             optionFilterProp: 'label'
                         }}
                         options={videoSources?.filter((el, index, self) => self.findIndex(t => t.type === el.type) === index)?.map(t => ({
-                            label: t.type != 'custom' ? sourceConfig[t.type]?.name || t.type : t.name,
-                            value: t.type != 'custom' ? t.type : t.name
+                            label: t.name || t.type,
+                            value: t.type
                         }))}
                         />
                         <Select

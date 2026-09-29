@@ -52,11 +52,23 @@ export async function handleVideoSources(request: Request, env: Env, corsHeaders
 
   if (path === "/api/video-sources" && request.method === "GET") {
     const sources = await env.DB.prepare("SELECT * FROM video_sources").all();
+    const rows = sources.results.length > 0
+      ? sources.results
+      : Object.values(sourcesLocal).map((s: any) => ({
+          id: `local:${s.type}`,
+          ...s,
+          enabled: s.enabled !== false,
+          tags: JSON.stringify(s.tags || []),
+        }));
     
-    // 解析JSON字段
-    const parsedSources = sources.results.map((source: any) => {
-      source.tags = JSON.parse(source.tags || "[]");
-      source.category = parseInt(source.category);
+    const parsedSources = rows.map((source: any) => {
+      try {
+        source.tags = JSON.parse(source.tags || "[]");
+      } catch {
+        source.tags = [];
+      }
+      const categoryNum = parseInt(source.category, 10);
+      source.category = Number.isNaN(categoryNum) ? source.category : categoryNum;
       return source;
     });
     return new Response(JSON.stringify(parsedSources), {
@@ -68,24 +80,45 @@ export async function handleVideoSources(request: Request, env: Env, corsHeaders
     const type = path.replace("/api/video-source-data/", "");
     const action = url.searchParams.get("action");
     const cid = url.searchParams.get("cid");
+    const queryPath = url.searchParams.get("path");
     
-    // 获取视频源配置
-    const sources:any = await env.DB.prepare(
+    const dbResults: any = await env.DB.prepare(
       "SELECT * FROM video_sources WHERE type = ?"
     ).bind(type).all();
     
-    const source = sources.results.find((s: any) => s.type === type) || {
-      ...sourcesLocal[type],
-      "action": "put"
-    };      
-    if (!source) {
-      return new Response(JSON.stringify({ error: "视频源不存在" }), {
+    const sourceFromDb = dbResults.results.find((s: any) => s.type === type);
+    const localFallback = sourcesLocal[type];
+    
+    let source: any;
+    if (queryPath) {
+      source = {
+        ...(sourceFromDb || localFallback || { type, name: type }),
+        path: queryPath,
+      };
+    } else if (sourceFromDb) {
+      try {
+        sourceFromDb.tags = JSON.parse(sourceFromDb.tags || "[]");
+      } catch {
+        sourceFromDb.tags = [];
+      }
+      source = sourceFromDb;
+    } else if (localFallback) {
+      source = { ...localFallback, action: "put" };
+    } else {
+      return new Response(JSON.stringify({ error: `视频源类型不存在: ${type}` }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 404
       });
     }
+
+    if (!source.path) {
+      return new Response(JSON.stringify({ error: `视频源[${source.name || type}] path 未配置` }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400
+      });
+    }
+
     if (source.path) {
-      // 处理路径参数
       if (source.path.includes("t=")) {
         source.path = source.path.replace(/t=([^&]*)/g, `t=${cid || ""}`);
       } else {
@@ -93,9 +126,6 @@ export async function handleVideoSources(request: Request, env: Env, corsHeaders
       }
     }
     
-    // console.log(source.path, 'source.path');
-    
-    // 抓取并存储视频数据
     const data = await setVideoList({ ...source, action }, env);
     
     return new Response(JSON.stringify({

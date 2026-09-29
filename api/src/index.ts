@@ -83,17 +83,19 @@ export default {
   ): Promise<void> {
     console.log("定时调度任务执行:", new Date().toLocaleString());
     
-    // 获取所有视频源配置
     const sources:any = await env.DB.prepare("SELECT * FROM video_sources WHERE enabled = 1").all();
     
     if (sources.results.length === 0) {
       console.log("无启用的视频源配置");
     } else {
       for (const source of sources.results) {
-        // 解析JSON字段
         source.tags = JSON.parse(source.tags || "[]");
         
-        // 检查是否到抓取时间
+        if (!source.type || !source.path) {
+          console.warn(`源[${source.name}] 配置未完成(type=${source.type}, path=${source.path})，跳过`);
+          continue;
+        }
+
         if (!isTimeToFetch(source)) {
           console.log(`源[${source.name}]未到抓取时间，跳过`);
           continue;
@@ -103,13 +105,16 @@ export default {
           await setVideoList(source, env);
           console.log(`源[${source.name}]抓取完成`);
         } catch (error) {
-          console.error(`源[${source.name}]抓取失败:`, error);
+          const e = error as Error;
+          console.error(`源[${source.name}]抓取失败: ${e.message}`);
+          if (e.stack) {
+            console.error(e.stack);
+          }
           continue;
         }
       }
     }
     
-    // 调用推荐API更新推荐数据
     await fetchVideoRecommend(env);
   },
 };

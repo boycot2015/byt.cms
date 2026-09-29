@@ -1,15 +1,12 @@
 import { withRetry } from "../utils/withRetry";
 import { fetchVideoBySource } from "./videoSourceService";
 
-// D1 数据库操作函数 - 分类
 export const setCategory = async (body: any, env: any) => {
-  // 检查分类是否已存在
   const existing = await env.DB.prepare(
     "SELECT * FROM categories WHERE name = ?"
   ).bind(body.name).first();
   
   if (existing) {
-    // 更新现有分类
     const updatedCategory = { ...existing, ...body };
     await env.DB.prepare(
       "UPDATE categories SET name = ?, desc = ?, `order` = ?, status = ? WHERE id = ?"
@@ -17,7 +14,6 @@ export const setCategory = async (body: any, env: any) => {
     return updatedCategory;
   }
   
-  // 创建新分类
   const id = `category:${Date.now()}`;
   const category = {
     id,
@@ -34,14 +30,12 @@ export const setCategory = async (body: any, env: any) => {
   
   return category;
 };
-// D1 数据库操作函数 - 标签
+
 export const setTag = async (body: any, env: any) => {
-  // 检查标签是否已存在
   const existing = await env.DB.prepare(
     "SELECT * FROM tags WHERE id = ?"
   ).bind(body.id || '').first();
   if (existing) {
-    // 更新现有标签
     const updatedTag = { name: body.name, id: existing.id };
     await env.DB.prepare(
       "UPDATE tags SET name = ? WHERE id = ?"
@@ -49,7 +43,6 @@ export const setTag = async (body: any, env: any) => {
     return updatedTag;
   }
   
-  // 检查标签是否已存在（通过名称）
   const existingByName = await env.DB.prepare(
     "SELECT * FROM tags WHERE name = ?"
   ).bind(body.name).first();
@@ -57,7 +50,6 @@ export const setTag = async (body: any, env: any) => {
     return existingByName;
   }
   
-  // 创建新标签
   const id = `tag:${Date.now()}`;
   const tag = {
     id,
@@ -70,32 +62,36 @@ export const setTag = async (body: any, env: any) => {
     ).bind(tag.id, tag.name, tag.createTime).run();
     return tag;
   } catch (error) {
-    console.log("标签创建失败:", error);
+    console.log("标签创建失败:", (error as Error).message);
     return null;
   }
 };
 
-// 视频存储函数（D1版本）
 export const setVideoList = async (source: any, env: any) => {
   if (!source.path) {
+    console.warn(`源[${source.name || '未知'}] path 未配置，跳过抓取`);
     return [];
-    // throw new Error("视频源路径不能为空");
+  }
+  if (!source.type) {
+    console.warn(`源[${source.name || '未知'}] type 未配置，跳过抓取`);
+    return [];
   }
   try {
-    const data = await withRetry(() => fetchVideoBySource(source, env));
+    const data = await withRetry(
+      () => fetchVideoBySource(source, env),
+      3,
+      1500,
+      `抓取源[${source.name || source.type}]`
+    );
     let videos = data.list || data || [];
-    // console.log(videos, 'videos');
     if (!source.action || source.action === "put") {
       for (const video of videos) {
-        // 检查视频是否已存在（通过标题和分类判断）
         const existingVideo = await env.DB.prepare(
           "SELECT * FROM videos WHERE title = ? AND category = ?"
         ).bind(video.title || "", video.category || "").first();
         
-        // 处理分类
         const category = await setCategory({ name: video.category || "" }, env);
         
-        // 处理标签
         const tagIds: string[] = [];
         if (video.tags && Array.isArray(video.tags)) {
           for (const tagName of video.tags) {
@@ -106,7 +102,6 @@ export const setVideoList = async (source: any, env: any) => {
           }
         }
         
-        // 准备视频数据
         const videoId = existingVideo?.id || `video:${Date.now()}_${Math.random().toString(36).slice(2)}`;
         const videoData = {
           id: videoId,
@@ -120,94 +115,88 @@ export const setVideoList = async (source: any, env: any) => {
           status: "active"
         };
         
-        // 存储视频
-          if (existingVideo) {
-            // 更新现有视频
-            await env.DB.prepare(`
-              UPDATE videos 
-              SET title = ?, subTitle = ?, desc = ?, cover = ?, 
-                  category = ?, categoryId = ?, fetchTime = ?, 
-                  actors = ?, director = ?, writer = ?, updateTime = ?, status = ?
-              WHERE id = ?
-            `).bind(
-              videoData.title, videoData.subTitle, videoData.desc, videoData.cover,
-              videoData.category, videoData.categoryId, videoData.fetchTime,
-              videoData.actors, videoData.director, videoData.writer,
-              videoData.updateTime, videoData.status, videoData.id
-            ).run();
-            
-            // 删除原有标签关联
-            await env.DB.prepare(
-              "DELETE FROM video_tags WHERE videoId = ?"
-            ).bind(videoId).run();
-          } else {
-            // 插入新视频
-            await env.DB.prepare(`
-              INSERT INTO videos (
-                id, title, subTitle, desc, cover, category,
-                categoryId, fetchTime, actors, director, writer,
-                createTime, updateTime, status
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `).bind(
-              videoData.id, videoData.title, videoData.subTitle, videoData.desc, videoData.cover,
-              videoData.category, videoData.categoryId, videoData.fetchTime,
-              videoData.actors, videoData.director, videoData.writer,
-              videoData.createTime, videoData.updateTime, videoData.status
-            ).run();
-          }
+        if (existingVideo) {
+          await env.DB.prepare(`
+            UPDATE videos 
+            SET title = ?, subTitle = ?, desc = ?, cover = ?, 
+                category = ?, categoryId = ?, fetchTime = ?, 
+                actors = ?, director = ?, writer = ?, updateTime = ?, status = ?
+            WHERE id = ?
+          `).bind(
+            videoData.title, videoData.subTitle, videoData.desc, videoData.cover,
+            videoData.category, videoData.categoryId, videoData.fetchTime,
+            videoData.actors, videoData.director, videoData.writer,
+            videoData.updateTime, videoData.status, videoData.id
+          ).run();
           
-          // 添加新的标签关联
-          for (const tagId of tagIds) {
-            await env.DB.prepare(
-              "INSERT OR IGNORE INTO video_tags (videoId, tagId) VALUES (?, ?)"
-            ).bind(videoId, tagId).run();
-          }
-          
-          // 检查视频来源是否已存在
-          const existingSource = await env.DB.prepare(
-            "SELECT * FROM video_sources_mapping WHERE videoId = ? AND source = ?"
-          ).bind(videoId, video.source || "").first();
-          
-          // 准备视频来源数据
-          const sourceId = existingSource?.id || `source_mapping:${Date.now()}_${Math.random().toString(36).slice(2)}`;
-          const sourceData = {
-            id: sourceId,
-            videoId: videoId,
-            source: video.source || "",
-            url: video.url || "",
-            urls: JSON.stringify(video.urls || []),
-            createTime: existingSource?.createTime || new Date().toISOString(),
-            updateTime: new Date().toISOString()
-          };
-          
-          // 存储视频来源
-          if (existingSource) {
-            // 更新现有来源
-            await env.DB.prepare(`
-              UPDATE video_sources_mapping 
-              SET url = ?, urls = ?, updateTime = ?
-              WHERE id = ?
-            `).bind(
-              sourceData.url, sourceData.urls, sourceData.updateTime, sourceData.id
-            ).run();
-          } else {
-            // 插入新来源
-            await env.DB.prepare(`
-              INSERT INTO video_sources_mapping (
-                id, videoId, source, url, urls, createTime, updateTime
-              ) VALUES (?, ?, ?, ?, ?, ?, ?)
-            `).bind(
-              sourceData.id, sourceData.videoId, sourceData.source,
-              sourceData.url, sourceData.urls, sourceData.createTime, sourceData.updateTime
-            ).run();
-          }
-          
-          console.log(`成功${existingVideo ? '更新' : '存储'}视频: ${video.title}，来源: ${video.source}`);
+          await env.DB.prepare(
+            "DELETE FROM video_tags WHERE videoId = ?"
+          ).bind(videoId).run();
+        } else {
+          await env.DB.prepare(`
+            INSERT INTO videos (
+              id, title, subTitle, desc, cover, category,
+              categoryId, fetchTime, actors, director, writer,
+              createTime, updateTime, status
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          `).bind(
+            videoData.id, videoData.title, videoData.subTitle, videoData.desc, videoData.cover,
+            videoData.category, videoData.categoryId, videoData.fetchTime,
+            videoData.actors, videoData.director, videoData.writer,
+            videoData.createTime, videoData.updateTime, videoData.status
+          ).run();
+        }
+        
+        for (const tagId of tagIds) {
+          await env.DB.prepare(
+            "INSERT OR IGNORE INTO video_tags (videoId, tagId) VALUES (?, ?)"
+          ).bind(videoId, tagId).run();
+        }
+        
+        const existingSource = await env.DB.prepare(
+          "SELECT * FROM video_sources_mapping WHERE videoId = ? AND source = ?"
+        ).bind(videoId, video.source || "").first();
+        
+        const sourceId = existingSource?.id || `source_mapping:${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const sourceData = {
+          id: sourceId,
+          videoId: videoId,
+          source: video.source || "",
+          url: video.url || "",
+          urls: JSON.stringify(video.urls || []),
+          createTime: existingSource?.createTime || new Date().toISOString(),
+          updateTime: new Date().toISOString()
+        };
+        
+        if (existingSource) {
+          await env.DB.prepare(`
+            UPDATE video_sources_mapping 
+            SET url = ?, urls = ?, updateTime = ?
+            WHERE id = ?
+          `).bind(
+            sourceData.url, sourceData.urls, sourceData.updateTime, sourceData.id
+          ).run();
+        } else {
+          await env.DB.prepare(`
+            INSERT INTO video_sources_mapping (
+              id, videoId, source, url, urls, createTime, updateTime
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+          `).bind(
+            sourceData.id, sourceData.videoId, sourceData.source,
+            sourceData.url, sourceData.urls, sourceData.createTime, sourceData.updateTime
+          ).run();
+        }
+        
+        console.log(`成功${existingVideo ? '更新' : '存储'}视频: ${video.title}，来源: ${video.source}`);
       }
     }
     return data;
   } catch (error) {
-    console.error(`源[${source.name}]设置失败:`, error);
+    const e = error as Error;
+    console.error(`源[${source.name}]设置失败: ${e.message}`);
+    if (e.stack) {
+      console.error(e.stack);
+    }
     throw error;
   }
 };
@@ -239,13 +228,11 @@ export async function fetchVideoRecommend(env: any, params: any = {}) {
     
     for (const poster of result) {
       try {
-        // 查找匹配的视频（通过标题）
         const video = await env.DB.prepare(
           "SELECT * FROM videos WHERE title LIKE ?"
         ).bind(`%${poster.name}%`).first();
         
         if (video) {
-          // 更新视频的 banner 字段和推荐状态
           await env.DB.prepare(
             "UPDATE videos SET banner = ?, recommended = ?, updateTime = ? WHERE id = ?"
           ).bind(poster.pic, true, new Date().toISOString(), video.id).run();
@@ -254,11 +241,10 @@ export async function fetchVideoRecommend(env: any, params: any = {}) {
           console.log(`未找到匹配的视频: ${poster.name}`);
         }
       } catch (error) {
-        console.error(`更新视频 ${poster.name} 失败:`, error);
+        console.error(`更新视频 ${poster.name} 失败:`, (error as Error).message);
       }
     }
     
-    // 检查推荐视频数量
     recommendedVideos = await env.DB.prepare(
       "SELECT * FROM videos WHERE recommended = 1 ORDER BY updateTime DESC"
     ).all();
@@ -269,7 +255,7 @@ export async function fetchVideoRecommend(env: any, params: any = {}) {
     }
     console.log("推荐数据更新完成");
   } catch (error) {
-    console.error("更新推荐数据失败:", error);
+    console.error("更新推荐数据失败:", (error as Error).message);
   }
   return recommendedVideos.results || result;
 }

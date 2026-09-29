@@ -3,7 +3,19 @@ import { AliyunDriveClient } from '../clients/AliyunDriveClient';
 import { JianguoYunWebDAV } from '../clients/JianguoYunWebDAV';
 import { hasSensitiveWords, randomImage } from '../utils/index';
 
-// 夸克网盘API对接函数
+async function safeFetchJson(url: string, label = "请求"): Promise<any> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`[${label}] HTTP ${res.status} ${res.statusText}, URL: ${url}`);
+  }
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`[${label}] JSON解析失败, URL: ${url}, 响应前200字: ${text.slice(0, 200)}`);
+  }
+}
+
 export async function fetchQuarkVideo(sourceConfig: any, env: any) {
   const { path, categoryId } = sourceConfig;
   const apiKey = env.QUARK_API_KEY;
@@ -22,10 +34,10 @@ export async function fetchQuarkVideo(sourceConfig: any, env: any) {
         offset: 0
       })
     });
-  });
-  if (!response.ok) throw new Error(`夸克网盘API请求失败: ${response.status}`);
-  const data:any = await response.json();
-  return data.data.files
+  }, 3, 1000, "夸克网盘API");
+  if (!response.ok) throw new Error(`夸克网盘API请求失败: HTTP ${response.status}`);
+  const data: any = await response.json();
+  return (data.data.files || [])
     .filter((file: any) => file.mime_type.startsWith("video/"))
     .map((file: any) => ({
       title: file.file_name,
@@ -38,13 +50,12 @@ export async function fetchQuarkVideo(sourceConfig: any, env: any) {
     }));
 }
 
-// 阿里云盘API对接函数
 export async function fetchAliyunVideo(sourceConfig: any, env: any) {
   if (!env.ALIYUN_REFRESH_TOKEN) {
     throw new Error("缺少阿里云盘环境变量: ALIYUN_REFRESH_TOKEN");
   }
   const client = new AliyunDriveClient(env);
-  const videoFiles = await withRetry(() => client.listVideoFiles(sourceConfig.path || "/"));
+  const videoFiles = await client.listVideoFiles(sourceConfig.path || "/");
   return videoFiles.map((file: any) => ({
     title: file.name,
     url: file.download_url || file.web_content_link || "",
@@ -57,10 +68,9 @@ export async function fetchAliyunVideo(sourceConfig: any, env: any) {
   }));
 }
 
-// 坚果云视频源对接函数
 export async function fetchJianguoYunVideo(sourceConfig: any, env: any) {
   const davClient = new JianguoYunWebDAV(env);
-  const videos = await withRetry(() => davClient.listVideoFiles(sourceConfig.path || "/"));
+  const videos = await davClient.listVideoFiles(sourceConfig.path || "/");
   return videos.map(file => ({
     title: file.name,
     url: file.downloadUrl,
@@ -73,29 +83,20 @@ export async function fetchJianguoYunVideo(sourceConfig: any, env: any) {
   }));
 }
 
-/**
- * 抓取CMS视频源数据
- * 
- * 该函数用于从CMS（内容管理系统）视频源获取视频列表和详细信息。
- * 首先获取视频列表数据，然后获取详细数据，最后将数据格式化为统一的视频对象结构。
- * 
- * @param sourceConfig - 视频源配置对象
- * @param sourceConfig.path - CMS API的URL路径，通常包含?ac=list参数
- * @param sourceConfig.type - 视频源类型标识
- * @param env - 环境变量对象（当前未使用，保留用于接口统一）
- * @returns 返回包含视频列表、分页信息和分类信息的对象
- * 
- * @example
- * const result = await fetchCmsVideo(
- *   { path: "https://api.example.com/api?ac=list", type: "custom" },
- *   {}
- * );
- */
 export async function fetchCmsVideo(sourceConfig: any, env: any) {
-  const video:any = await withRetry(() => fetch(sourceConfig.path || "/").then(res => res.json()));
-  const videoDetial:any = await withRetry(() => fetch(sourceConfig.path.replace('?ac=list', '?ac=detail') || "/").then(res => res.json()));
-  
-  let list = videoDetial?.list?.map((file: any) => ({
+  const listUrl = sourceConfig.path || "";
+  if (!listUrl) {
+    throw new Error("CMS视频源 path 为空");
+  }
+  const detailUrl = listUrl.includes('?ac=list')
+    ? listUrl.replace('?ac=list', '?ac=detail')
+    : listUrl;
+
+  const video: any = await safeFetchJson(listUrl, "CMS-list");
+  const videoDetail: any = await safeFetchJson(detailUrl, "CMS-detail");
+
+  const rawList: any[] = videoDetail?.list || video?.list || [];
+  const list = rawList.map((file: any) => ({
     title: file.vod_name || file.title || "",
     subTitle: file.vod_remarks || "",
     desc: file.vod_content || "",
@@ -109,9 +110,9 @@ export async function fetchCmsVideo(sourceConfig: any, env: any) {
     writer: file.vod_writer || "",
     cover: hasSensitiveWords(file.vod_name + file.type_name) ? randomImage() : file.vod_pic || "",
     size: file.vod_total || 0,
-    source: file.vod_play_from.split('$$$')?.[0] || sourceConfig.type || "默认源",
+    source: file.vod_play_from?.split('$$$')?.[0] || sourceConfig.type || "默认源",
     category: file.type_name || "默认分类",
-    tags:  [file.vod_area, file.vod_lang].filter((tag: string) => tag),
+    tags: [file.vod_area, file.vod_lang].filter((tag: string) => tag),
     fetchTime: file.vod_time || "",
     path: file.path || "",
   }));
@@ -127,9 +128,9 @@ export async function fetchCmsVideo(sourceConfig: any, env: any) {
   };
 }
 
-// 通用视频抓取函数
 export async function fetchVideoBySource(sourceConfig: any, env: any) {
-  switch (sourceConfig.type) {
+  const type = sourceConfig?.type;
+  switch (type) {
     case "quark":
       return await fetchQuarkVideo(sourceConfig, env);
     case "aliyun":
@@ -151,12 +152,15 @@ export async function fetchVideoBySource(sourceConfig: any, env: any) {
       return await fetchCmsVideo(sourceConfig, env);
     case "bilibili":
       return [];
+    case "":
+      throw new Error(`视频源[${sourceConfig?.name || '未知'}] type 未配置`);
+    case undefined:
+      throw new Error(`视频源[${sourceConfig?.name || '未知'}] type 未配置`);
     default:
-      throw new Error(`不支持的视频源类型: ${sourceConfig.type}`);
+      throw new Error(`不支持的视频源类型: ${type}`);
   }
 }
 
-// 检查是否到了源的抓取时间
 export function isTimeToFetch(sourceConfig: any): boolean {
   const now = new Date();
   const cronExpr = sourceConfig.cron || "* * * * *";
