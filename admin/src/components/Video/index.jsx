@@ -914,9 +914,9 @@ const Video = forwardRef((props, ref) => {
                                 showSearch={{
                                     optionFilterProp: 'label'
                                 }}
-                                options={Object.keys(sourceConfig)?.map(key => ({
-                                label: sourceConfig[key].name,
-                                value: key
+                                options={videoSources?.map(t => ({
+                                label: t.name || t.type,
+                                value: t.type
                                 }))}
                             />
                             )

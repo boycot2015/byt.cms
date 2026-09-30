@@ -128,7 +128,7 @@ export async function fetchCmsVideo(sourceConfig: any, env: any) {
 }
 
 export async function fetchVideoBySource(sourceConfig: any, env: any) {
-  const type = sourceConfig?.type;
+  const type = sourceConfig?.type || "";
   switch (type) {
     case "quark":
       return await fetchQuarkVideo(sourceConfig, env);
@@ -156,7 +156,8 @@ export async function fetchVideoBySource(sourceConfig: any, env: any) {
     case undefined:
       throw new Error(`视频源[${sourceConfig?.name || '未知'}] type 未配置`);
     default:
-      throw new Error(`不支持的视频源类型: ${type}`);
+      return await fetchCmsVideo(sourceConfig, env);
+      // throw new Error(`不支持的视频源类型: ${type}`);
   }
 }
 
