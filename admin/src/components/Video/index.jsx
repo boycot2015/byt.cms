@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment, useRef, forwardRef, useImperativeHandle } from 'react';
+import { useState, useEffect, Fragment, useRef, forwardRef, useImperativeHandle, useMemo } from 'react';
 import { useAsyncEffect, useGetState, useRequest, useDebounceFn } from 'ahooks';
 import { 
   Table, Button, message, Rate, Input, Typography, Space, 
@@ -51,6 +51,25 @@ const Video = forwardRef((props, ref) => {
     });
     const [videoSources, setVideoSources] = useState([]);
     const [videoSourceLoading, setVideoSourceLoading] = useState(false);
+
+    // 统一 type options 来源：sourceConfig 枚举 ∪ videoSources 里已有的 type（探测出来的）
+    const sourceTypeOptions = useMemo(() => {
+        const fromConfig = Object.values(sourceConfig).map((s, index) => ({
+            label: s.name || s.type,
+            path: s.path || '',
+            key: s.type + '_' + index,
+            value: s.type,
+        }));
+        const fromDb = videoSources
+            .filter(s => s.type && !sourceConfig[s.type])
+            .map((s, index) => ({
+                label: s.name || s.type,
+                path: s.path || '',
+                key: s.type + '_' + s.id + '_' + index,
+                value: s.type,
+            }));
+        return [...fromConfig, ...fromDb];
+    }, [videoSources]);
     // 新增：手动拉取视频的加载状态
     const [fetchingSource, setFetchingSource] = useState(-1); // -1表示没有拉取，index表示正在拉取第几个源
     // 批量操作状态
@@ -335,7 +354,7 @@ const Video = forwardRef((props, ref) => {
                     const next = [...prev];
                     if (!next[index] || next[index].path !== path) return prev;
                     if (next[index].type && next[index].type === src) return prev;
-                    next[index] = { ...next[index], type: src };
+                    next[index] = { ...next[index], type: src, categories: res.data?.categories || categories };
                     return next;
                 });
             }
@@ -349,15 +368,20 @@ const Video = forwardRef((props, ref) => {
         newSources[index] = { ...oldSource, [key]: value };
 
         if (key === 'type' && value) {
-            const oldDefaultPath = sourceConfig[oldSource.type]?.path;
-            const newDefaultPath = sourceConfig[value]?.path;
-            const isPathEmptyOrOldDefault = !oldSource.path || oldSource.path === oldDefaultPath;
-            if (isPathEmptyOrOldDefault && newDefaultPath) {
-                newSources[index].path = newDefaultPath;
-                newSources[index].playUrl = sourceConfig[value].playUrl || '';
-            }
+            // const oldDefaultPath = sourceConfig[oldSource.type]?.path;
+            const newDefaultPath = sourceTypeOptions.find(opt => opt.value === value)?.path || sourceConfig[value]?.path || sourceConfig[oldSource.type]?.path || '';
+            newSources[index].path = newDefaultPath;
+            // const isPathEmptyOrOldDefault = !oldSource.path || oldSource.path === oldDefaultPath;
+            // if (isPathEmptyOrOldDefault && newDefaultPath) {
+            // }
             newSources[index].categories = categories;
+            if (value === 'custom') {
+                newSources[index].categories = [];
+                newSources[index].path = '';
+                newSources[index].category = '';
+            }
             if (newSources[index].path) {
+                setVideoSources(newSources);
                 try {
                     let data = await fetchVideoBySource(newSources[index], index, true);
                     if (data && data.categories && data.categories.length) {
@@ -522,10 +546,9 @@ const Video = forwardRef((props, ref) => {
                         showSearch={{
                             optionFilterProp: 'label'
                         }}
-                        options={videoSources?.filter((el, index, self) => self.findIndex(t => t.type === el.type) === index)?.map(t => ({
-                            label: t.name || t.type,
-                            value: t.type
-                        }))}
+                        options={sourceTypeOptions.filter(opt =>
+                            videoSources.some(s => s.type === opt.value)
+                        )}
                         />
                         <Select
                         placeholder="是否推荐"
@@ -909,15 +932,13 @@ const Video = forwardRef((props, ref) => {
                             render: (_, record, index) => (
                             <Select
                                 value={record.type}
+                                key={record.type+'_'+record.id+'_'+index}
                                 onChange={(value) => updateVideoSource(index, 'type', value)}
                                 style={{ width: '100%' }}
                                 showSearch={{
                                     optionFilterProp: 'label'
                                 }}
-                                options={videoSources?.map(t => ({
-                                label: t.name || t.type,
-                                value: t.type
-                                }))}
+                                options={sourceTypeOptions}
                             />
                             )
                         },
@@ -967,10 +988,16 @@ const Video = forwardRef((props, ref) => {
                                 showSearch={{
                                     optionFilterProp: 'label'
                                 }}
-                                options={record.categories?.map(c => ({
-                                label: c.name,
-                                value: c.id
-                                }))}
+                                options={record.categories
+                                    ?.filter(c => record.category === c.id ||
+                                        !videoSources.some((s, i) =>
+                                            i !== index &&
+                                            s.type === record.type &&
+                                            s.category === c.id))
+                                    ?.map(c => ({
+                                        label: c.name,
+                                        value: c.id
+                                    }))}
                             />
                             )
                         },

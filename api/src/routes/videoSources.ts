@@ -88,11 +88,12 @@ export async function handleVideoSources(request: Request, env: Env, corsHeaders
     }
     try {
       const source: any = { path: rawPath, type: "custom" };
-      const { list } = await fetchCmsVideo(source, env);
+      const { list, categories } = await fetchCmsVideo(source, env);
       const first = list?.[0] || null;
       return new Response(JSON.stringify({
         success: true,
         source: first?.source || "",
+        categories,
         sample: first ? {
           title: first.title,
           category: first.category,
