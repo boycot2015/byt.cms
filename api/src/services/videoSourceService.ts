@@ -1,7 +1,7 @@
 import { withRetry } from '../utils/withRetry';
 import { AliyunDriveClient } from '../clients/AliyunDriveClient';
 import { JianguoYunWebDAV } from '../clients/JianguoYunWebDAV';
-import { hasSensitiveWords, randomImage } from '../utils/index';
+import { hasSensitiveWords, randomImage, normalizeCmsUrl } from '../utils/index';
 
 async function safeFetchJson(url: string, label = "请求"): Promise<any> {
   const res = await fetch(url);
@@ -84,13 +84,12 @@ export async function fetchJianguoYunVideo(sourceConfig: any, env: any) {
 }
 
 export async function fetchCmsVideo(sourceConfig: any, env: any) {
-  const listUrl = sourceConfig.path || "";
-  if (!listUrl) {
+  const rawUrl = sourceConfig.path || "";
+  if (!rawUrl) {
     throw new Error("CMS视频源 path 为空");
   }
-  const detailUrl = listUrl.includes('?ac=list')
-    ? listUrl.replace('?ac=list', '?ac=detail')
-    : listUrl;
+  const listUrl = normalizeCmsUrl(rawUrl, { ac: 'list' });
+  const detailUrl = normalizeCmsUrl(rawUrl, { ac: 'detail' });
 
   const video: any = await safeFetchJson(listUrl, "CMS-list");
   const videoDetail: any = await safeFetchJson(detailUrl, "CMS-detail");

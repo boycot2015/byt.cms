@@ -1,6 +1,7 @@
 // import type { Request } from 'cloudflare-workers-types';
 import { sources as sourcesLocal } from '../data/sources';
 import { setVideoList, fetchVideoRecommend } from '../services/dbService';
+import { normalizeCmsUrl } from '../utils/index';
 
 interface Env {
   DB: D1Database;
@@ -118,13 +119,10 @@ export async function handleVideoSources(request: Request, env: Env, corsHeaders
       });
     }
 
-    if (source.path) {
-      if (source.path.includes("t=")) {
-        source.path = source.path.replace(/t=([^&]*)/g, `t=${cid || ""}`);
-      } else {
-        source.path += `&t=${cid || ""}`;
-      }
-    }
+    source.path = normalizeCmsUrl(source.path, {
+      ac: source.path.includes('ac=') ? undefined : 'list',
+      t: cid || undefined,
+    });
     
     const data = await setVideoList({ ...source, action }, env);
     

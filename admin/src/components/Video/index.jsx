@@ -181,10 +181,40 @@ const Video = forwardRef((props, ref) => {
             setRecommendLoading(false);
         }
     };
+    const repairBareAmpersand = (raw) => {
+        const [base, frag] = raw.split('#');
+        const repaired = base.replace(/(?<!\?)(&[^=&]+=[^&]*)/g, (_m, param) => {
+            return (base.includes('?') ? '&' : '?') + param.slice(1);
+        });
+        return frag !== undefined ? `${repaired}#${frag}` : repaired;
+    };
+
+    const normalizeCmsPath = (rawPath) => {
+        if (!rawPath) return rawPath;
+        try {
+            const repaired = repairBareAmpersand(rawPath);
+            const url = new URL(repaired);
+            if (!url.searchParams.has('ac')) url.searchParams.set('ac', 'list');
+            const seen = new Set();
+            for (const key of Array.from(url.searchParams.keys())) {
+                if (seen.has(key)) {
+                    const vals = url.searchParams.getAll(key);
+                    url.searchParams.delete(key);
+                    url.searchParams.set(key, vals[vals.length - 1]);
+                }
+                seen.add(key);
+            }
+            return url.toString();
+        } catch {
+            return rawPath;
+        }
+    };
+
     const saveVideoSources = async () => {
         try {
         await axios.post(`${API_BASE}/api/video-sources`, videoSources.map(item => ({
             ...item,
+            path: normalizeCmsPath(item.path),
             category: item.category ? Number(item.category) : ''
         })));
         message.success('视频源配置保存成功');
@@ -318,8 +348,14 @@ const Video = forwardRef((props, ref) => {
         }
 
         if (key === 'category' && value) {
-            newSources[index].path = newSources[index].path.replace(/&t=[^&]*/, '');
-            newSources[index].path += `&t=${value}`;
+            try {
+                const url = new URL(newSources[index].path);
+                url.searchParams.set('t', value);
+                newSources[index].path = url.toString();
+            } catch {
+                const base = newSources[index].path.split('?')[0];
+                newSources[index].path = `${base}?ac=list&t=${value}`;
+            }
         }
 
         setVideoSources(newSources);
