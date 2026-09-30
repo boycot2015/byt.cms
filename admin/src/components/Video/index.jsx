@@ -1,5 +1,5 @@
 import { useState, useEffect, Fragment, useRef, forwardRef, useImperativeHandle } from 'react';
-import { useAsyncEffect, useGetState, useRequest } from 'ahooks';
+import { useAsyncEffect, useGetState, useRequest, useDebounceFn } from 'ahooks';
 import { 
   Table, Button, message, Rate, Input, Typography, Space, 
   App, Row, Col, Switch, Select, Tag, Tabs,
@@ -320,6 +320,29 @@ const Video = forwardRef((props, ref) => {
         });
     };
 
+    const probeRef = useRef({ index: -1, path: '' });
+
+    const { run: runProbe } = useDebounceFn(async (index, path) => {
+        if (!path || !/^https?:\/\//.test(path)) return;
+        if (probeRef.current.index !== index || probeRef.current.path !== path) return;
+        try {
+            const res = await axios.get(`${API_BASE}/api/video-source-probe`, {
+                params: { path },
+            });
+            const src = res.data?.source;
+            if (src) {
+                setVideoSources(prev => {
+                    const next = [...prev];
+                    if (!next[index] || next[index].path !== path) return prev;
+                    if (next[index].type && next[index].type === src) return prev;
+                    next[index] = { ...next[index], type: src };
+                    return next;
+                });
+            }
+        } catch {
+        }
+    }, { wait: 1500 });
+
     const updateVideoSource = async (index, key, value) => {
         const newSources = [...videoSources];
         const oldSource = newSources[index];
@@ -356,6 +379,11 @@ const Video = forwardRef((props, ref) => {
                 const base = newSources[index].path.split('?')[0];
                 newSources[index].path = `${base}?ac=list&t=${value}`;
             }
+        }
+
+        if (key === 'path') {
+            probeRef.current = { index, path: value };
+            runProbe(index, value);
         }
 
         setVideoSources(newSources);

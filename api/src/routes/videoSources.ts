@@ -1,6 +1,7 @@
 // import type { Request } from 'cloudflare-workers-types';
 import { sources as sourcesLocal } from '../data/sources';
 import { setVideoList, fetchVideoRecommend } from '../services/dbService';
+import { fetchCmsVideo } from '../services/videoSourceService';
 import { normalizeCmsUrl } from '../utils/index';
 
 interface Env {
@@ -76,6 +77,38 @@ export async function handleVideoSources(request: Request, env: Env, corsHeaders
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
+  // 探测 CMS 视频源 path，返回第一条视频的 source 值
+  if (path === "/api/video-source-probe" && request.method === "GET") {
+    const rawPath = url.searchParams.get("path");
+    if (!rawPath) {
+      return new Response(JSON.stringify({ error: "path 不能为空" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+    try {
+      const source: any = { path: rawPath, type: "custom" };
+      const { list } = await fetchCmsVideo(source, env);
+      const first = list?.[0] || null;
+      return new Response(JSON.stringify({
+        success: true,
+        source: first?.source || "",
+        sample: first ? {
+          title: first.title,
+          category: first.category,
+        } : null,
+        total: list?.length || 0,
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    } catch (error: any) {
+      return new Response(JSON.stringify({ error: error?.message || "探测失败" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
+  }
+
   // 手动抓取视频源数据
   if (path.startsWith("/api/video-source-data/") && request.method === "GET") {
     const type = path.replace("/api/video-source-data/", "");
