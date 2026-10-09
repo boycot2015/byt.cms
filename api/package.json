@@ -1,19 +1,21 @@
 {
-	"name": "byt-cms-api",
-	"version": "1.0.1",
-	"private": true,
-	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler types && wrangler dev",
-		"start": "wrangler dev",
-		"test": "vitest",
-		"cf-typegen": "wrangler types"
-	},
-	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.12.4",
-		"@types/node": "^25.3.0",
-		"typescript": "^5.5.2",
-		"vitest": "~3.2.0",
-		"wrangler": "^4.68.1"
-	}
+  "name": "byt-cms-api",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "deploy": "npm run build && edgeone makers deploy",
+    "dev": "npm run build && edgeone makers dev",
+    "start": "npm run build && edgeone makers dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@edgeone/pages-blob": "^0.0.14"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.5.2"
+  }
 }

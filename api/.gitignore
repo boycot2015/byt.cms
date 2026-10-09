@@ -165,3 +165,9 @@ dist
 .env*
 !.env.example
 .wrangler/
+
+# EdgeOne 构建产物（由 npm run build 生成）
+cloud-functions/
+
+# 构建时生成的静态文档首页
+index.html

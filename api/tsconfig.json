@@ -36,11 +36,12 @@
 
 		/* Skip type checking all .d.ts files. */
 		"skipLibCheck": true,
-		"types": [
-			"./worker-configuration.d.ts",
-			"node"
-		]
+		/* D1 / R2 等类型改由 src/types/cf.d.ts 自声明，不再依赖 wrangler 生成的
+		   worker-configuration.d.ts（417KB）；Node 类型来自 @types/node。 */
+		"types": ["node"]
 	},
-	"exclude": ["test"],
-	"include": ["worker-configuration.d.ts", "src/**/*.ts"]
+	"include": ["src/**/*.ts"],
+	/* src/inde_kv.ts 是 Cloudflare KV 时代的遗留死代码（全项目 0 处引用），
+	   依赖 KVNamespace 等已不使用的绑定，排除出类型检查。可直接删除。 */
+	"exclude": ["src/inde_kv.ts"]
 }
