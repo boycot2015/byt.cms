@@ -3,7 +3,9 @@
 		/* Visit https://aka.ms/tsconfig.json to read more about this file */
 
 		/* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-		"target": "es2024",
+		/* Node 20 的运行时可安全支持到 es2022（EdgeOne CLI 内置的 esbuild
+		   不识别 es2024，保持 es2022 以避免告警）。 */
+		"target": "es2022",
 		/* Specify a set of bundled library declaration files that describe the target runtime environment. */
 		"lib": ["es2024"],
 		/* Specify what JSX code is generated. */

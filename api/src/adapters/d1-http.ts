@@ -130,7 +130,10 @@ class D1HttpClient implements D1Database {
   ): Promise<D1Result<T>> {
     this.assertConfigured(sql);
 
-    const payload = await this.post<CloudflareQueryResponse>([payloadOf(sql, params)], sql);
+    const payload = await this.post<CloudflareQueryResponse>(
+      payloadOf(sql, params),
+      sql
+    );
     const entry = payload.result?.[0];
 
     if (!entry) {
@@ -144,23 +147,8 @@ class D1HttpClient implements D1Database {
     };
   }
 
-  /** 批量执行，按顺序返回结果（本项目未使用，保留以备后用）。 */
-  async batch(sqls: string[], paramsList: unknown[][]): Promise<D1Result[]> {
-    this.assertConfigured(sqls[0] ?? "");
-    const payload = await this.post<CloudflareQueryResponse>(
-      sqls.map((sql, i) => payloadOf(sql, paramsList[i] ?? [])),
-      sqls.join("; ")
-    );
-
-    return (payload.result ?? []).map((entry) => ({
-      results: entry.results ?? [],
-      success: entry.success !== false,
-      meta: entry.meta ?? {},
-    }));
-  }
-
   private async post<T extends CloudflareQueryResponse>(
-    body: unknown[],
+    body: Record<string, unknown>,
     sql: string
   ): Promise<T> {
     const url =

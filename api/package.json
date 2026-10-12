@@ -6,8 +6,6 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "deploy": "npm run build && edgeone makers deploy",
-    "dev": "npm run build && edgeone makers dev",
-    "start": "npm run build && edgeone makers dev",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
